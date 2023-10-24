@@ -1,5 +1,7 @@
-﻿using System;
+﻿using PinJuke.Model;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,9 +22,28 @@ namespace PinJuke
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private MainModel mainModel;
+        private Configuration.Display displayConfig;
+
+        public MainWindow(MainModel mainModel, Configuration.Display displayConfig)
         {
+            this.mainModel = mainModel;
+            this.displayConfig = displayConfig;
+
             InitializeComponent();
+
+            Title = displayConfig.Role.ToString();
+            Left = displayConfig.Window.Left;
+            Top = displayConfig.Window.Top;
+            Width = displayConfig.Window.Width;
+            Height = displayConfig.Window.Height;
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            Debug.WriteLine(e.Key);
+
+            base.OnKeyDown(e);
         }
     }
 }

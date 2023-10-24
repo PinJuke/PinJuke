@@ -10,7 +10,7 @@ using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace PinJuke.Configuration
 {
-    class Loader
+    public class Loader
     {
         private readonly Parser parser = new();
 
@@ -30,9 +30,9 @@ namespace PinJuke.Configuration
             var mediaPath = parser.ParseString(iniDocument["PinJuke"]["MediaPath"]) ?? ".";
             var player = CreatePlayer(iniDocument["Player"]);
             var keyboard = CreateKeyboard(iniDocument["Keyboard"]);
-            var backGlass = CreateDisplay(iniDocument["BackGlass"]);
-            var playField = CreateDisplay(iniDocument["PlayField"]);
-            var dmd = CreateDisplay(iniDocument["DMD"]);
+            var backGlass = CreateDisplay(DisplayRole.BackGlass, iniDocument["BackGlass"]);
+            var playField = CreateDisplay(DisplayRole.PlayField, iniDocument["PlayField"]);
+            var dmd = CreateDisplay(DisplayRole.DMD, iniDocument["DMD"]);
             return new Configuration(mediaPath, player, keyboard, backGlass, playField, dmd);
         }
 
@@ -42,7 +42,7 @@ namespace PinJuke.Configuration
                 ?? Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
             var startupTrackType = parser.ParseEnum<StartupTrackType>(playerSection["StartupTrackType"])
                 ?? StartupTrackType.FirstTrack;
-            var playOnStartup = parser.ParseBool("PlayOnStartup")
+            var playOnStartup = parser.ParseBool(playerSection["PlayOnStartup"])
                 ?? true;
             return new Player(musicPath, startupTrackType, playOnStartup);
         }
@@ -57,11 +57,11 @@ namespace PinJuke.Configuration
             return new Keyboard(exit, browse, previous, next, playPause);
         }
 
-        protected Display CreateDisplay(IniSection displaySection)
+        protected Display CreateDisplay(DisplayRole role, IniSection displaySection)
         {
             var enabled = parser.ParseBool(displaySection["Enabled"]) ?? true;
 
-            var orientation = parser.ParseInt("WindowOrientation") ?? 0;
+            var orientation = parser.ParseInt(displaySection["WindowOrientation"]) ?? 0;
             orientation = orientation % 360;
             if (orientation < 0)
             {
@@ -87,11 +87,11 @@ namespace PinJuke.Configuration
                 parser.ParseString(displaySection["BackgroundImageFile"]) ?? ""
             );
 
-            return new Display(enabled, window, content);
+            return new Display(role, enabled, window, content);
         }
     }
 
-    class Parser
+    public class Parser
     {
         /// <summary>
         /// Should at least check for null.

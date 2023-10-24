@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace PinJuke.Configuration
 {
-    class IniDocument : IEnumerable<(string, IniSection)>
+    public class IniDocument : IEnumerable<(string, IniSection)>
     {
         private readonly OrderedDictionary sectionByName = new();
 
@@ -42,7 +42,7 @@ namespace PinJuke.Configuration
         }
     }
 
-    class IniSection : IEnumerable<(string, string)>
+    public class IniSection : IEnumerable<(string, string)>
     {
         private readonly OrderedDictionary valueByName = new();
 
@@ -91,7 +91,7 @@ namespace PinJuke.Configuration
         }
     }
 
-    class IniReader
+    public class IniReader
     {
         public IniDocument Read(string filePath)
         {
@@ -117,7 +117,7 @@ namespace PinJuke.Configuration
                 line = line.Trim();
                 if (line.Length == 0 || line[0] == ';')
                 {
-                    // Line is comment
+                    // Line is empty or comment
                     continue;
                 }
                 if (line[0] == '[' && line[^1] == ']')
@@ -133,7 +133,7 @@ namespace PinJuke.Configuration
                     // Line is not recognized
                     continue;
                 }
-                section[pair[0]] = pair[1];
+                section[pair[0].Trim()] = pair[1].Trim();
             }
             return document;
         }

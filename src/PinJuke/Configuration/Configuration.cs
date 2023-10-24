@@ -9,29 +9,36 @@ using System.Windows.Input;
 
 namespace PinJuke.Configuration
 {
-    record Configuration(string MediaPath, Player Player, Keyboard Keyboard, Display BackGlass, Display PlayField, Display DMD);
+    public record Configuration(string MediaPath, Player Player, Keyboard Keyboard, Display BackGlass, Display PlayField, Display DMD);
 
-    record Player(string MusicPath, StartupTrackType StartupTrackType, bool PlayOnStartup);
+    public record Player(string MusicPath, StartupTrackType StartupTrackType, bool PlayOnStartup);
 
-    enum StartupTrackType
+    public enum StartupTrackType
     {
         LastPlayedTrack = 0,
         FirstTrack = 1,
-        Random = 2
+        Random = 2,
     }
 
-    record Display(bool Enabled, Window Window, Content Content);
+    public record Display(DisplayRole Role, bool Enabled, Window Window, Content Content);
 
-    record Window(int Left, int Top, int Width, int Height, int Orientation);
+    public enum DisplayRole
+    {
+        BackGlass = 0,
+        PlayField = 1,
+        DMD = 2,
+    }
 
-    record Content(BackgroundType BackgroundType, string BackgroundImageFile, bool BrowserEnabled, string SongStartFile);
+    public record Window(int Left, int Top, int Width, int Height, int Orientation);
 
-    enum BackgroundType
+    public record Content(BackgroundType BackgroundType, string BackgroundImageFile, bool BrowserEnabled, string SongStartFile);
+
+    public enum BackgroundType
     {
         Image = 0,
         MilkdropVisualization = 1,
     }
 
-    record Keyboard(Key Exit, Key Browse, Key Previous, Key Next, Key PlayPause);
+    public record Keyboard(Key Exit, Key Browse, Key Previous, Key Next, Key PlayPause);
 
 }

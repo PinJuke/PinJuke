@@ -10,7 +10,7 @@ namespace PinJuke.Util
     /// <summary>
     /// Wraps a IDictionaryEnumerator of e.g. an OrderedDictionary which is not generic.
     /// </summary>
-    class DictionaryEnumerator<TKey, TValue> : IEnumerator<(TKey, TValue)>
+    public class DictionaryEnumerator<TKey, TValue> : IEnumerator<(TKey, TValue)>
     {
         private readonly IDictionaryEnumerator dictionaryEnumerator;
 
