@@ -27,6 +27,8 @@ namespace PinJuke.Playlist
         public FileType Type { get; }
         public int ChildCount { get; private set; } = 0;
 
+        public bool Playable => Type == FileType.Music || Type == FileType.Video;
+
         public FileNode(string fullName, string displayName, FileType type)
         {
             FullName = fullName;
@@ -151,6 +153,28 @@ namespace PinJuke.Playlist
                 node = node.LastChild;
             }
             return node;
+        }
+
+        public FileNode? GetNextPlayableInList()
+        {
+            for (var node = GetNextInList(); ; node = node.GetNextInList())
+            {
+                if (node == null || node.Playable)
+                {
+                    return node;
+                }
+            }
+        }
+
+        public FileNode? GetPreviousPlayableInList()
+        {
+            for (var node = GetPreviousInList(); ; node = node.GetPreviousInList())
+            {
+                if (node == null || node.Playable)
+                {
+                    return node;
+                }
+            }
         }
     }
 }

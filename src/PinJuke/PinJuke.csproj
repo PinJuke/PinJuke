@@ -13,10 +13,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FFME.Windows" Version="4.4.350" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="PinJuke.global.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="PinJuke.user.sample.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+	<None Include="ffmpeg\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

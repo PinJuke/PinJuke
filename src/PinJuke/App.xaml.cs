@@ -20,15 +20,9 @@ namespace PinJuke
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            List<string> iniFilePaths = new();
-            iniFilePaths.Add("PinJuke.global.ini");
-            if (e.Args.Length >= 1)
-            {
-                iniFilePaths.Add(e.Args[0]);
-            }
+            var configuration = LoadConfiguration(e);
 
-            var loader = new Configuration.Loader();
-            var configuration = loader.FromIniFilePaths(iniFilePaths);
+            Unosquare.FFME.Library.FFmpegDirectory = @"ffmpeg";
 
             var mainModel = new MainModel(configuration);
 
@@ -53,6 +47,19 @@ namespace PinJuke
             appController?.Dispose();
         }
 
+        private Configuration.Configuration LoadConfiguration(StartupEventArgs e)
+        {
+            List<string> iniFilePaths = new();
+            iniFilePaths.Add("PinJuke.global.ini");
+            if (e.Args.Length >= 1)
+            {
+                iniFilePaths.Add(e.Args[0]);
+            }
+
+            var loader = new Configuration.Loader();
+            return loader.FromIniFilePaths(iniFilePaths);
+        }
+
         private MainWindow? CreateWindow(MainModel mainModel, Configuration.Display displayConfig)
         {
             if (!displayConfig.Enabled)
@@ -60,6 +67,7 @@ namespace PinJuke
                 return null;
             }
             var window = new MainWindow(mainModel, displayConfig);
+            var controller = new DisplayController(mainModel, window);
             return window;
         }
     }

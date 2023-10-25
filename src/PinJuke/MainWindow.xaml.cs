@@ -1,6 +1,7 @@
 ﻿using PinJuke.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -37,13 +38,46 @@ namespace PinJuke
             Top = displayConfig.Window.Top;
             Width = displayConfig.Window.Width;
             Height = displayConfig.Window.Height;
+
+            Loaded += MainWindow_Loaded;
+            Closed += MainWindow_Closed;
         }
 
-        protected override void OnKeyDown(KeyEventArgs e)
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine(e.Key);
-
-            base.OnKeyDown(e);
+            Debug.WriteLine(Title + " loaded.");
+            Play();
+            mainModel.ShutdownEvent += MainModel_ShutdownEvent;
+            mainModel.PropertyChanged += MainModel_PropertyChanged;
         }
+
+        private void MainWindow_Closed(object? sender, EventArgs e)
+        {
+            Debug.WriteLine(Title + " closed.");
+            mainModel.ShutdownEvent -= MainModel_ShutdownEvent;
+            mainModel.PropertyChanged -= MainModel_PropertyChanged;
+        }
+
+        private void MainModel_ShutdownEvent(object? sender, EventArgs e)
+        {
+            Debug.WriteLine(Title + " received shotdown event.");
+            Close();
+        }
+
+        private void MainModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(MainModel.NavigationNode):
+                    Browser1.SetFileNode(mainModel.NavigationNode);
+                    break;
+            }
+        }
+
+        private async void Play()
+        {
+            await Media.Open(new Uri(@"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"));
+        }
+
     }
 }

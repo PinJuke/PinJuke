@@ -48,6 +48,7 @@ namespace PinJuke.Controller
                 return;
             }
             mainModel.RootDirectory = (Playlist.FileNode?)e.Result;
+            mainModel.NavigationNode = mainModel.RootDirectory;
         }
 
     }
