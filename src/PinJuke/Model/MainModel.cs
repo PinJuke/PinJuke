@@ -109,6 +109,8 @@ namespace PinJuke.Model
             }
         }
 
+        private int lastHideQueuedAt;
+
         public MainModel(Configuration.Configuration configuration)
         {
             Configuration = configuration;
@@ -127,12 +129,26 @@ namespace PinJuke.Model
 
         public void Input(InputActionEventArgs e)
         {
+            HideBrowserAfterDelay();
+
             InputEvent?.Invoke(this, e);
         }
 
         public void ShowBrowser()
         {
             BrowserVisible = true;
+        }
+
+        private async void HideBrowserAfterDelay()
+        {
+            var hideQueuedAt = lastHideQueuedAt = Environment.TickCount;
+
+            await Task.Delay(5000);
+            if (hideQueuedAt != lastHideQueuedAt)
+            {
+                return;
+            }
+            BrowserVisible = false;
         }
 
         public void PlayNext()
@@ -190,6 +206,7 @@ namespace PinJuke.Model
                 node = node.GetNextPlayableInList();
             }
             Playing = false;
+            PlayingFile = null;
             PlayingFile = node;
             Playing = node != null;
         }
@@ -210,14 +227,7 @@ namespace PinJuke.Model
             }
             else
             {
-                if (NavigationNode == PlayingFile)
-                {
-                    TogglePlayPause();
-                }
-                else
-                {
-                    PlayFile(NavigationNode);
-                }
+                PlayFile(NavigationNode);
             }
 
         }

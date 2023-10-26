@@ -29,6 +29,20 @@ namespace PinJuke.Playlist
 
         public bool Playable => Type == FileType.Music || Type == FileType.Video;
 
+        public string DisplayBasePath
+        {
+            get
+            {
+                var names = new List<string>();
+                for (var node = this.Parent; node != null; node = node.Parent)
+                {
+                    names.Add(node.DisplayName);
+                }
+                names.Reverse();
+                return string.Join(@"\", names);
+            }
+        }
+
         public FileNode(string fullName, string displayName, FileType type)
         {
             FullName = fullName;
@@ -118,6 +132,18 @@ namespace PinJuke.Playlist
         public void Remove()
         {
             Parent?.RemoveChild(this);
+        }
+
+        public bool IsAncestorOf(FileNode other)
+        {
+            for (var node = other.Parent; node != null; node = node.Parent)
+            {
+                if (node == this)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public FileNode? GetNextInList()

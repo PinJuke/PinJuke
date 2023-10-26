@@ -104,7 +104,14 @@ namespace PinJuke.Controller
             }
             else
             {
-                mainModel.TogglePlayPause();
+                if (mainModel.PlayingFile == null)
+                {
+                    mainModel.PlayFile(mainModel.NavigationNode);
+                }
+                else
+                {
+                    mainModel.TogglePlayPause();
+                }
             }
         }
 

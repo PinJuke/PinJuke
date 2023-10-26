@@ -1,4 +1,6 @@
 ﻿using PinJuke.Model;
+using PinJuke.Playlist;
+using PinJuke.View;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Unosquare.FFME.Common;
 
 namespace PinJuke
 {
@@ -25,6 +28,9 @@ namespace PinJuke
     {
         private MainModel mainModel;
         private Configuration.Display displayConfig;
+
+        private Unosquare.FFME.MediaElement? mediaElement = null;
+        private MediaActionQueue? mediaActionQueue = null;
 
         public MainWindow(MainModel mainModel, Configuration.Display displayConfig)
         {
@@ -41,12 +47,20 @@ namespace PinJuke
 
             Loaded += MainWindow_Loaded;
             Closed += MainWindow_Closed;
+
+            if (displayConfig.Role == Configuration.DisplayRole.BackGlass)
+            {
+                mediaElement = new();
+                // https://github.com/unosquare/ffmediaelement/issues/388#issuecomment-491851750
+                mediaElement.RendererOptions.UseLegacyAudioOut = true;
+                MediaElementContainer.Children.Add(mediaElement);
+                mediaActionQueue = new(mediaElement);
+            }
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine(Title + " loaded.");
-            Play();
             mainModel.ShutdownEvent += MainModel_ShutdownEvent;
             mainModel.PropertyChanged += MainModel_PropertyChanged;
         }
@@ -69,14 +83,43 @@ namespace PinJuke
             switch (e.PropertyName)
             {
                 case nameof(MainModel.NavigationNode):
-                    Browser1.SetFileNode(mainModel.NavigationNode);
+                    Browser1.FileNode = mainModel.NavigationNode;
+                    break;
+                case nameof(MainModel.BrowserVisible):
+                    Browser1.BrowserVisible = mainModel.BrowserVisible;
+                    break;
+                case nameof(MainModel.PlayingFile):
+                    PlayFile(mainModel.PlayingFile);
+                    break;
+                case nameof(MainModel.Playing):
+                    SetPlayPause(mainModel.Playing);
                     break;
             }
         }
 
-        private async void Play()
+        private void PlayFile(FileNode? playingFile)
         {
-            await Media.Open(new Uri(@"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"));
+            if (playingFile != null)
+            {
+                mediaActionQueue?.Open(playingFile.FullName);
+                mediaActionQueue?.Play();
+            }
+            else
+            {
+                mediaActionQueue?.Close();
+            }
+        }
+
+        private void SetPlayPause(bool playing)
+        {
+            if (playing)
+            {
+                mediaActionQueue?.Play();
+            }
+            else
+            {
+                mediaActionQueue?.Pause();
+            }
         }
 
     }

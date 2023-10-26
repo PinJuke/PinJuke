@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PinJuke"
         mc:Ignorable="d"
-        xmlns:ffme="clr-namespace:Unosquare.FFME;assembly=ffme.win"
         xmlns:view="clr-namespace:PinJuke.View"
         >
     <Grid>
-        <ffme:MediaElement x:Name="Media" Background="Gray" LoadedBehavior="Play" UnloadedBehavior="Manual" />
+        <Grid Name="MediaElementContainer">
+        </Grid>
         <view:Browser x:Name="Browser1"></view:Browser>
     </Grid>
     
