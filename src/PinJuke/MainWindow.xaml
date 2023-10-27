@@ -6,8 +6,18 @@
         xmlns:local="clr-namespace:PinJuke"
         mc:Ignorable="d"
         xmlns:view="clr-namespace:PinJuke.View"
+        WindowStyle="None"
+        ResizeMode="NoResize"
         >
+
     <Grid>
+        <Grid.LayoutTransform>
+            <TransformGroup>
+                <ScaleTransform ScaleX="{Binding ContentScale}" ScaleY="{Binding ContentScale}"/>
+                <RotateTransform Angle="{Binding ContentAngle}"/>
+            </TransformGroup>
+        </Grid.LayoutTransform>
+
         <Grid Name="MediaElementContainer">
         </Grid>
         <view:Browser x:Name="Browser1"></view:Browser>

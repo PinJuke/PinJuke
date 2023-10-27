@@ -64,7 +64,7 @@ namespace PinJuke.Playlist
             return fullPath.Substring(fullPath.LastIndexOf('\\') + 1);
         }
 
-        protected void AppendFileIfSupported(FileNode parent, FileInfo fileInfo, bool excludeM3u = false)
+        protected void AppendFileIfSupportedType(FileNode parent, FileInfo fileInfo, bool excludeM3u = false)
         {
             var extension = fileInfo.Extension;
             if (string.IsNullOrEmpty(extension))
@@ -98,7 +98,7 @@ namespace PinJuke.Playlist
             }
             foreach (var fileInfo in directoryInfo.GetFiles())
             {
-                AppendFileIfSupported(fileNode, fileInfo);
+                AppendFileIfSupportedType(fileNode, fileInfo);
             }
         }
 
@@ -121,10 +121,6 @@ namespace PinJuke.Playlist
             {
                 CheckCancellation();
 
-                var fakeDirFileNode = new FileNode(m3uFileNode.FullName, m3uFileNode.DisplayName, FileType.Directory);
-                m3uFileNode.Parent!.InsertBefore(fakeDirFileNode, m3uFileNode);
-                m3uFileNode.Remove();
-
                 var basePath = Path.GetDirectoryName(m3uFileNode.FullName);
                 if (string.IsNullOrEmpty(basePath))
                 {
@@ -146,7 +142,7 @@ namespace PinJuke.Playlist
                     }
 
                     var fullPath = Path.GetFullPath(line, basePath);
-                    AppendFileIfSupported(fakeDirFileNode, new FileInfo(fullPath), true);
+                    AppendFileIfSupportedType(m3uFileNode, new FileInfo(fullPath), true);
 
                     // avoid duplicates
                     if (fileNodesByFullName.TryGetValue(fullPath.ToLowerInvariant(), out var replacedFileNode))

@@ -127,6 +127,7 @@ namespace PinJuke.Playlist
             child.Parent = null;
             child.NextSibling = null;
             child.PreviousSibling = null;
+            ChildCount--;
         }
 
         public void Remove()

@@ -29,7 +29,7 @@ namespace PinJuke.Configuration
         DMD = 2,
     }
 
-    public record Window(int Left, int Top, int Width, int Height, int Orientation);
+    public record Window(int Left, int Top, int Width, int Height, float ContentScale, int ContentAngle);
 
     public record Content(BackgroundType BackgroundType, string BackgroundImageFile, bool BrowserEnabled, string SongStartFile);
 

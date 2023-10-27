@@ -24,6 +24,8 @@ namespace PinJuke.Controller
 
             window.Closed += Window_Closed;
             window.KeyDown += Window_KeyDown;
+            window.MediaEndedEvent += Window_MediaEndedEvent;
+
             inputManager.InputEvent += InputManager_InputEvent;
             inputManager.ExitEvent += InputManager_ExitEvent;
             inputManager.BrowseEvent += InputManager_BrowseEvent;
@@ -41,6 +43,11 @@ namespace PinJuke.Controller
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             e.Handled = inputManager.HandleKeyDown(e.Key);
+        }
+
+        private void Window_MediaEndedEvent(object? sender, EventArgs e)
+        {
+            mainModel.PlayNext();
         }
 
         private void InputManager_InputEvent(object? sender, InputActionEventArgs e)
@@ -100,6 +107,8 @@ namespace PinJuke.Controller
                 else
                 {
                     mainModel.PlayFile(mainModel.NavigationNode);
+                    // Select the actual track.
+                    mainModel.NavigationNode = mainModel.PlayingFile;
                 }
             }
             else

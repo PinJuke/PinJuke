@@ -1,8 +1,11 @@
 ﻿using PinJuke.Playlist;
+using SVGImage.SVG;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO.Compression;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -16,10 +19,30 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Windows.Resources;
 using System.Windows.Shapes;
+using DotNetProjects.SVGImage.SVG.FileLoaders;
+using FFmpeg.AutoGen;
 
 namespace PinJuke.View
 {
+    public class BrowserListFile : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public string Text { get; }
+        public ImageSource? ImageSource { get; }
+        public bool Selected { get; }
+
+        public BrowserListFile(string text, ImageSource? imageSource = null, bool selected = false)
+        {
+            Text = text;
+            ImageSource = imageSource;
+            Selected = selected;
+        }
+    }
+
+
     /// <summary>
     /// Interaction logic for BrowserList.xaml
     /// </summary>
@@ -42,8 +65,8 @@ namespace PinJuke.View
             }
         }
 
-        private IReadOnlyList<string> files = new List<string>();
-        public IReadOnlyList<string> Files
+        private IReadOnlyList<BrowserListFile> files = new List<BrowserListFile>();
+        public IReadOnlyList<BrowserListFile> Files
         {
             get => files;
             private set
@@ -94,7 +117,7 @@ namespace PinJuke.View
 
         private void UpdateView()
         {
-            List<string> files = new();
+            List<BrowserListFile> files = new();
             var fileNode = FileNode;
 
             if (fileNode == null)
@@ -133,23 +156,28 @@ namespace PinJuke.View
 
             if (morePreviousFileNodes)
             {
-                files.Add("...");
+                files.Add(new("..."));
             }
             for (var itemFileNode = startFileNode; itemFileNode != endFileNode.NextSibling; itemFileNode = itemFileNode.NextSibling!)
             {
-                files.Add((itemFileNode == fileNode ? ">>" : "") + itemFileNode.DisplayName);
+                string imageSource = itemFileNode.Type switch
+                {
+                    FileType.Directory => @"icons/folder-outline.svg",
+                    FileType.M3u => @"icons/folder-outline.svg",
+                    FileType.Music => @"icons/musical-notes-outline.svg",
+                    FileType.Video => @"icons/videocam-outline.svg",
+                    _ => throw new NotImplementedException(),
+                };
+                var drawingImage = SvgImageLoader.Instance.GetFromResource(imageSource);
+                files.Add(new(itemFileNode.DisplayName, drawingImage, itemFileNode == fileNode));
             }
             if (moreNextFileNodes)
             {
-                files.Add("...");
+                files.Add(new("..."));
             }
             Files = files;
         }
 
-        private void Storyboard_Completed(object sender, EventArgs e)
-        {
-
-        }
     }
 
 }

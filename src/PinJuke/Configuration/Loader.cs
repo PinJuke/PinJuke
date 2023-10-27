@@ -61,23 +61,13 @@ namespace PinJuke.Configuration
         {
             var enabled = parser.ParseBool(displaySection["Enabled"]) ?? true;
 
-            var orientation = parser.ParseInt(displaySection["WindowOrientation"]) ?? 0;
-            orientation = orientation % 360;
-            if (orientation < 0)
-            {
-                orientation += 360;
-            }
-            if (orientation % 90 != 0)
-            {
-                orientation = 0;
-            }
-
             var window = new Window(
                  parser.ParseInt(displaySection["WindowLeft"]) ?? 0,
                  parser.ParseInt(displaySection["WindowTop"]) ?? 0,
                  parser.ParseInt(displaySection["WindowWidth"]) ?? 400,
                  parser.ParseInt(displaySection["WindowHeight"]) ?? 300,
-                 orientation
+                 parser.ParseFloat(displaySection["ContentScale"]) ?? 1,
+                 GetAngle(displaySection["ContentAngle"]) ?? 0
             );
 
             var content = new Content(
@@ -88,6 +78,25 @@ namespace PinJuke.Configuration
             );
 
             return new Display(role, enabled, window, content);
+        }
+
+        protected int? GetAngle(string? s)
+        {
+            var angle = parser.ParseInt(s);
+            if (angle == null)
+            {
+                return null;
+            }
+
+            angle = (int)Math.Round((double)angle / 90.0) * 90;
+
+            angle = angle % 360;
+            if (angle < 0)
+            {
+                angle += 360;
+            }
+
+            return angle;
         }
     }
 
@@ -117,6 +126,19 @@ namespace PinJuke.Configuration
                 return null;
             }
             if (int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out var result))
+            {
+                return result;
+            }
+            return null;
+        }
+
+        public float? ParseFloat(string? s)
+        {
+            if (IsUndefined(s))
+            {
+                return null;
+            }
+            if (float.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out var result))
             {
                 return result;
             }

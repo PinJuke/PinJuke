@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DotNetProjects.SVGImage" Version="4.1.109" />
     <PackageReference Include="FFME.Windows" Version="4.4.350" />
   </ItemGroup>
 
@@ -23,9 +24,15 @@
     <None Update="PinJuke.user.sample.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-	<None Include="ffmpeg\**">
+    <None Include="ffmpeg\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="icons\videocam-outline.svg" />
+    <Resource Include="icons\folder-outline.svg" />
+    <Resource Include="icons\musical-notes-outline.svg" />
   </ItemGroup>
 
 </Project>

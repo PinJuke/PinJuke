@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,8 +26,14 @@ namespace PinJuke
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public event EventHandler? MediaEndedEvent;
+
+        public float ContentScale { get; }
+        public float ContentAngle { get; }
+
         private MainModel mainModel;
         private Configuration.Display displayConfig;
 
@@ -38,24 +46,28 @@ namespace PinJuke
             this.displayConfig = displayConfig;
 
             InitializeComponent();
+            DataContext = this;
 
             Title = displayConfig.Role.ToString();
             Left = displayConfig.Window.Left;
             Top = displayConfig.Window.Top;
             Width = displayConfig.Window.Width;
             Height = displayConfig.Window.Height;
-
-            Loaded += MainWindow_Loaded;
-            Closed += MainWindow_Closed;
+            ContentScale = displayConfig.Window.ContentScale;
+            ContentAngle = displayConfig.Window.ContentAngle;
 
             if (displayConfig.Role == Configuration.DisplayRole.BackGlass)
             {
                 mediaElement = new();
                 // https://github.com/unosquare/ffmediaelement/issues/388#issuecomment-491851750
                 mediaElement.RendererOptions.UseLegacyAudioOut = true;
+                mediaElement.MediaEnded += MediaElement_MediaEnded;
                 MediaElementContainer.Children.Add(mediaElement);
                 mediaActionQueue = new(mediaElement);
             }
+
+            Loaded += MainWindow_Loaded;
+            Closed += MainWindow_Closed;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -89,20 +101,20 @@ namespace PinJuke
                     Browser1.BrowserVisible = mainModel.BrowserVisible;
                     break;
                 case nameof(MainModel.PlayingFile):
-                    PlayFile(mainModel.PlayingFile);
+                    PlayFile();
                     break;
                 case nameof(MainModel.Playing):
-                    SetPlayPause(mainModel.Playing);
+                    SetPlayPause();
                     break;
             }
         }
 
-        private void PlayFile(FileNode? playingFile)
+        private void PlayFile()
         {
-            if (playingFile != null)
+            if (mainModel.PlayingFile != null)
             {
-                mediaActionQueue?.Open(playingFile.FullName);
-                mediaActionQueue?.Play();
+                mediaActionQueue?.Open(mainModel.PlayingFile.FullName);
+                SetPlayPause();
             }
             else
             {
@@ -110,9 +122,9 @@ namespace PinJuke
             }
         }
 
-        private void SetPlayPause(bool playing)
+        private void SetPlayPause()
         {
-            if (playing)
+            if (mainModel.Playing)
             {
                 mediaActionQueue?.Play();
             }
@@ -120,6 +132,11 @@ namespace PinJuke
             {
                 mediaActionQueue?.Pause();
             }
+        }
+
+        private void MediaElement_MediaEnded(object? sender, EventArgs e)
+        {
+            MediaEndedEvent?.Invoke(this, EventArgs.Empty);
         }
 
     }

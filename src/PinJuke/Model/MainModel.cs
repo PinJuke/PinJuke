@@ -151,24 +151,6 @@ namespace PinJuke.Model
             BrowserVisible = false;
         }
 
-        public void PlayNext()
-        {
-            var node = PlayingFile?.GetNextPlayableInList();
-            if (node != null)
-            {
-                PlayingFile = node;
-            }
-        }
-
-        public void PlayPrevious()
-        {
-            var node = PlayingFile?.GetPreviousPlayableInList();
-            if (node != null)
-            {
-                PlayingFile = node;
-            }
-        }
-
         public void NavigateNext()
         {
             var node = NavigationNode?.NextSibling;
@@ -186,6 +168,7 @@ namespace PinJuke.Model
                 NavigationNode = node;
                 return;
             }
+            // Can we go a level up?
             node = NavigationNode?.Parent;
             if (node != null )
             {
@@ -205,10 +188,23 @@ namespace PinJuke.Model
             {
                 node = node.GetNextPlayableInList();
             }
+
+            // To restart a track first reset the playing track to trigger an event in any case.
             Playing = false;
             PlayingFile = null;
+
             PlayingFile = node;
             Playing = node != null;
+        }
+
+        public void PlayNext()
+        {
+            PlayFile(PlayingFile?.GetNextPlayableInList());
+        }
+
+        public void PlayPrevious()
+        {
+            PlayFile(PlayingFile?.GetPreviousPlayableInList());
         }
 
         public void DescendOrPlay()
