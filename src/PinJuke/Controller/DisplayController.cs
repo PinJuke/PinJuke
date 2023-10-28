@@ -64,7 +64,7 @@ namespace PinJuke.Controller
         {
             if (mainModel.BrowserVisible)
             {
-                mainModel.DescendOrPlay();
+                mainModel.PlayOrFollowDirectory();
             }
             else
             {

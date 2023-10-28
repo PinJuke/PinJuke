@@ -26,12 +26,14 @@ namespace PinJuke.View
         public FileNode FileNode { get; }
         public string Text { get; }
         public ImageSource? ImageSource { get; }
+        public FontStyle FontStyle { get; }
 
-        public BrowserListFile(FileNode fileNode, string text, ImageSource? imageSource = null)
+        public BrowserListFile(FileNode fileNode, string text, ImageSource? imageSource, FontStyle fontStyle)
         {
             FileNode = fileNode;
             Text = text;
             ImageSource = imageSource;
+            FontStyle = fontStyle;
         }
 
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")

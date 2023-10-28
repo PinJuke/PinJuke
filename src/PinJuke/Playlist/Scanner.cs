@@ -36,18 +36,18 @@ namespace PinJuke.Playlist
         protected override void OnDoWork(DoWorkEventArgs e)
         {
             var directoryInfo = new DirectoryInfo(path);
-            var fileNode = new FileNode(directoryInfo.FullName, GetDisplayName(directoryInfo.FullName), FileType.Directory);
+            var rootFileNode = new FileNode(directoryInfo.FullName, GetDisplayName(directoryInfo.FullName), FileType.Directory);
             try
             {
-                ScanDirectory(fileNode, directoryInfo);
-                ResolveM3uFiles(fileNode);
+                ScanDirectory(rootFileNode, directoryInfo);
+                ResolveM3uFiles(rootFileNode);
             }
             catch (ScanCanceledException)
             {
                 e.Cancel = true;
                 return;
             }
-            e.Result = fileNode;
+            e.Result = rootFileNode;
         }
 
         protected void CheckCancellation()
@@ -82,16 +82,16 @@ namespace PinJuke.Playlist
             }
         }
 
-        protected void ScanDirectory(FileNode fileNode, DirectoryInfo directoryInfo)
+        protected bool ScanDirectory(FileNode fileNode, DirectoryInfo directoryInfo)
         {
             CheckCancellation();
 
             foreach (var childDirectoryInfo in directoryInfo.GetDirectories())
             {
                 var childFileNode = new FileNode(childDirectoryInfo.FullName, GetDisplayName(childDirectoryInfo.FullName), FileType.Directory);
-                ScanDirectory(childFileNode, childDirectoryInfo);
+                var hasChildren = ScanDirectory(childFileNode, childDirectoryInfo);
                 // Discard directories with no files of interest.
-                if (childFileNode.ChildCount > 0)
+                if (hasChildren)
                 {
                     fileNode.AppendChild(childFileNode);
                 }
@@ -100,20 +100,31 @@ namespace PinJuke.Playlist
             {
                 AppendFileIfSupportedType(fileNode, fileInfo);
             }
+
+            if (fileNode.ChildCount == 0)
+            {
+                return false;
+            }
+
+            fileNode.InsertBefore(new FileNode("", Strings.BrowserUp, FileType.DirectoryUp), fileNode.FirstChild);
+            return true;
         }
 
-        protected void ResolveM3uFiles(FileNode fileNode)
+        protected void ResolveM3uFiles(FileNode rootFileNode)
         {
             // lower case full path => FileNode
-            var fileNodesByFullName = new Dictionary<string, FileNode>();
+            var playableFileNodesByFullName = new Dictionary<string, FileNode>();
             var m3uFileNodes = new List<FileNode>();
 
-            for (var eachFileNode = fileNode.FirstChild; eachFileNode != null; eachFileNode = eachFileNode.GetNextInList())
+            for (var eachFileNode = rootFileNode.FirstChild; eachFileNode != null; eachFileNode = eachFileNode.GetNextInList())
             {
-                fileNodesByFullName.Add(eachFileNode.FullName.ToLowerInvariant(), eachFileNode);
                 if (eachFileNode.Type == FileType.M3u)
                 {
                     m3uFileNodes.Add(eachFileNode);
+                }
+                else if (eachFileNode.Playable)
+                {
+                    playableFileNodesByFullName.Add(eachFileNode.FullName.ToLowerInvariant(), eachFileNode);
                 }
             }
 
@@ -145,7 +156,7 @@ namespace PinJuke.Playlist
                     AppendFileIfSupportedType(m3uFileNode, new FileInfo(fullPath), true);
 
                     // avoid duplicates
-                    if (fileNodesByFullName.TryGetValue(fullPath.ToLowerInvariant(), out var replacedFileNode))
+                    if (playableFileNodesByFullName.TryGetValue(fullPath.ToLowerInvariant(), out var replacedFileNode))
                     {
                         replacedFileNode.Remove();
                     }

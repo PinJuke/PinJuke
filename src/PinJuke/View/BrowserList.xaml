@@ -35,7 +35,8 @@
                  ItemsSource="{Binding Files}"
                  SelectedIndex="{Binding SelectedFileIndex, Mode=OneWay}"
                  ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <local:BrowserListFileControl />
@@ -43,8 +44,8 @@
             </ListBox.ItemTemplate>
             <ListBox.Template>
                 <ControlTemplate TargetType="ListBox">
-                    <ScrollViewer Focusable="false">
-                        <StackPanel IsItemsHost="True" />
+                    <ScrollViewer Padding="{TemplateBinding Padding}" Focusable="false">
+                        <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                     </ScrollViewer>
                 </ControlTemplate>
             </ListBox.Template>

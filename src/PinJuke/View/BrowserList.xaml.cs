@@ -1,5 +1,4 @@
 ﻿using PinJuke.Playlist;
-using SVGImage.SVG;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,8 +20,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Resources;
 using System.Windows.Shapes;
-using DotNetProjects.SVGImage.SVG.FileLoaders;
-using FFmpeg.AutoGen;
 
 namespace PinJuke.View
 {
@@ -35,6 +32,7 @@ namespace PinJuke.View
         private static readonly Dictionary<FileType, string> iconPaths = new()
         {
             {FileType.Directory, @"icons/folder-outline.svg"},
+            {FileType.DirectoryUp, @"icons/arrow-back-outline.svg"},
             {FileType.M3u, @"icons/folder-outline.svg"},
             {FileType.Music, @"icons/musical-notes-outline.svg"},
             {FileType.Video, @"icons/videocam-outline.svg"},
@@ -151,7 +149,7 @@ namespace PinJuke.View
                 {
                     drawingImage = SvgImageLoader.Instance.GetFromResource(iconPath);
                 }
-                files.Add(new(fileNode, fileNode.DisplayName, drawingImage));
+                files.Add(new(fileNode, fileNode.DisplayName, drawingImage, fileNode.Type == FileType.DirectoryUp ? FontStyles.Italic : FontStyles.Normal));
             }
             return files;
         }

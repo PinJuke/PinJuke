@@ -166,13 +166,6 @@ namespace PinJuke.Model
             if (node != null)
             {
                 NavigationNode = node;
-                return;
-            }
-            // Can we go a level up?
-            node = NavigationNode?.Parent;
-            if (node != null )
-            {
-                NavigationNode = node;
             }
         }
 
@@ -207,25 +200,28 @@ namespace PinJuke.Model
             PlayFile(PlayingFile?.GetPreviousPlayableInList());
         }
 
-        public void DescendOrPlay()
+        public void PlayOrFollowDirectory()
         {
             if (NavigationNode == null)
             {
                 return;
             }
 
-            if (!NavigationNode.Playable)
-            {
-                if (NavigationNode.FirstChild != null)
-                {
-                    NavigationNode = NavigationNode.FirstChild;
-                }
-            }
-            else
+            if (NavigationNode.Playable)
             {
                 PlayFile(NavigationNode);
+                return;
             }
 
+            switch (NavigationNode.Type)
+            {
+                case FileType.Directory:
+                    NavigationNode = NavigationNode.FindChild() ?? NavigationNode;
+                    break;
+                case FileType.DirectoryUp:
+                    NavigationNode = NavigationNode.FindParent() ?? NavigationNode;
+                    break;
+            }
         }
     }
 }

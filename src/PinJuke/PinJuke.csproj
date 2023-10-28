@@ -30,9 +30,25 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="icons\videocam-outline.svg" />
+    <Resource Include="icons\arrow-back-outline.svg" />
     <Resource Include="icons\folder-outline.svg" />
     <Resource Include="icons\musical-notes-outline.svg" />
+    <Resource Include="icons\videocam-outline.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Strings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

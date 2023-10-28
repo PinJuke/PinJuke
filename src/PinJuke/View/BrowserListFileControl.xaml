@@ -22,7 +22,7 @@
             </Rectangle.OpacityMask>
         </Rectangle>
 
-        <TextBlock Grid.Column="1" Margin="10,0,0,0" Text="{Binding Text}" FontSize="30" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+        <TextBlock Grid.Column="1" Margin="10,0,0,0" Text="{Binding Text}" FontStyle="{Binding FontStyle}" FontSize="30" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
 
     </Grid>
 </UserControl>

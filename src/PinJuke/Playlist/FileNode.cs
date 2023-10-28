@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Navigation;
 
 namespace PinJuke.Playlist
 {
     public enum FileType
     {
-        Directory = 0,
-        Music = 1,
-        Video = 2,
-        M3u = 3,
+        Directory,
+        DirectoryUp,
+        Music,
+        Video,
+        M3u,
     }
 
     public class FileNode
@@ -202,6 +204,54 @@ namespace PinJuke.Playlist
                     return node;
                 }
             }
+        }
+
+        private FileNode? GetFirstRegularChild()
+        {
+            var child = FirstChild;
+            for (; child != null && child.Type == FileType.DirectoryUp; child = child.NextSibling) ;
+            return child;
+        }
+
+        public FileNode? FindChild()
+        {
+            var child = GetFirstRegularChild();
+            if (child == null)
+            {
+                return null;
+            }
+            for (; ; )
+            {
+                if (child.Playable || child.NextSibling != null)
+                {
+                    break;
+                }
+                var childChild = child.GetFirstRegularChild();
+                if (childChild == null)
+                {
+                    break;
+                }
+                child = childChild;
+            }
+            return child;
+        }
+
+        public FileNode? FindParent()
+        {
+            var parent = Parent;
+            if (parent == null)
+            {
+                return null;
+            }
+            for (; ; )
+            {
+                if (parent.Parent == null || parent.NextSibling != null || parent != parent.Parent.GetFirstRegularChild())
+                {
+                    break;
+                }
+                parent = parent.Parent;
+            }
+            return parent;
         }
     }
 }
