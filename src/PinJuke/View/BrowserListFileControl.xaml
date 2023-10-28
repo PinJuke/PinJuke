@@ -7,74 +7,22 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              >
-    <UserControl.Resources>
-        <Style x:Key="SelectedForegroundStyle" TargetType="TextBlock">
-            <Setter Property="Foreground">
-                <Setter.Value>
-                    <SolidColorBrush Color="White"/>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True">
-                    <DataTrigger.EnterActions>
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <ColorAnimation Storyboard.TargetProperty="Foreground.(SolidColorBrush.Color)" To="#50adcb" Duration="0:0:0.25" />
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </DataTrigger.EnterActions>
-                    <DataTrigger.ExitActions>
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <ColorAnimation Storyboard.TargetProperty="Foreground.(SolidColorBrush.Color)" To="White" Duration="0:0:0.25" />
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </DataTrigger.ExitActions>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="SelectedFillStyle" TargetType="Shape">
-            <Setter Property="Fill">
-                <Setter.Value>
-                    <SolidColorBrush Color="White"/>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True">
-                    <DataTrigger.EnterActions>
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <ColorAnimation Storyboard.TargetProperty="Fill.(SolidColorBrush.Color)" To="#50adcb" Duration="0:0:0.25" />
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </DataTrigger.EnterActions>
-                    <DataTrigger.ExitActions>
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <ColorAnimation Storyboard.TargetProperty="Fill.(SolidColorBrush.Color)" To="White" Duration="0:0:0.25" />
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </DataTrigger.ExitActions>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="40"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Rectangle Width="30" Height="30" Style="{StaticResource SelectedFillStyle}">
+        <Rectangle Width="30" Height="30" Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}">
             <Rectangle.OpacityMask>
                 <ImageBrush Stretch="Uniform" ImageSource="{Binding ImageSource}"/>
             </Rectangle.OpacityMask>
         </Rectangle>
 
-        <TextBlock Grid.Column="1" Margin="10,0,0,0" Text="{Binding Text}" FontSize="30" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Style="{StaticResource SelectedForegroundStyle}" />
+        <TextBlock Grid.Column="1" Margin="10,0,0,0" Text="{Binding Text}" FontSize="30" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
 
     </Grid>
 </UserControl>

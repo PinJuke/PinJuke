@@ -33,9 +33,8 @@ namespace PinJuke.View
         {
             var streamResourceInfo = Application.GetResourceStream(new Uri(uriString, UriKind.Relative));
             var drawing = svgRender.LoadDrawing(streamResourceInfo.Stream);
-            //drawing.Freeze();
             var drawingImage = new DrawingImage(drawing);
-            //drawingImage.Freeze();
+            drawingImage.Freeze();
             return drawingImage;
         }
 
