@@ -26,28 +26,20 @@ using FFmpeg.AutoGen;
 
 namespace PinJuke.View
 {
-    public class BrowserListFile : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public string Text { get; }
-        public ImageSource? ImageSource { get; }
-        public bool Selected { get; }
-
-        public BrowserListFile(string text, ImageSource? imageSource = null, bool selected = false)
-        {
-            Text = text;
-            ImageSource = imageSource;
-            Selected = selected;
-        }
-    }
-
 
     /// <summary>
     /// Interaction logic for BrowserList.xaml
     /// </summary>
     public partial class BrowserList : UserControl, INotifyPropertyChanged
     {
+        private static readonly Dictionary<FileType, string> iconPaths = new()
+        {
+            {FileType.Directory, @"icons/folder-outline.svg"},
+            {FileType.M3u, @"icons/folder-outline.svg"},
+            {FileType.Music, @"icons/musical-notes-outline.svg"},
+            {FileType.Video, @"icons/videocam-outline.svg"},
+        };
+
         public event PropertyChangedEventHandler? PropertyChanged;
         public event EventHandler? RemovalRequestedEvent;
 
@@ -57,16 +49,18 @@ namespace PinJuke.View
             get => fileNode;
             set
             {
-                if (value != fileNode)
+                var oldFileNode = fileNode;
+                if (value != oldFileNode)
                 {
                     fileNode = value;
-                    UpdateView();
+                    UpdateView(oldFileNode, fileNode);
+                    NotifyPropertyChanged();
                 }
             }
         }
 
-        private IReadOnlyList<BrowserListFile> files = new List<BrowserListFile>();
-        public IReadOnlyList<BrowserListFile> Files
+        private List<BrowserListFile> files = new List<BrowserListFile>();
+        public List<BrowserListFile> Files
         {
             get => files;
             private set
@@ -74,6 +68,20 @@ namespace PinJuke.View
                 if (value != files)
                 {
                     files = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        private int selectedFileIndex = -1;
+        public int SelectedFileIndex
+        {
+            get => selectedFileIndex;
+            private set
+            {
+                if (value != selectedFileIndex)
+                {
+                    selectedFileIndex = value;
                     NotifyPropertyChanged();
                 }
             }
@@ -115,67 +123,37 @@ namespace PinJuke.View
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void UpdateView()
+        private void UpdateView(FileNode? oldFileNode, FileNode? newFileNode)
+        {
+            if (newFileNode == null || oldFileNode == null || newFileNode.Parent != oldFileNode.Parent)
+            {
+                Files = CreateBrowserListFiles(newFileNode);
+            }
+            SelectedFileIndex = Files.FindIndex(it => it.FileNode == newFileNode);
+            if (SelectedFileIndex != -1)
+            {
+                FilesListBox.ScrollIntoView(Files[SelectedFileIndex]);
+            }
+        }
+
+        private List<BrowserListFile> CreateBrowserListFiles(FileNode? newFileNode)
         {
             List<BrowserListFile> files = new();
-            var fileNode = FileNode;
-
-            if (fileNode == null)
+            if (newFileNode == null)
             {
-                Files = files;
-                return;
+                return files;
             }
-
-            var morePreviousFileNodes = false;
-            var moreNextFileNodes = false;
-            var count = 1;
-            var startFileNode = fileNode;
-            var endFileNode = fileNode;
-
-            for (var i = 0; ; ++i)
+            var startFileNode = newFileNode?.Parent?.FirstChild ?? newFileNode;
+            for (var fileNode = startFileNode; fileNode != null; fileNode = fileNode.NextSibling)
             {
-                morePreviousFileNodes = startFileNode.PreviousSibling != null;
-                if (i >= 3 || !morePreviousFileNodes)
+                DrawingImage? drawingImage = null;
+                if (iconPaths.TryGetValue(fileNode.Type, out var iconPath))
                 {
-                    break;
+                    drawingImage = SvgImageLoader.Instance.GetFromResource(iconPath);
                 }
-                startFileNode = startFileNode.PreviousSibling!;
-                count++;
+                files.Add(new(fileNode, fileNode.DisplayName, drawingImage));
             }
-
-            for (var i = 0; ; ++i)
-            {
-                moreNextFileNodes = endFileNode.NextSibling != null;
-                if (i >= 3 || !moreNextFileNodes)
-                {
-                    break;
-                }
-                endFileNode = endFileNode.NextSibling!;
-                count++;
-            }
-
-            if (morePreviousFileNodes)
-            {
-                files.Add(new("..."));
-            }
-            for (var itemFileNode = startFileNode; itemFileNode != endFileNode.NextSibling; itemFileNode = itemFileNode.NextSibling!)
-            {
-                string imageSource = itemFileNode.Type switch
-                {
-                    FileType.Directory => @"icons/folder-outline.svg",
-                    FileType.M3u => @"icons/folder-outline.svg",
-                    FileType.Music => @"icons/musical-notes-outline.svg",
-                    FileType.Video => @"icons/videocam-outline.svg",
-                    _ => throw new NotImplementedException(),
-                };
-                var drawingImage = SvgImageLoader.Instance.GetFromResource(imageSource);
-                files.Add(new(itemFileNode.DisplayName, drawingImage, itemFileNode == fileNode));
-            }
-            if (moreNextFileNodes)
-            {
-                files.Add(new("..."));
-            }
-            Files = files;
+            return files;
         }
 
     }
