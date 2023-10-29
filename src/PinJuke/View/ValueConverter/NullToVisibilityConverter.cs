@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace PinJuke.View
+namespace PinJuke.View.ValueConverter
 {
     /// <summary>
     /// Some ideas taken from:
