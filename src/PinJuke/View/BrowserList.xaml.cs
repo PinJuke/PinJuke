@@ -23,19 +23,15 @@ using System.Windows.Shapes;
 
 namespace PinJuke.View
 {
-
-    /// <summary>
-    /// Interaction logic for BrowserList.xaml
-    /// </summary>
     public partial class BrowserList : UserControl, INotifyPropertyChanged
     {
         private static readonly Dictionary<FileType, string> iconPaths = new()
         {
-            {FileType.Directory, @"icons/folder-outline.svg"},
-            {FileType.DirectoryUp, @"icons/arrow-back-outline.svg"},
-            {FileType.M3u, @"icons/folder-outline.svg"},
-            {FileType.Music, @"icons/musical-notes-outline.svg"},
-            {FileType.Video, @"icons/videocam-outline.svg"},
+            {FileType.Directory, @"icons\folder-outline.svg"},
+            {FileType.DirectoryUp, @"icons\arrow-back-outline.svg"},
+            {FileType.M3u, @"icons\folder-outline.svg"},
+            {FileType.Music, @"icons\musical-notes-outline.svg"},
+            {FileType.Video, @"icons\videocam-outline.svg"},
         };
 
         public event PropertyChangedEventHandler? PropertyChanged;

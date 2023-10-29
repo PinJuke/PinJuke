@@ -109,7 +109,27 @@ namespace PinJuke.Model
             }
         }
 
-        private int lastHideQueuedAt;
+        private int browserLastHideQueuedAt;
+
+        private bool playingTrackVisible = false;
+        /// <summary>
+        /// Saves whether the file browsing overlay is currently visible.
+        /// </summary>
+        public bool PlayingTrackVisible
+        {
+            get => playingTrackVisible;
+            private set
+            {
+                if (value == playingTrackVisible)
+                {
+                    return;
+                }
+                playingTrackVisible = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private int playingTrackLastHideQueuedAt;
 
         public MainModel(Configuration.Configuration configuration)
         {
@@ -137,18 +157,37 @@ namespace PinJuke.Model
         public void ShowBrowser()
         {
             BrowserVisible = true;
+            HideBrowserAfterDelay();
         }
 
         private async void HideBrowserAfterDelay()
         {
-            var hideQueuedAt = lastHideQueuedAt = Environment.TickCount;
+            var hideQueuedAt = browserLastHideQueuedAt = Environment.TickCount;
 
             await Task.Delay(5000);
-            if (hideQueuedAt != lastHideQueuedAt)
+            if (hideQueuedAt != browserLastHideQueuedAt)
             {
                 return;
             }
             BrowserVisible = false;
+        }
+
+        public void ShowPlayingTrack()
+        {
+            PlayingTrackVisible = true;
+            HidePlayingTrackAfterDelay();
+        }
+
+        private async void HidePlayingTrackAfterDelay()
+        {
+            var hideQueuedAt = playingTrackLastHideQueuedAt = Environment.TickCount;
+
+            await Task.Delay(3000);
+            if (hideQueuedAt != playingTrackLastHideQueuedAt)
+            {
+                return;
+            }
+            PlayingTrackVisible = false;
         }
 
         public void NavigateNext()
@@ -172,6 +211,7 @@ namespace PinJuke.Model
         public void TogglePlayPause()
         {
             Playing = !Playing;
+            ShowPlayingTrack();
         }
 
         public void PlayFile(FileNode? node)
@@ -185,9 +225,9 @@ namespace PinJuke.Model
             // To restart a track first reset the playing track to trigger an event in any case.
             Playing = false;
             PlayingFile = null;
-
             PlayingFile = node;
             Playing = node != null;
+            ShowPlayingTrack();
         }
 
         public void PlayNext()

@@ -23,9 +23,6 @@ using Unosquare.FFME.Common;
 
 namespace PinJuke
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -66,6 +63,10 @@ namespace PinJuke
                 mediaActionQueue = new(mediaElement);
             }
 
+            PlayFile();
+            UpdateBrowser();
+            UpdatePlayingTrack();
+
             Loaded += MainWindow_Loaded;
             Closed += MainWindow_Closed;
         }
@@ -95,16 +96,21 @@ namespace PinJuke
             switch (e.PropertyName)
             {
                 case nameof(MainModel.NavigationNode):
-                    Browser1.FileNode = mainModel.NavigationNode;
+                    UpdateBrowser();
                     break;
                 case nameof(MainModel.BrowserVisible):
-                    Browser1.BrowserVisible = mainModel.BrowserVisible;
+                    UpdateBrowser();
                     break;
                 case nameof(MainModel.PlayingFile):
                     PlayFile();
+                    UpdatePlayingTrack();
                     break;
                 case nameof(MainModel.Playing):
                     SetPlayPause();
+                    UpdatePlayingTrack();
+                    break;
+                case nameof(MainModel.PlayingTrackVisible):
+                    UpdatePlayingTrack();
                     break;
             }
         }
@@ -132,6 +138,19 @@ namespace PinJuke
             {
                 mediaActionQueue?.Pause();
             }
+        }
+
+        private void UpdateBrowser()
+        {
+            Browser.FileNode = mainModel.NavigationNode;
+            Browser.ViewVisible = mainModel.BrowserVisible;
+        }
+
+        private void UpdatePlayingTrack()
+        {
+            PlayingTrack.FileNode = mainModel.PlayingFile;
+            PlayingTrack.Playing = mainModel.Playing;
+            PlayingTrack.ViewVisible = mainModel.PlayingTrackVisible;
         }
 
         private void MediaElement_MediaEnded(object? sender, EventArgs e)

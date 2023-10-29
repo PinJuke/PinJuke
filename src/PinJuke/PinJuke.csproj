@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>PinJuke2.ico</ApplicationIcon>
+    <StartupObject>PinJuke.App</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,6 +34,9 @@
     <Resource Include="icons\arrow-back-outline.svg" />
     <Resource Include="icons\folder-outline.svg" />
     <Resource Include="icons\musical-notes-outline.svg" />
+    <Resource Include="icons\pause-outline.svg" />
+    <Resource Include="icons\play-outline.svg" />
+    <Resource Include="icons\stop-outline.svg" />
     <Resource Include="icons\videocam-outline.svg" />
   </ItemGroup>
 

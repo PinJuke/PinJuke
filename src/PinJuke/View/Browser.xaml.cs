@@ -27,15 +27,15 @@ namespace PinJuke.View
 
         private BrowserList browserList = new();
 
-        private bool browserVisible = false;
-        public bool BrowserVisible
+        private bool viewVisible = false;
+        public bool ViewVisible
         {
-            get => browserVisible;
+            get => viewVisible;
             set
             {
-                if (value != browserVisible)
+                if (value != viewVisible)
                 {
-                    browserVisible = value;
+                    viewVisible = value;
                     NotifyPropertyChanged();
                 }
             }

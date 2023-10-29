@@ -20,7 +20,8 @@
 
         <Grid Name="MediaElementContainer">
         </Grid>
-        <view:Browser x:Name="Browser1"></view:Browser>
+        <view:Browser x:Name="Browser" />
+        <view:PlayingTrack x:Name="PlayingTrack" />
     </Grid>
     
 </Window>

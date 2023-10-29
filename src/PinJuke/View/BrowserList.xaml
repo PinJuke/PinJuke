@@ -29,63 +29,63 @@
             <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.25" />
         </Storyboard>
     </UserControl.Resources>
-    <Grid>
-        <!-- https://learn.microsoft.com/en-us/dotnet/desktop/wpf/controls/listbox-styles-and-templates?view=netframeworkdesktop-4.8#listbox-controltemplate-example -->
-        <ListBox x:Name="FilesListBox"
-                 ItemsSource="{Binding Files}"
-                 SelectedIndex="{Binding SelectedFileIndex, Mode=OneWay}"
-                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 >
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <local:BrowserListFileControl />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-            <ListBox.Template>
-                <ControlTemplate TargetType="ListBox">
-                    <ScrollViewer Padding="{TemplateBinding Padding}" Focusable="false">
-                        <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                    </ScrollViewer>
-                </ControlTemplate>
-            </ListBox.Template>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="Foreground">
-                        <Setter.Value>
-                            <SolidColorBrush Color="White"/>
-                        </Setter.Value>
-                    </Setter>
-                    <Setter Property="Focusable" Value="False"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="ListBoxItem">
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Trigger.EnterActions>
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <ColorAnimation Storyboard.TargetProperty="(ListBoxItem.Foreground).(SolidColorBrush.Color)" To="#50adcb" Duration="0:0:0.25" />
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </Trigger.EnterActions>
-                                        <Trigger.ExitActions>
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <ColorAnimation Storyboard.TargetProperty="(ListBoxItem.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.25" />
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </Trigger.ExitActions>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
+    
+    <!-- https://learn.microsoft.com/en-us/dotnet/desktop/wpf/controls/listbox-styles-and-templates?view=netframeworkdesktop-4.8#listbox-controltemplate-example -->
+    <ListBox x:Name="FilesListBox"
+                ItemsSource="{Binding Files}"
+                SelectedIndex="{Binding SelectedFileIndex, Mode=OneWay}"
+                ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                >
+        <ListBox.ItemTemplate>
+            <DataTemplate>
+                <local:BrowserListFileControl />
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+        <ListBox.Template>
+            <ControlTemplate TargetType="ListBox">
+                <ScrollViewer Padding="{TemplateBinding Padding}" Focusable="false">
+                    <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                </ScrollViewer>
+            </ControlTemplate>
+        </ListBox.Template>
+        <ListBox.ItemContainerStyle>
+            <Style TargetType="ListBoxItem">
+                <Setter Property="Foreground">
+                    <Setter.Value>
+                        <SolidColorBrush Color="White"/>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Focusable" Value="False"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem">
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ColorAnimation Storyboard.TargetProperty="(ListBoxItem.Foreground).(SolidColorBrush.Color)" To="#50adcb" Duration="0:0:0.25" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ColorAnimation Storyboard.TargetProperty="(ListBoxItem.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.25" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
 
-                                <ContentPresenter/>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListBox.ItemContainerStyle>
+                            <ContentPresenter/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ListBox.ItemContainerStyle>
 
-        </ListBox>
-    </Grid>
+    </ListBox>
+    
 </UserControl>

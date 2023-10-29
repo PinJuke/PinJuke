@@ -11,13 +11,10 @@ using System.Windows;
 
 namespace PinJuke
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
         private AppController? appController;
-
+        
         protected override void OnStartup(StartupEventArgs e)
         {
             var configuration = LoadConfiguration(e);
