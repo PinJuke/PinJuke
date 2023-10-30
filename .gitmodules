@@ -1,6 +1,6 @@
 [submodule "deps/DirectOutput"]
 	path = deps/DirectOutput
-	url = ../DirectOutput
+	url = https://github.com/PinJuke/DirectOutput
 [submodule "deps/projectm"]
 	path = deps/projectm
-	url = ../projectm
+	url = https://github.com/PinJuke/projectm

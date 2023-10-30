@@ -6,6 +6,7 @@ Get the project and its dependencies:
 
 ```shell
 git clone --recurse-submodules https://github.com/PinJuke/PinJuke.git
+cd PinJuke
 ```
 
 ## Getting FFmpeg
@@ -19,7 +20,7 @@ Note: https://github.com/unosquare/ffmediaelement/issues/213#issuecomment-112011
 Open the `Developer PowerShell for VS 2022`:
 
 ```PowerShell
-cd PinJuke\deps\projectm
+cd deps\projectm
 cmake . -B build -DCMAKE_BUILD_TYPE=Release "-DCMAKE_INSTALL_PREFIX=$PWD/dist" "-DCMAKE_TOOLCHAIN_FILE=$Env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
 cmake --build build --target install --config Release
 ```
