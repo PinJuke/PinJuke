@@ -256,6 +256,7 @@ namespace PinJuke.Model
             switch (NavigationNode.Type)
             {
                 case FileType.Directory:
+                case FileType.M3u:
                     NavigationNode = NavigationNode.FindChild() ?? NavigationNode;
                     break;
                 case FileType.DirectoryUp:

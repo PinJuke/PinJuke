@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -163,6 +164,17 @@ namespace PinJuke.Playlist
                 }
             }
 
+            foreach (var m3uFileNode in m3uFileNodes)
+            {
+                if (m3uFileNode.ChildCount == 0)
+                {
+                    m3uFileNode.Remove();
+                }
+                else
+                {
+                    m3uFileNode.InsertBefore(new FileNode("", Strings.BrowserUp, FileType.DirectoryUp), m3uFileNode.FirstChild);
+                }
+            }
         }
 
     }
