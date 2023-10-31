@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotNetProjects.SVGImage" Version="4.1.109" />
+    <PackageReference Include="DotNetProjects.SVGImage" Version="5.0.117" />
     <PackageReference Include="FFME.Windows" Version="4.4.350" />
   </ItemGroup>
 

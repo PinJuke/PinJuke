@@ -1,5 +1,4 @@
-﻿using DotNetProjects.SVGImage.SVG.FileLoaders;
-using SVGImage.SVG;
+﻿using SVGImage.SVG;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,11 +10,14 @@ using System.Windows.Media;
 
 namespace PinJuke.View
 {
+    // Warning CA1416
+    // https://stackoverflow.com/a/70010939
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     public class SvgImageLoader
     {
         public static SvgImageLoader Instance { get; } = new SvgImageLoader();
 
-        private readonly SVGRender svgRender = new SVGRender(new FileSystemLoader());
+        private readonly SVGRender svgRender = new();
 
         private readonly Dictionary<string, DrawingImage> images = new();
 
