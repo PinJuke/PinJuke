@@ -16,6 +16,7 @@
   <ItemGroup>
     <PackageReference Include="DotNetProjects.SVGImage" Version="5.0.117" />
     <PackageReference Include="FFME.Windows" Version="4.4.350" />
+    <PackageReference Include="OpenTK.GLWpfControl" Version="4.2.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,6 +39,21 @@
     <Resource Include="icons\play-outline.svg" />
     <Resource Include="icons\stop-outline.svg" />
     <Resource Include="icons\videocam-outline.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ContentWithTargetPath Include="..\..\deps\projectm\dist\lib\projectM-4.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>projectM-4.dll</TargetPath>
+    </ContentWithTargetPath>
+    <ContentWithTargetPath Include="..\..\deps\projectm\dist\lib\projectM-4-playlist.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>projectM-4-playlist.dll</TargetPath>
+    </ContentWithTargetPath>
+    <ContentWithTargetPath Include="..\..\deps\projectm\build\vcpkg_installed\x64-windows\bin\glew32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>glew32.dll</TargetPath>
+    </ContentWithTargetPath>
   </ItemGroup>
 
   <ItemGroup>

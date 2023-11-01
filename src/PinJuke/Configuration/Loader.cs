@@ -1,12 +1,11 @@
-﻿using Microsoft.VisualBasic;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace PinJuke.Configuration
 {
@@ -33,7 +32,8 @@ namespace PinJuke.Configuration
             var backGlass = CreateDisplay(DisplayRole.BackGlass, iniDocument["BackGlass"]);
             var playField = CreateDisplay(DisplayRole.PlayField, iniDocument["PlayField"]);
             var dmd = CreateDisplay(DisplayRole.DMD, iniDocument["DMD"]);
-            return new Configuration(mediaPath, player, keyboard, backGlass, playField, dmd);
+            var milkdrop = CreateMilkdrop(iniDocument["Milkdrop"], mediaPath);
+            return new Configuration(mediaPath, player, keyboard, backGlass, playField, dmd, milkdrop);
         }
 
         protected Player CreatePlayer(IniSection playerSection)
@@ -78,6 +78,16 @@ namespace PinJuke.Configuration
             );
 
             return new Display(role, enabled, window, content);
+        }
+
+        protected Milkdrop CreateMilkdrop(IniSection milkdropSection, string mediaPath)
+        {
+            var presetsPath = milkdropSection["PresetsPath"] ?? ".";
+            presetsPath = Path.GetFullPath(presetsPath, mediaPath);
+            var texturesPath = milkdropSection["TexturesPath"] ?? ".";
+            texturesPath = Path.GetFullPath(texturesPath, mediaPath);
+
+            return new Milkdrop(presetsPath, texturesPath);
         }
 
         protected int? GetAngle(string? s)

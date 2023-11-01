@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -9,7 +8,7 @@ using System.Windows.Input;
 
 namespace PinJuke.Configuration
 {
-    public record Configuration(string MediaPath, Player Player, Keyboard Keyboard, Display BackGlass, Display PlayField, Display DMD);
+    public record Configuration(string MediaPath, Player Player, Keyboard Keyboard, Display BackGlass, Display PlayField, Display DMD, Milkdrop Milkdrop);
 
     public record Player(string MusicPath, StartupTrackType StartupTrackType, bool PlayOnStartup);
 
@@ -40,5 +39,7 @@ namespace PinJuke.Configuration
     }
 
     public record Keyboard(Key Exit, Key Browse, Key Previous, Key Next, Key PlayPause);
+
+    public record Milkdrop(string PresetsPath, string TexturesPath);
 
 }

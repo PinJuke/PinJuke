@@ -1,6 +1,7 @@
 ﻿using PinJuke.Model;
 using PinJuke.Playlist;
 using PinJuke.View;
+using PinJuke.View.Visualizer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,13 +32,13 @@ namespace PinJuke
         public float ContentScale { get; }
         public float ContentAngle { get; }
 
-        private MainModel mainModel;
-        private Configuration.Display displayConfig;
+        private readonly MainModel mainModel;
+        private readonly Configuration.Display displayConfig;
 
         private Unosquare.FFME.MediaElement? mediaElement = null;
         private MediaActionQueue? mediaActionQueue = null;
 
-        public MainWindow(MainModel mainModel, Configuration.Display displayConfig)
+        public MainWindow(MainModel mainModel, Configuration.Display displayConfig, VisualizerManager visualizerManager)
         {
             this.mainModel = mainModel;
             this.displayConfig = displayConfig;
@@ -52,6 +53,8 @@ namespace PinJuke
             Height = displayConfig.Window.Height;
             ContentScale = displayConfig.Window.ContentScale;
             ContentAngle = displayConfig.Window.ContentAngle;
+
+            VisualizerControl.VisualizerManager = visualizerManager;
 
             if (displayConfig.Role == Configuration.DisplayRole.BackGlass)
             {
@@ -70,7 +73,7 @@ namespace PinJuke
             Loaded += MainWindow_Loaded;
             Closed += MainWindow_Closed;
         }
-
+        
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine(Title + " loaded.");

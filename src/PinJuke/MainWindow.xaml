@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:PinJuke"
         mc:Ignorable="d"
         xmlns:view="clr-namespace:PinJuke.View"
+        xmlns:visualizer="clr-namespace:PinJuke.View.Visualizer"
         WindowStyle="None"
         ResizeMode="NoResize"
         >
@@ -18,10 +19,11 @@
             </TransformGroup>
         </Grid.LayoutTransform>
 
-        <Grid Name="MediaElementContainer">
+        <visualizer:VisualizerControl x:Name="VisualizerControl"/>
+        <Grid x:Name="MediaElementContainer">
         </Grid>
         <view:Browser x:Name="Browser" />
         <view:PlayingTrack x:Name="PlayingTrack" />
     </Grid>
-    
+
 </Window>

@@ -1,6 +1,7 @@
 ﻿using PinJuke.Configuration;
 using PinJuke.Controller;
 using PinJuke.Model;
+using PinJuke.View.Visualizer;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -23,9 +24,10 @@ namespace PinJuke
 
             var mainModel = new MainModel(configuration);
 
-            var backGlassWindow = CreateWindow(mainModel, configuration.BackGlass);
-            var playFieldWindow = CreateWindow(mainModel, configuration.PlayField);
-            var dmdWindow = CreateWindow(mainModel, configuration.DMD);
+            var visualizerManager = new VisualizerManager(configuration.Milkdrop);
+            var backGlassWindow = CreateWindow(mainModel, configuration.BackGlass, visualizerManager);
+            var playFieldWindow = CreateWindow(mainModel, configuration.PlayField, visualizerManager);
+            var dmdWindow = CreateWindow(mainModel, configuration.DMD, visualizerManager);
 
             appController = new AppController(mainModel);
             appController.Scan();
@@ -57,13 +59,13 @@ namespace PinJuke
             return loader.FromIniFilePaths(iniFilePaths);
         }
 
-        private MainWindow? CreateWindow(MainModel mainModel, Configuration.Display displayConfig)
+        private MainWindow? CreateWindow(MainModel mainModel, Configuration.Display displayConfig, VisualizerManager visualizerManager)
         {
             if (!displayConfig.Enabled)
             {
                 return null;
             }
-            var window = new MainWindow(mainModel, displayConfig);
+            var window = new MainWindow(mainModel, displayConfig, visualizerManager);
             var controller = new DisplayController(mainModel, window);
             return window;
         }
