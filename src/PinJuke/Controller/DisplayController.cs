@@ -42,7 +42,7 @@ namespace PinJuke.Controller
 
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            e.Handled = inputManager.HandleKeyDown(e.Key);
+            e.Handled = inputManager.HandleKeyDown(e);
         }
 
         private void Window_MediaEndedEvent(object? sender, EventArgs e)
@@ -55,12 +55,12 @@ namespace PinJuke.Controller
             mainModel.Input(e);
         }
 
-        private void InputManager_ExitEvent(object? sender, EventArgs e)
+        private void InputManager_ExitEvent(object? sender, InputActionEventArgs e)
         {
             mainModel.Shutdown();
         }
 
-        private void InputManager_BrowseEvent(object? sender, EventArgs e)
+        private void InputManager_BrowseEvent(object? sender, InputActionEventArgs e)
         {
             if (mainModel.BrowserVisible)
             {
@@ -72,11 +72,11 @@ namespace PinJuke.Controller
             }
         }
 
-        private void InputManager_PreviousEvent(object? sender, EventArgs e)
+        private void InputManager_PreviousEvent(object? sender, InputActionEventArgs e)
         {
             if (mainModel.BrowserVisible)
             {
-                mainModel.NavigatePrevious();
+                mainModel.NavigatePrevious(e.Repeated);
             }
             else
             {
@@ -84,11 +84,11 @@ namespace PinJuke.Controller
             }
         }
 
-        private void InputManager_NextEvent(object? sender, EventArgs e)
+        private void InputManager_NextEvent(object? sender, InputActionEventArgs e)
         {
             if (mainModel.BrowserVisible)
             {
-                mainModel.NavigateNext();
+                mainModel.NavigateNext(e.Repeated);
             }
             else
             {
@@ -96,7 +96,7 @@ namespace PinJuke.Controller
             }
         }
 
-        private void InputManager_PlayPauseEvent(object? sender, EventArgs e)
+        private void InputManager_PlayPauseEvent(object? sender, InputActionEventArgs e)
         {
             if (mainModel.BrowserVisible)
             {

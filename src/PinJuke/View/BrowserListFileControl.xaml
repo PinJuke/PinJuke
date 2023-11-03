@@ -7,22 +7,24 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              >
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
+    <Border Background="{Binding Background, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
 
-        <Rectangle Width="30" Height="30" Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}">
-            <Rectangle.OpacityMask>
-                <ImageBrush Stretch="Uniform" ImageSource="{Binding ImageSource}"/>
-            </Rectangle.OpacityMask>
-        </Rectangle>
+            <Rectangle Width="30" Height="30" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}">
+                <Rectangle.OpacityMask>
+                    <ImageBrush Stretch="Uniform" ImageSource="{Binding ImageSource}"/>
+                </Rectangle.OpacityMask>
+            </Rectangle>
 
-        <TextBlock Grid.Column="1" Margin="10,0,0,0" Text="{Binding Text}" FontStyle="{Binding FontStyle}" FontSize="30" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="1" Margin="10,0,0,0" Text="{Binding Text}" FontStyle="{Binding FontStyle}" FontSize="30" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+        </Grid>
+    </Border>
 
-    </Grid>
 </UserControl>

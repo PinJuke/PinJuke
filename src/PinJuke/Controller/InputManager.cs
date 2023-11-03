@@ -25,33 +25,36 @@ namespace PinJuke.Controller
             this.configuration = configuration;
         }
 
-        public bool HandleKeyDown(Key key)
+        public bool HandleKeyDown(System.Windows.Input.KeyEventArgs e)
         {
+            var key = e.Key;
+            var repeated = e.IsRepeat;
+
             InputActionEventArgs? eventArgs = null;
             var keyboard = configuration.Keyboard;
             if (key == keyboard.Exit)
             {
-                eventArgs = new(InputAction.Exit);
+                eventArgs = new(InputAction.Exit, repeated);
                 ExitEvent?.Invoke(this, eventArgs);
             }
             else if (key == keyboard.Browse)
             {
-                eventArgs = new(InputAction.Browse);
+                eventArgs = new(InputAction.Browse, repeated);
                 BrowseEvent?.Invoke(this, eventArgs);
             }
             else if (key == keyboard.Previous)
             {
-                eventArgs = new(InputAction.Previous);
+                eventArgs = new(InputAction.Previous, repeated);
                 PreviousEvent?.Invoke(this, eventArgs);
             }
             else if (key == keyboard.Next)
             {
-                eventArgs = new(InputAction.Next);
+                eventArgs = new(InputAction.Next, repeated);
                 NextEvent?.Invoke(this, eventArgs);
             }
             else if (key == keyboard.PlayPause)
             {
-                eventArgs = new(InputAction.PlayPause);
+                eventArgs = new(InputAction.PlayPause, repeated);
                 PlayPauseEvent?.Invoke(this, eventArgs);
             }
 

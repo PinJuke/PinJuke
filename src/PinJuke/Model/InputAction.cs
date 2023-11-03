@@ -18,10 +18,12 @@ namespace PinJuke.Model
     public class InputActionEventArgs : EventArgs
     {
         public InputAction InputAction { get; }
+        public bool Repeated { get; }
 
-        public InputActionEventArgs(InputAction inputAction)
+        public InputActionEventArgs(InputAction inputAction, bool repeated)
         {
             InputAction = inputAction;
+            Repeated = repeated;
         }
     }
 }

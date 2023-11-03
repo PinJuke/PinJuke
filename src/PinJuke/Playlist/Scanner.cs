@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NaturalSort.Extension;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing.Drawing2D;
@@ -87,7 +88,8 @@ namespace PinJuke.Playlist
         {
             CheckCancellation();
 
-            foreach (var childDirectoryInfo in directoryInfo.GetDirectories())
+            var directories = directoryInfo.GetDirectories().OrderBy(x => x.Name, new NaturalSortComparer(StringComparison.CurrentCultureIgnoreCase));
+            foreach (var childDirectoryInfo in directories)
             {
                 var childFileNode = new FileNode(childDirectoryInfo.FullName, GetDisplayName(childDirectoryInfo.FullName), FileType.Directory);
                 var hasChildren = ScanDirectory(childFileNode, childDirectoryInfo);
@@ -97,7 +99,8 @@ namespace PinJuke.Playlist
                     fileNode.AppendChild(childFileNode);
                 }
             }
-            foreach (var fileInfo in directoryInfo.GetFiles())
+            var files = directoryInfo.GetFiles().OrderBy(x => x.Name, new NaturalSortComparer(StringComparison.CurrentCultureIgnoreCase));
+            foreach (var fileInfo in files)
             {
                 AppendFileIfSupportedType(fileNode, fileInfo);
             }

@@ -9,7 +9,7 @@
              d:DesignWidth="300" d:DesignHeight="300" 
              >
 
-    <Border Background="#80000000" Style="{StaticResource ViewVisibleFadeStyle}" ClipToBounds="True">
+    <Border Background="#CC000000" Style="{StaticResource ViewVisibleFadeStyle}" ClipToBounds="True" Margin="80" BorderThickness="2" BorderBrush="Black">
     
         <Grid>
             <Grid.ColumnDefinitions>

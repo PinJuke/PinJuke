@@ -190,21 +190,29 @@ namespace PinJuke.Model
             PlayingTrackVisible = false;
         }
 
-        public void NavigateNext()
+        public void NavigateNext(bool repeated)
         {
             var node = NavigationNode?.NextSibling;
             if (node != null)
             {
                 NavigationNode = node;
             }
+            else if (!repeated)
+            {
+                NavigationNode = NavigationNode?.Parent?.FirstChild ?? NavigationNode;
+            }
         }
 
-        public void NavigatePrevious()
+        public void NavigatePrevious(bool repeated)
         {
             var node = NavigationNode?.PreviousSibling;
             if (node != null)
             {
                 NavigationNode = node;
+            }
+            else if (!repeated)
+            {
+                NavigationNode = NavigationNode?.Parent?.LastChild ?? NavigationNode;
             }
         }
 

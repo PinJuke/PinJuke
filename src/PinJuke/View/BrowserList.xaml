@@ -56,6 +56,11 @@
                         <SolidColorBrush Color="White"/>
                     </Setter.Value>
                 </Setter>
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Color="Transparent"/>
+                    </Setter.Value>
+                </Setter>
                 <Setter Property="Focusable" Value="False"/>
                 <Setter Property="Template">
                     <Setter.Value>
@@ -65,7 +70,8 @@
                                     <Trigger.EnterActions>
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <ColorAnimation Storyboard.TargetProperty="(ListBoxItem.Foreground).(SolidColorBrush.Color)" To="#50adcb" Duration="0:0:0.25" />
+                                                <ColorAnimation Storyboard.TargetProperty="(ListBoxItem.Foreground).(SolidColorBrush.Color)" To="#00adff" Duration="0:0:0.25" />
+                                                <ColorAnimation Storyboard.TargetProperty="(ListBoxItem.Background).(SolidColorBrush.Color)" To="#404040" Duration="0:0:0" />
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </Trigger.EnterActions>
@@ -73,6 +79,7 @@
                                         <BeginStoryboard>
                                             <Storyboard>
                                                 <ColorAnimation Storyboard.TargetProperty="(ListBoxItem.Foreground).(SolidColorBrush.Color)" To="White" Duration="0:0:0.25" />
+                                                <ColorAnimation Storyboard.TargetProperty="(ListBoxItem.Background).(SolidColorBrush.Color)" To="Transparent" Duration="0:0:0" />
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </Trigger.ExitActions>
