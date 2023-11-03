@@ -54,11 +54,16 @@ namespace PinJuke.View.Visualizer
             projectMPlaylist.AddPath(visualizerManager.Milkdrop.PresetsPath, true, false);
             projectMPlaylist.SetShuffle(true);
             projectMPlaylist.PlayNext(true);
+
+            visualizerManager.Add(projectMRenderer);
         }
 
         private void Dispatcher_ShutdownStarted(object? sender, EventArgs e)
         {
             Debug.WriteLine("Dispatcher_ShutdownStarted");
+
+            VisualizerManager?.Remove(projectMRenderer);
+
             projectMPlaylist.Dispose();
             projectMRenderer.Dispose();
         }
@@ -73,7 +78,7 @@ namespace PinJuke.View.Visualizer
 
         private void OpenTkControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            projectMRenderer?.SetSize((nint)OpenTkControl.RenderSize.Width, (nint)OpenTkControl.RenderSize.Height);
+            projectMRenderer?.SetSize((nuint)OpenTkControl.RenderSize.Width, (nuint)OpenTkControl.RenderSize.Height);
         }
 
     }

@@ -18,18 +18,18 @@ namespace PinJuke.View.Visualizer
 
     public class ProjectMPlaylist : IDisposable
     {
-        private nint handle = nint.Zero;
-        internal nint Handle
+        private nuint handle = nuint.Zero;
+        internal nuint Handle
         {
-            get => handle != nint.Zero ? handle : throw new ProjectMPlaylistException("ProjectM playlist handle is null.");
+            get => handle != nuint.Zero ? handle : throw new ProjectMPlaylistException("ProjectM playlist handle is null.");
         }
 
         private ProjectMRenderer? projectMRenderer = null;
 
         public ProjectMPlaylist()
         {
-            handle = LibProjectMPlaylist.Create(nint.Zero);
-            if (handle == nint.Zero)
+            handle = LibProjectMPlaylist.Create(nuint.Zero);
+            if (handle == nuint.Zero)
             {
                 throw new ProjectMPlaylistException("Failed to create a projectM playlist instance.");
             }
@@ -45,12 +45,12 @@ namespace PinJuke.View.Visualizer
 
         internal void Release()
         {
-            if (handle != nint.Zero)
+            if (handle != nuint.Zero)
             {
                 Disconnect();
 
                 LibProjectMPlaylist.Destroy(handle);
-                handle = nint.Zero;
+                handle = nuint.Zero;
             }
         }
 
@@ -73,7 +73,7 @@ namespace PinJuke.View.Visualizer
                 return;
             }
             Debug.Assert(projectMRenderer.Playlist == this);
-            LibProjectMPlaylist.Connect(Handle, nint.Zero);
+            LibProjectMPlaylist.Connect(Handle, nuint.Zero);
             projectMRenderer.Playlist = null;
             projectMRenderer = null;
         }

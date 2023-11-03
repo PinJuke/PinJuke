@@ -16,10 +16,10 @@ namespace PinJuke.View.Visualizer
 
     public class ProjectMRenderer : IDisposable
     {
-        private nint handle = nint.Zero;
-        internal nint Handle
+        private nuint handle = nuint.Zero;
+        internal nuint Handle
         {
-            get => handle != nint.Zero ? handle : throw new ProjectMRendererException("ProjectM handle is null.");
+            get => handle != nuint.Zero ? handle : throw new ProjectMRendererException("ProjectM handle is null.");
         }
 
         internal ProjectMPlaylist? Playlist { get; set; } = null;
@@ -27,7 +27,7 @@ namespace PinJuke.View.Visualizer
         public ProjectMRenderer()
         {
             handle = LibProjectM.Create();
-            if (handle == nint.Zero)
+            if (handle == nuint.Zero)
             {
                 throw new ProjectMRendererException("Failed to create a projectM instance.");
             }
@@ -43,21 +43,21 @@ namespace PinJuke.View.Visualizer
 
         internal void Release()
         {
-            if (handle != nint.Zero)
+            if (handle != nuint.Zero)
             {
                 Playlist?.Release();
 
                 LibProjectM.Destroy(handle);
-                handle = nint.Zero;
+                handle = nuint.Zero;
             }
         }
 
         public void SetTextureSearchPaths(string[] textureSearchPaths)
         {
-            LibProjectM.SetTextureSearchPaths(Handle, textureSearchPaths, textureSearchPaths.Length);
+            LibProjectM.SetTextureSearchPaths(Handle, textureSearchPaths, (nuint)textureSearchPaths.Length);
         }
 
-        public void SetSize(nint width, nint height)
+        public void SetSize(nuint width, nuint height)
         {
             LibProjectM.SetWindowSize(Handle, width, height);
         }
@@ -65,6 +65,11 @@ namespace PinJuke.View.Visualizer
         public void Render()
         {
             LibProjectM.OpenglRenderFrame(Handle);
+        }
+
+        public void PcmAddFloat(byte[] samples, uint count, uint channels)
+        {
+            LibProjectM.PcmAddFloat(Handle, samples, count, channels);
         }
 
     }

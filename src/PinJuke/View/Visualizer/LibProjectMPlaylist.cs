@@ -10,21 +10,21 @@ namespace PinJuke.View.Visualizer
     public class LibProjectMPlaylist
     {
         [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_create")]
-        public static extern nint Create(nint projectMHandle);
+        public static extern nuint Create(nuint projectMHandle);
 
         [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_destroy")]
-        public static extern nint Destroy(nint projectMPlaylistHandle);
+        public static extern void Destroy(nuint projectMPlaylistHandle);
 
         [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_connect")]
-        public static extern void Connect(nint projectMPlaylistHandle, nint projectMHandle);
+        public static extern void Connect(nuint projectMPlaylistHandle, nuint projectMHandle);
 
         [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_add_path")]
-        public static extern uint AddPath(nint projectMPlaylistHandle, string path, bool recurseSubdirs, bool allowDuplicates);
+        public static extern uint AddPath(nuint projectMPlaylistHandle, string path, bool recurseSubdirs, bool allowDuplicates);
 
         [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_set_shuffle")]
-        public static extern uint SetShuffle(nint projectMPlaylistHandle, bool shuffle);
+        public static extern void SetShuffle(nuint projectMPlaylistHandle, bool shuffle);
 
         [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_play_next")]
-        public static extern uint PlayNext(nint projectMPlaylistHandle, bool hardCut);
+        public static extern uint PlayNext(nuint projectMPlaylistHandle, bool hardCut);
     }
 }

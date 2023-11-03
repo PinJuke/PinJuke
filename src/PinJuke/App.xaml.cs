@@ -15,7 +15,8 @@ namespace PinJuke
     public partial class App : Application
     {
         private AppController? appController;
-        
+        private VisualizerManager? visualizerManager;
+
         protected override void OnStartup(StartupEventArgs e)
         {
             var configuration = LoadConfiguration(e);
@@ -24,7 +25,7 @@ namespace PinJuke
 
             var mainModel = new MainModel(configuration);
 
-            var visualizerManager = new VisualizerManager(configuration.Milkdrop);
+            visualizerManager = new VisualizerManager(configuration.Milkdrop);
             var backGlassWindow = CreateWindow(mainModel, configuration.BackGlass, visualizerManager);
             var playFieldWindow = CreateWindow(mainModel, configuration.PlayField, visualizerManager);
             var dmdWindow = CreateWindow(mainModel, configuration.DMD, visualizerManager);
@@ -44,6 +45,7 @@ namespace PinJuke
             base.OnExit(e);
 
             appController?.Dispose();
+            visualizerManager?.Dispose();
         }
 
         private Configuration.Configuration LoadConfiguration(StartupEventArgs e)
