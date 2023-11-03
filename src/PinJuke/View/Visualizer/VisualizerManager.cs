@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Channels;
@@ -53,11 +54,13 @@ namespace PinJuke.View.Visualizer
     {
         public Milkdrop Milkdrop { get; }
 
+        private readonly HashSet<ProjectMRenderer> renderers = new();
+
         private readonly MMDeviceEnumerator deviceEnumerator;
         private readonly NotificationClient notificationClient;
 
         private WasapiLoopbackCapture? wasapiLoopbackCapture = null;
-        private readonly HashSet<ProjectMRenderer> renderers = new();
+        private bool restarting = false;
 
         public VisualizerManager(Milkdrop milkdrop)
         {
@@ -88,27 +91,47 @@ namespace PinJuke.View.Visualizer
         public void QueueRestart()
         {
             Debug.WriteLine("VisualizerManager: Queue restart...");
-            Application.Current.Dispatcher.Invoke(new Action(CheckRestart));
+            Application.Current.Dispatcher.InvokeAsync(new Action(CheckRestart));
         }
 
-        private void CheckRestart()
+        private async void CheckRestart()
         {
-            if (wasapiLoopbackCapture != null && wasapiLoopbackCapture.CaptureState != CaptureState.Stopped)
+            if (restarting)
             {
-                Debug.WriteLine("VisualizerManager: No need to restart.");
                 return;
             }
 
-            Debug.WriteLine("VisualizerManager: Restarting...");
+            restarting = true;
 
-            wasapiLoopbackCapture?.Dispose();
-            wasapiLoopbackCapture = null;
+            try
+            {
+                wasapiLoopbackCapture?.Dispose();
+                wasapiLoopbackCapture = null;
 
-            wasapiLoopbackCapture = new WasapiLoopbackCapture(deviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia));
+                await Task.Delay(100);
 
-            wasapiLoopbackCapture.DataAvailable += WasapiLoopbackCapture_DataAvailable;
-            wasapiLoopbackCapture.RecordingStopped += WasapiLoopbackCapture_RecordingStopped;
-            wasapiLoopbackCapture.StartRecording();
+                MMDevice captureDevice;
+                try
+                {
+                    captureDevice = deviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+
+                }
+                catch (COMException exception)
+                {
+                    Debug.WriteLine("VisualizerManager: No device.");
+                    return;
+                }
+
+                Debug.WriteLine("VisualizerManager: Capturing...");
+                wasapiLoopbackCapture = new WasapiLoopbackCapture(captureDevice);
+                wasapiLoopbackCapture.DataAvailable += WasapiLoopbackCapture_DataAvailable;
+                wasapiLoopbackCapture.RecordingStopped += WasapiLoopbackCapture_RecordingStopped;
+                wasapiLoopbackCapture.StartRecording();
+            }
+            finally
+            {
+                restarting = false;
+            }
         }
 
         private void WasapiLoopbackCapture_DataAvailable(object? sender, WaveInEventArgs e)
@@ -123,7 +146,7 @@ namespace PinJuke.View.Visualizer
 
             //Debug.WriteLine("VisualizerManager: data available: " + count + " samples " + wasapiLoopbackCapture!.WaveFormat);
 
-            Application.Current.Dispatcher.Invoke(new Action(() => {
+            Application.Current.Dispatcher.InvokeAsync(new Action(() => {
                 PcmAddFloat(buffer, count, channels);
             }));
         }
