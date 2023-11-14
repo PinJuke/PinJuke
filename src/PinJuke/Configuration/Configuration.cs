@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace PinJuke.Configuration
 {
-    public record Configuration(string MediaPath, Player Player, Keyboard Keyboard, Display BackGlass, Display PlayField, Display DMD, Milkdrop Milkdrop);
+    public record Configuration(string MediaPath, Player Player, Keyboard Keyboard, Display BackGlass, Display PlayField, Display Dmd, Milkdrop Milkdrop, Dof Dof);
 
     public record Player(string MusicPath, StartupTrackType StartupTrackType, bool PlayOnStartup);
 
@@ -41,5 +41,7 @@ namespace PinJuke.Configuration
     public record Keyboard(Key Exit, Key Browse, Key Previous, Key Next, Key PlayPause);
 
     public record Milkdrop(string PresetsPath, string TexturesPath);
+
+    public record Dof(bool Enabled, string GlobalConfigFilePath, string RomName);
 
 }

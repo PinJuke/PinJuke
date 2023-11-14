@@ -59,6 +59,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DirectOutput-PinJuke\DirectOutput-PinJuke.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Strings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

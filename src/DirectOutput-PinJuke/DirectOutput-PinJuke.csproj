@@ -1,0 +1,290 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <RootNamespace>DirectOutput_PinJuke</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Log.cs" Link="Log.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Pinball.cs" Link="Pinball.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Cab.cs" Link="Cab\Cab.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Cabinet.cs" Link="Cab\Cabinet.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\CabinetOutputList.cs" Link="Cab\CabinetOutputList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\CabinetOwner.cs" Link="Cab\CabinetOwner.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\ICabinetOwner.cs" Link="Cab\ICabinetOwner.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\HIDImports.cs" Link="Cab\Out\HIDImports.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\IAutoConfigOutputController.cs" Link="Cab\Out\IAutoConfigOutputController.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\IOutput.cs" Link="Cab\Out\IOutput.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\IOutputController.cs" Link="Cab\Out\IOutputController.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\ISupportsSetValues.cs" Link="Cab\Out\ISupportsSetValues.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\Out.cs" Link="Cab\Out\Out.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\Output.cs" Link="Cab\Out\Output.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\OutputControllerBase.cs" Link="Cab\Out\OutputControllerBase.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\OutputControllerCompleteBase.cs" Link="Cab\Out\OutputControllerCompleteBase.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\OutputControllerFlexCompleteBase.cs" Link="Cab\Out\OutputControllerFlexCompleteBase.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\OutputControllerList.cs" Link="Cab\Out\OutputControllerList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\OutputEventArgs.cs" Link="Cab\Out\OutputEventArgs.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\OutputList.cs" Link="Cab\Out\OutputList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\AdressableLedStrip\AdressableLedStrip.cs" Link="Cab\Out\AdressableLedStrip\AdressableLedStrip.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\AdressableLedStrip\DirectStripController.cs" Link="Cab\Out\AdressableLedStrip\DirectStripController.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\AdressableLedStrip\DirectStripControllerApi.cs" Link="Cab\Out\AdressableLedStrip\DirectStripControllerApi.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\AdressableLedStrip\LedStripOutput.cs" Link="Cab\Out\AdressableLedStrip\LedStripOutput.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\AdressableLedStrip\TeensyStripController.cs" Link="Cab\Out\AdressableLedStrip\TeensyStripController.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\AdressableLedStrip\WemosD1StripController.cs" Link="Cab\Out\AdressableLedStrip\WemosD1StripController.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\AdressableLedStrip\WS2811StripController.cs" Link="Cab\Out\AdressableLedStrip\WS2811StripController.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\ComPort\GenericCom.cs" Link="Cab\Out\ComPort\GenericCom.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\ComPort\PinControl.cs" Link="Cab\Out\ComPort\PinControl.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\DMX\ArtNet.cs" Link="Cab\Out\DMX\ArtNet.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\DMX\DMX.cs" Link="Cab\Out\DMX\DMX.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\DMX\DMXOutput.cs" Link="Cab\Out\DMX\DMXOutput.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\DMX\ArtnetEngine\ArtnetEngine.cs" Link="Cab\Out\DMX\ArtnetEngine\ArtnetEngine.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\DMX\ArtnetEngine\Engine.cs" Link="Cab\Out\DMX\ArtnetEngine\Engine.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\FTDIChip\FT245RBitbangController.cs" Link="Cab\Out\FTDIChip\FT245RBitbangController.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\FTDIChip\FT245RBitbangControllerAutoConfigurator.cs" Link="Cab\Out\FTDIChip\FT245RBitbangControllerAutoConfigurator.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\FTDIChip\FTD2XX_NET.cs" Link="Cab\Out\FTDIChip\FTD2XX_NET.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\FTDIChip\FTDIChip.cs" Link="Cab\Out\FTDIChip\FTDIChip.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\LW\LedWiz.cs" Link="Cab\Out\LW\LedWiz.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\LW\LedWizAutoConfigurator.cs" Link="Cab\Out\LW\LedWizAutoConfigurator.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\LW\LEDWizOutput.cs" Link="Cab\Out\LW\LEDWizOutput.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\LW\LW.cs" Link="Cab\Out\LW\LW.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\NullOutputController\NullOutputController.cs" Link="Cab\Out\NullOutputController\NullOutputController.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\Pac\Pac.cs" Link="Cab\Out\Pac\Pac.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\Pac\PacDrive.cs" Link="Cab\Out\Pac\PacDrive.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\Pac\PacDriveAutoConfigurator.cs" Link="Cab\Out\Pac\PacDriveAutoConfigurator.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\Pac\PacDriveSingleton.cs" Link="Cab\Out\Pac\PacDriveSingleton.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\Pac\PacLed64.cs" Link="Cab\Out\Pac\PacLed64.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\Pac\PacLed64AutoConfigurator.cs" Link="Cab\Out\Pac\PacLed64AutoConfigurator.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\Pac\PacUIO.cs" Link="Cab\Out\Pac\PacUIO.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\Pac\PacUIOAutoConfigurator.cs" Link="Cab\Out\Pac\PacUIOAutoConfigurator.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\PhilipsHue\PhilipsHue.cs" Link="Cab\Out\PhilipsHue\PhilipsHue.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\PhilipsHue\PhilipsHueAutoConfigurator.cs" Link="Cab\Out\PhilipsHue\PhilipsHueAutoConfigurator.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\PhilipsHue\PhilipsHueController.cs" Link="Cab\Out\PhilipsHue\PhilipsHueController.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\PinOne\PinOne.cs" Link="Cab\Out\PinOne\PinOne.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\PinOne\PinOneAutoConfigurator.cs" Link="Cab\Out\PinOne\PinOneAutoConfigurator.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\PS\HIDImports.cs" Link="Cab\Out\PS\HIDImports.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\PS\Pinscape.cs" Link="Cab\Out\PS\Pinscape.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\PS\PinscapeAutoConfigurator.cs" Link="Cab\Out\PS\PinscapeAutoConfigurator.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\PS\PS.cs" Link="Cab\Out\PS\PS.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Out\SSF\SSFImpactController.cs" Link="Cab\Out\SSF\SSFImpactController.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Overrides\Overrides.cs" Link="Cab\Overrides\Overrides.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Overrides\TableOverrideSetting.cs" Link="Cab\Overrides\TableOverrideSetting.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Overrides\TableOverrideSettingDevice.cs" Link="Cab\Overrides\TableOverrideSettingDevice.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Overrides\TableOverrideSettings.cs" Link="Cab\Overrides\TableOverrideSettings.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Schedules\ScheduledSetting.cs" Link="Cab\Schedules\ScheduledSetting.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Schedules\ScheduledSettingDevice.cs" Link="Cab\Schedules\ScheduledSettingDevice.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Schedules\ScheduledSettings.cs" Link="Cab\Schedules\ScheduledSettings.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Schedules\Schedules.cs" Link="Cab\Schedules\Schedules.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Sequencer\Sequencer.cs" Link="Cab\Sequencer\Sequencer.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Sequencer\SequentialOutputDevice.cs" Link="Cab\Sequencer\SequentialOutputDevice.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Sequencer\SequentialOutputSetting.cs" Link="Cab\Sequencer\SequentialOutputSetting.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Sequencer\SequentialOutputSettings.cs" Link="Cab\Sequencer\SequentialOutputSettings.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\IAnalogAlphaToy.cs" Link="Cab\Toys\IAnalogAlphaToy.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\IMatrixToy.cs" Link="Cab\Toys\IMatrixToy.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\IRGBAToy.cs" Link="Cab\Toys\IRGBAToy.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\IRGBOutputToy.cs" Link="Cab\Toys\IRGBOutputToy.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\ISingleOutputToy.cs" Link="Cab\Toys\ISingleOutputToy.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\IToy.cs" Link="Cab\Toys\IToy.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\IToyUpdatable.cs" Link="Cab\Toys\IToyUpdatable.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\ToyBase.cs" Link="Cab\Toys\ToyBase.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\ToyBaseUpdatable.cs" Link="Cab\Toys\ToyBaseUpdatable.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\ToyEventArgs.cs" Link="Cab\Toys\ToyEventArgs.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\ToyList.cs" Link="Cab\Toys\ToyList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Toys.cs" Link="Cab\Toys\Toys.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Hardware\GearMotor.cs" Link="Cab\Toys\Hardware\GearMotor.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Hardware\Hardware.cs" Link="Cab\Toys\Hardware\Hardware.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Hardware\Lamp.cs" Link="Cab\Toys\Hardware\Lamp.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Hardware\LedStrip.cs" Link="Cab\Toys\Hardware\LedStrip.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Hardware\Motor.cs" Link="Cab\Toys\Hardware\Motor.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Hardware\RGBLed.cs" Link="Cab\Toys\Hardware\RGBLed.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Hardware\Shaker.cs" Link="Cab\Toys\Hardware\Shaker.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Layer\AlphaMappingTable.cs" Link="Cab\Toys\Layer\AlphaMappingTable.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Layer\AnalogAlphaToy.cs" Link="Cab\Toys\Layer\AnalogAlphaToy.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Layer\ILayerToy.cs" Link="Cab\Toys\Layer\ILayerToy.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Layer\Layer.cs" Link="Cab\Toys\Layer\Layer.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Layer\LayerDictionary.cs" Link="Cab\Toys\Layer\LayerDictionary.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Layer\MatrixDictionaryBase.cs" Link="Cab\Toys\Layer\MatrixDictionaryBase.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Layer\RGBAToy.cs" Link="Cab\Toys\Layer\RGBAToy.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Layer\RGBOrderEnum.cs" Link="Cab\Toys\Layer\RGBOrderEnum.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Layer\StripArrangementEnum.cs" Link="Cab\Toys\Layer\StripArrangementEnum.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\LWEquivalent\LedWizEquivalent.cs" Link="Cab\Toys\LWEquivalent\LedWizEquivalent.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\LWEquivalent\LedWizEquivalentOutput.cs" Link="Cab\Toys\LWEquivalent\LedWizEquivalentOutput.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\LWEquivalent\LedWizEquivalentOutputList.cs" Link="Cab\Toys\LWEquivalent\LedWizEquivalentOutputList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Virtual\AnalogAlphaToyGroup.cs" Link="Cab\Toys\Virtual\AnalogAlphaToyGroup.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Virtual\RGBAToyGroup.cs" Link="Cab\Toys\Virtual\RGBAToyGroup.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Virtual\ToyGroupBase.cs" Link="Cab\Toys\Virtual\ToyGroupBase.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Cab\Toys\Virtual\Virtual.cs" Link="Cab\Toys\Virtual\Virtual.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Extensions\ArrayExtensions.cs" Link="Extensions\ArrayExtensions.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Extensions\ByteExtensions.cs" Link="Extensions\ByteExtensions.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Extensions\DirectoryInfoExtensions.cs" Link="Extensions\DirectoryInfoExtensions.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Extensions\DoubleExtensions.cs" Link="Extensions\DoubleExtensions.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Extensions\FileInfoExtensions.cs" Link="Extensions\FileInfoExtensions.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Extensions\FloatExtensions.cs" Link="Extensions\FloatExtensions.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Extensions\IntExtensions.cs" Link="Extensions\IntExtensions.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Extensions\PropertyInfoExtension.cs" Link="Extensions\PropertyInfoExtension.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Extensions\StringExtensionsx.cs" Link="Extensions\StringExtensionsx.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Extensions\TimeSpanExtensions.cs" Link="Extensions\TimeSpanExtensions.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Extensions\TypeExtensions.cs" Link="Extensions\TypeExtensions.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\AssignedEffect.cs" Link="FX\AssignedEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\AssignedEffectList.cs" Link="FX\AssignedEffectList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\EffectBase.cs" Link="FX\EffectBase.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\EffectEffectBase.cs" Link="FX\EffectEffectBase.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\EffectEventArgs.cs" Link="FX\EffectEventArgs.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\EffectList.cs" Link="FX\EffectList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\FadeModeEnum.cs" Link="FX\FadeModeEnum.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\FX.cs" Link="FX\FX.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\IEffect.cs" Link="FX\IEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\RetriggerBehaviourEnum.cs" Link="FX\RetriggerBehaviourEnum.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\AnalogToyFX\AnalogToyFX.cs" Link="FX\AnalogToyFX\AnalogToyFX.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\AnalogToyFX\AnalogToyValueEffect.cs" Link="FX\AnalogToyFX\AnalogToyValueEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\AnalogToyFX\AnanlogToyEffectBase.cs" Link="FX\AnalogToyFX\AnanlogToyEffectBase.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\ConditionFX\ConditionFX.cs" Link="FX\ConditionFX\ConditionFX.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\ConditionFX\TableElementConditionEffect.cs" Link="FX\ConditionFX\TableElementConditionEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\ListFX\ListEffect.cs" Link="FX\ListFX\ListEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\AnalogAlphaMatrixBitmapAnimationEffect.cs" Link="FX\MatrixFX\AnalogAlphaMatrixBitmapAnimationEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\AnalogAlphaMatrixBitmapEffect.cs" Link="FX\MatrixFX\AnalogAlphaMatrixBitmapEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\AnalogAlphaMatrixFlickerEffect.cs" Link="FX\MatrixFX\AnalogAlphaMatrixFlickerEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\AnalogAlphaMatrixShiftEffect.cs" Link="FX\MatrixFX\AnalogAlphaMatrixShiftEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\AnalogAlphaMatrixValueEffect.cs" Link="FX\MatrixFX\AnalogAlphaMatrixValueEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\AnimationBehaviourEnum.cs" Link="FX\MatrixFX\AnimationBehaviourEnum.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\IMatrixBitmapEffect.cs" Link="FX\MatrixFX\IMatrixBitmapEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\IMatrixEffect.cs" Link="FX\MatrixFX\IMatrixEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\MatrixAnimationStepDirectionEnum.cs" Link="FX\MatrixFX\MatrixAnimationStepDirectionEnum.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\MatrixBitmapAnimationEffectBase.cs" Link="FX\MatrixFX\MatrixBitmapAnimationEffectBase.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\MatrixBitmapEffectBase.cs" Link="FX\MatrixFX\MatrixBitmapEffectBase.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\MatrixEffectBase.cs" Link="FX\MatrixFX\MatrixEffectBase.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\MatrixFlickerEffectBase.cs" Link="FX\MatrixFX\MatrixFlickerEffectBase.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\MatrixFX.cs" Link="FX\MatrixFX\MatrixFX.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\MatrixPlasmaEffectBase.cs" Link="FX\MatrixFX\MatrixPlasmaEffectBase.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\MatrixShiftDirectionEnum.cs" Link="FX\MatrixFX\MatrixShiftDirectionEnum.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\MatrixShiftEffectBase.cs" Link="FX\MatrixFX\MatrixShiftEffectBase.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\MatrixValueEffectBase.cs" Link="FX\MatrixFX\MatrixValueEffectBase.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\RGBAMatrixBitmapAnimationEffect.cs" Link="FX\MatrixFX\RGBAMatrixBitmapAnimationEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\RGBAMatrixBitmapEffect.cs" Link="FX\MatrixFX\RGBAMatrixBitmapEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\RGBAMatrixColorEffect.cs" Link="FX\MatrixFX\RGBAMatrixColorEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\RGBAMatrixColorScaleBitmapAnimationEffect.cs" Link="FX\MatrixFX\RGBAMatrixColorScaleBitmapAnimationEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\RGBAMatrixColorScaleBitmapEffect.cs" Link="FX\MatrixFX\RGBAMatrixColorScaleBitmapEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\RGBAMatrixColorScaleShapeEffect.cs" Link="FX\MatrixFX\RGBAMatrixColorScaleShapeEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\RGBAMatrixFlickerEffect.cs" Link="FX\MatrixFX\RGBAMatrixFlickerEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\RGBAMatrixPlasmaEffect.cs" Link="FX\MatrixFX\RGBAMatrixPlasmaEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\RGBAMatrixShapeEffect.cs" Link="FX\MatrixFX\RGBAMatrixShapeEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\RGBAMatrixShiftEffect.cs" Link="FX\MatrixFX\RGBAMatrixShiftEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\BitmapShapes\Shape.cs" Link="FX\MatrixFX\BitmapShapes\Shape.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\BitmapShapes\ShapeAnimated.cs" Link="FX\MatrixFX\BitmapShapes\ShapeAnimated.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\BitmapShapes\ShapeDefinitions.cs" Link="FX\MatrixFX\BitmapShapes\ShapeDefinitions.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\MatrixFX\BitmapShapes\ShapeList.cs" Link="FX\MatrixFX\BitmapShapes\ShapeList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\NullFX\NullEffect.cs" Link="FX\NullFX\NullEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\RGBAFX\RGBAColorEffect.cs" Link="FX\RGBAFX\RGBAColorEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\RGBAFX\RGBAEffectBase.cs" Link="FX\RGBAFX\RGBAEffectBase.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\RGBAFX\RGBAFX.cs" Link="FX\RGBAFX\RGBAFX.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\TimmedFX\BlinkEffect.cs" Link="FX\TimmedFX\BlinkEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\TimmedFX\BlinkEffectUntriggerBehaviourEnum.cs" Link="FX\TimmedFX\BlinkEffectUntriggerBehaviourEnum.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\TimmedFX\DelayEffect.cs" Link="FX\TimmedFX\DelayEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\TimmedFX\DurationEffect.cs" Link="FX\TimmedFX\DurationEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\TimmedFX\ExtendDurationEffect.cs" Link="FX\TimmedFX\ExtendDurationEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\TimmedFX\FadeEffect.cs" Link="FX\TimmedFX\FadeEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\TimmedFX\FadeEffectDurationModeEnum.cs" Link="FX\TimmedFX\FadeEffectDurationModeEnum.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\TimmedFX\MaxDurationEffect.cs" Link="FX\TimmedFX\MaxDurationEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\TimmedFX\MinDurationEffect.cs" Link="FX\TimmedFX\MinDurationEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\TimmedFX\TimmedFX.cs" Link="FX\TimmedFX\TimmedFX.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\ValueFX\ValueFX.cs" Link="FX\ValueFX\ValueFX.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\ValueFX\ValueInvertEffect.cs" Link="FX\ValueFX\ValueInvertEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\FX\ValueFX\ValueMapFullRangeEffect.cs" Link="FX\ValueFX\ValueMapFullRangeEffect.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\Curve.cs" Link="General\Curve.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\CurveList.cs" Link="General\CurveList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\FilePattern.cs" Link="General\FilePattern.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\FilePatternList.cs" Link="General\FilePatternList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\FileReader.cs" Link="General\FileReader.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\General.cs" Link="General\General.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\Kernel32Imports.cs" Link="General\Kernel32Imports.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\ThreadInfo.cs" Link="General\ThreadInfo.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\ThreadInfoList.cs" Link="General\ThreadInfoList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\TypeList.cs" Link="General\TypeList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\Analog\AnalogAlpha.cs" Link="General\Analog\AnalogAlpha.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\BitmapHandling\FastBitmap.cs" Link="General\BitmapHandling\FastBitmap.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\BitmapHandling\FastBitmapDataExtractModeEnum.cs" Link="General\BitmapHandling\FastBitmapDataExtractModeEnum.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\BitmapHandling\FastImage.cs" Link="General\BitmapHandling\FastImage.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\BitmapHandling\FastImageList.cs" Link="General\BitmapHandling\FastImageList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\BitmapHandling\PixelData.cs" Link="General\BitmapHandling\PixelData.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\BitmapHandling\UnsafeBitmap.cs" Link="General\BitmapHandling\UnsafeBitmap.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\Color\ColorList.cs" Link="General\Color\ColorList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\Color\RGBAColor.cs" Link="General\Color\RGBAColor.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\Color\RGBAColorNamed.cs" Link="General\Color\RGBAColorNamed.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\Color\RGBColor.cs" Link="General\Color\RGBColor.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\Color\RGBColorNamed.cs" Link="General\Color\RGBColorNamed.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\Generic\ExtList.cs" Link="General\Generic\ExtList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\Generic\INamedItem.cs" Link="General\Generic\INamedItem.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\Generic\InsertEventArgs.cs" Link="General\Generic\InsertEventArgs.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\Generic\NameChangeEventArgs.cs" Link="General\Generic\NameChangeEventArgs.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\Generic\NamedItemBase.cs" Link="General\Generic\NamedItemBase.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\Generic\NamedItemList.cs" Link="General\Generic\NamedItemList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\Generic\RemoveEventArgs.cs" Link="General\Generic\RemoveEventArgs.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\Generic\SetEventArgs.cs" Link="General\Generic\SetEventArgs.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\Generic\SortableBindingList.cs" Link="General\Generic\SortableBindingList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\General\Generic\ValidateItemEventArgs.cs" Link="General\Generic\ValidateItemEventArgs.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\GlobalConfiguration\GlobalConfig.cs" Link="GlobalConfiguration\GlobalConfig.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\LedControl\Loader\ColorConfig.cs" Link="LedControl\Loader\ColorConfig.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\LedControl\Loader\ColorConfigList.cs" Link="LedControl\Loader\ColorConfigList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\LedControl\Loader\LedControl.cs" Link="LedControl\Loader\LedControl.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\LedControl\Loader\LedControlConfig.cs" Link="LedControl\Loader\LedControlConfig.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\LedControl\Loader\LedControlConfigList.cs" Link="LedControl\Loader\LedControlConfigList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\LedControl\Loader\OutputControlEnum.cs" Link="LedControl\Loader\OutputControlEnum.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\LedControl\Loader\OutputTypeEnum.cs" Link="LedControl\Loader\OutputTypeEnum.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\LedControl\Loader\TableConfig.cs" Link="LedControl\Loader\TableConfig.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\LedControl\Loader\TableConfigColumn.cs" Link="LedControl\Loader\TableConfigColumn.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\LedControl\Loader\TableConfigColumnList.cs" Link="LedControl\Loader\TableConfigColumnList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\LedControl\Loader\TableConfigList.cs" Link="LedControl\Loader\TableConfigList.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\LedControl\Loader\TableConfigSetting.cs" Link="LedControl\Loader\TableConfigSetting.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\LedControl\Loader\TableVariablesDictionary.cs" Link="LedControl\Loader\TableVariablesDictionary.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\LedControl\Loader\VariablesDictionary.cs" Link="LedControl\Loader\VariablesDictionary.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\LedControl\Setup\Configurator.cs" Link="LedControl\Setup\Configurator.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\PinballSupport\AlarmHandler.cs" Link="PinballSupport\AlarmHandler.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\PinballSupport\InputQueue.cs" Link="PinballSupport\InputQueue.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\PinballSupport\PinballSupport.cs" Link="PinballSupport\PinballSupport.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Table\Table.cs" Link="Table\Table.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Table\TableConfigSourceEnum.cs" Link="Table\TableConfigSourceEnum.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Table\TableElement.cs" Link="Table\TableElement.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Table\TableElementData.cs" Link="Table\TableElementData.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Table\TableElementList.cs" Link="Table\TableElementTypeEnum.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Table\TableElementTypeEnum.cs" Link="Table\TableElementValueChangedEventArgs.cs" />
+	  <Compile Include="..\..\deps\DirectOutput\DirectOutput\Table\TableElementValueChangedEventArgs.cs" Link="Table\TableElementList.cs" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ContentWithTargetPath Include="..\..\deps\DirectOutput\DirectOutput\Costura32\FTD2XX32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>FTD2XX32.dll</TargetPath>
+    </ContentWithTargetPath>
+    <ContentWithTargetPath Include="..\..\deps\DirectOutput\DirectOutput\Costura32\PacDrive32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>PacDrive32.dll</TargetPath>
+    </ContentWithTargetPath>
+    <ContentWithTargetPath Include="..\..\deps\DirectOutput\DirectOutput\Costura64\FTD2XX64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>FTD2XX64.dll</TargetPath>
+    </ContentWithTargetPath>
+    <ContentWithTargetPath Include="..\..\deps\DirectOutput\DirectOutput\Costura64\PacDrive64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>PacDrive64.dll</TargetPath>
+    </ContentWithTargetPath>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Cab\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Flee" Version="2.0.0" />
+    <PackageReference Include="ManagedBass" Version="3.1.1" />
+    <PackageReference Include="ManagedBass.Fx" Version="3.1.1" />
+    <PackageReference Include="ManagedBass.Mix" Version="3.1.1" />
+    <PackageReference Include="Q42.HueApi" Version="3.22.0" />
+    <PackageReference Include="Q42.HueApi.ColorConverters" Version="3.20.1" />
+    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+    <PackageReference Include="System.IO.Ports" Version="7.0.0" />
+  </ItemGroup>
+
+</Project>

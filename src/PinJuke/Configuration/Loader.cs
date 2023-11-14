@@ -33,7 +33,8 @@ namespace PinJuke.Configuration
             var playField = CreateDisplay(DisplayRole.PlayField, iniDocument["PlayField"]);
             var dmd = CreateDisplay(DisplayRole.DMD, iniDocument["DMD"]);
             var milkdrop = CreateMilkdrop(iniDocument["Milkdrop"], mediaPath);
-            return new Configuration(mediaPath, player, keyboard, backGlass, playField, dmd, milkdrop);
+            var dof = CreateDof(iniDocument["DOF"]);
+            return new Configuration(mediaPath, player, keyboard, backGlass, playField, dmd, milkdrop, dof);
         }
 
         protected Player CreatePlayer(IniSection playerSection)
@@ -82,12 +83,28 @@ namespace PinJuke.Configuration
 
         protected Milkdrop CreateMilkdrop(IniSection milkdropSection, string mediaPath)
         {
-            var presetsPath = milkdropSection["PresetsPath"] ?? ".";
+            var presetsPath = parser.ParseString(milkdropSection["PresetsPath"]) ?? ".";
             presetsPath = Path.GetFullPath(presetsPath, mediaPath);
-            var texturesPath = milkdropSection["TexturesPath"] ?? ".";
+            var texturesPath = parser.ParseString(milkdropSection["TexturesPath"]) ?? ".";
             texturesPath = Path.GetFullPath(texturesPath, mediaPath);
 
             return new Milkdrop(presetsPath, texturesPath);
+        }
+
+        protected Dof CreateDof(IniSection dofSection)
+        {
+            var enabled = parser.ParseBool(dofSection["Enabled"]) ?? false;
+            var globalConfigFilePath = parser.ParseString(dofSection["GlobalConfigFilePath"]) ?? "";
+            var romName = parser.ParseString(dofSection["RomName"]) ?? "";
+            if (string.IsNullOrEmpty(globalConfigFilePath) || string.IsNullOrEmpty(romName))
+            {
+                enabled = false;
+            }
+            return new Dof(
+                enabled,
+                globalConfigFilePath,
+                romName
+            );
         }
 
         protected int? GetAngle(string? s)

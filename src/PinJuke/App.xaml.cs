@@ -1,5 +1,6 @@
 ﻿using PinJuke.Configuration;
 using PinJuke.Controller;
+using PinJuke.Dof;
 using PinJuke.Model;
 using PinJuke.View.Visualizer;
 using System;
@@ -15,6 +16,7 @@ namespace PinJuke
     public partial class App : Application
     {
         private AppController? appController;
+        private DofMediator? dofMediator = null;
         private VisualizerManager? visualizerManager;
 
         protected override void OnStartup(StartupEventArgs e)
@@ -25,10 +27,15 @@ namespace PinJuke
 
             var mainModel = new MainModel(configuration);
 
+            if (configuration.Dof.Enabled)
+            {
+                dofMediator = new DofMediator(mainModel, configuration.Dof);
+            }
+
             visualizerManager = new VisualizerManager(configuration.Milkdrop);
             var backGlassWindow = CreateWindow(mainModel, configuration.BackGlass, visualizerManager);
             var playFieldWindow = CreateWindow(mainModel, configuration.PlayField, visualizerManager);
-            var dmdWindow = CreateWindow(mainModel, configuration.DMD, visualizerManager);
+            var dmdWindow = CreateWindow(mainModel, configuration.Dmd, visualizerManager);
 
             appController = new AppController(mainModel);
             appController.Scan();
@@ -46,6 +53,7 @@ namespace PinJuke
 
             appController?.Dispose();
             visualizerManager?.Dispose();
+            dofMediator?.Dispose();
         }
 
         private Configuration.Configuration LoadConfiguration(StartupEventArgs e)
