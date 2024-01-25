@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
@@ -35,6 +36,9 @@ namespace PinJuke
         private readonly MainModel mainModel;
         private readonly Configuration.Display displayConfig;
 
+        private readonly BackgroundImageControl? backgroundImageControl = null;
+        private readonly VisualizerControl? visualizerControl = null;
+
         private Unosquare.FFME.MediaElement? mediaElement = null;
         private MediaActionQueue? mediaActionQueue = null;
 
@@ -54,7 +58,31 @@ namespace PinJuke
             ContentScale = displayConfig.Window.ContentScale;
             ContentAngle = displayConfig.Window.ContentAngle;
 
-            VisualizerControl.VisualizerManager = visualizerManager;
+            switch (displayConfig.Content.BackgroundType)
+            {
+                case Configuration.BackgroundType.Image:
+                    backgroundImageControl = new();
+                    BackgroundImageContainer.Content = backgroundImageControl;
+                    var backgroundImageFile = displayConfig.Content.BackgroundImageFile;
+                    if (!backgroundImageFile.IsNullOrEmpty())
+                    {
+                        try
+                        {
+                            backgroundImageControl.BackgroundImageSource = new BitmapImage(new Uri(backgroundImageFile));
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            backgroundImageControl.ErrorMessage = string.Format(Strings.FileNotFound, e.FileName);
+                            backgroundImageControl.ErrorImageSource = SvgImageLoader.Instance.GetFromResource(@"icons\image-outline.svg");
+                        }
+                    }
+                    break;
+                case Configuration.BackgroundType.MilkdropVisualization:
+                    visualizerControl = new();
+                    VisualizerContainer.Content = visualizerControl;
+                    visualizerControl.VisualizerManager = visualizerManager;
+                    break;
+            }
 
             if (displayConfig.Role == Configuration.DisplayRole.BackGlass)
             {
@@ -62,7 +90,7 @@ namespace PinJuke
                 // https://github.com/unosquare/ffmediaelement/issues/388#issuecomment-491851750
                 mediaElement.RendererOptions.UseLegacyAudioOut = true;
                 mediaElement.MediaEnded += MediaElement_MediaEnded;
-                MediaElementContainer.Children.Add(mediaElement);
+                MediaElementContainer.Content = mediaElement;
                 mediaActionQueue = new(mediaElement);
             }
 

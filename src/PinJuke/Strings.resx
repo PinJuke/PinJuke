@@ -120,4 +120,7 @@
   <data name="BrowserUp" xml:space="preserve">
     <value>(Up)</value>
   </data>
+  <data name="FileNotFound" xml:space="preserve">
+    <value>File "{0}" not found.</value>
+  </data>
 </root>

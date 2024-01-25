@@ -69,7 +69,7 @@ namespace PinJuke.Playlist
         protected void AppendFileIfSupportedType(FileNode parent, FileInfo fileInfo, bool excludeM3u = false)
         {
             var extension = fileInfo.Extension;
-            if (string.IsNullOrEmpty(extension))
+            if (extension.IsNullOrEmpty())
             {
                 return;
             }
@@ -137,7 +137,7 @@ namespace PinJuke.Playlist
                 CheckCancellation();
 
                 var basePath = Path.GetDirectoryName(m3uFileNode.FullName);
-                if (string.IsNullOrEmpty(basePath))
+                if (basePath.IsNullOrEmpty())
                 {
                     continue;
                 }

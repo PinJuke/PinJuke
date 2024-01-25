@@ -9,6 +9,7 @@
         xmlns:visualizer="clr-namespace:PinJuke.View.Visualizer"
         WindowStyle="None"
         ResizeMode="NoResize"
+        Background="Black"
         >
 
     <Grid>
@@ -19,9 +20,15 @@
             </TransformGroup>
         </Grid.LayoutTransform>
 
-        <visualizer:VisualizerControl x:Name="VisualizerControl"/>
-        <Grid x:Name="MediaElementContainer">
-        </Grid>
+        <ContentControl x:Name="BackgroundImageContainer">
+        </ContentControl>
+        
+        <ContentControl x:Name="VisualizerContainer">
+        </ContentControl>
+
+        <ContentControl x:Name="MediaElementContainer">
+        </ContentControl>
+        
         <view:Browser x:Name="Browser" />
         <view:PlayingTrack x:Name="PlayingTrack" />
     </Grid>

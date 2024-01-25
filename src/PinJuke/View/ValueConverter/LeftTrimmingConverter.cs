@@ -101,7 +101,7 @@ namespace PinJuke.View.ValueConverter
             }
             var text = values[0]?.ToString();
             var reference = values[1] as TextBlock;
-            if (string.IsNullOrEmpty(text) || reference == null)
+            if (text.IsNullOrEmpty() || reference == null)
             {
                 return "";
             }

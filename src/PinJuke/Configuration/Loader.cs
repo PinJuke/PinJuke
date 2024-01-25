@@ -11,7 +11,7 @@ namespace PinJuke.Configuration
 {
     public class Loader
     {
-        private readonly Parser parser = new();
+        protected readonly Parser parser = new();
 
         public Configuration FromIniFilePaths(IEnumerable<string> iniFilePaths)
         {
@@ -29,9 +29,9 @@ namespace PinJuke.Configuration
             var mediaPath = parser.ParseString(iniDocument["PinJuke"]["MediaPath"]) ?? ".";
             var player = CreatePlayer(iniDocument["Player"]);
             var keyboard = CreateKeyboard(iniDocument["Keyboard"]);
-            var backGlass = CreateDisplay(DisplayRole.BackGlass, iniDocument["BackGlass"]);
-            var playField = CreateDisplay(DisplayRole.PlayField, iniDocument["PlayField"]);
-            var dmd = CreateDisplay(DisplayRole.DMD, iniDocument["DMD"]);
+            var backGlass = CreateDisplay(DisplayRole.BackGlass, iniDocument["BackGlass"], mediaPath);
+            var playField = CreateDisplay(DisplayRole.PlayField, iniDocument["PlayField"], mediaPath);
+            var dmd = CreateDisplay(DisplayRole.DMD, iniDocument["DMD"], mediaPath);
             var milkdrop = CreateMilkdrop(iniDocument["Milkdrop"], mediaPath);
             var dof = CreateDof(iniDocument["DOF"]);
             return new Configuration(mediaPath, player, keyboard, backGlass, playField, dmd, milkdrop, dof);
@@ -58,7 +58,7 @@ namespace PinJuke.Configuration
             return new Keyboard(exit, browse, previous, next, playPause);
         }
 
-        protected Display CreateDisplay(DisplayRole role, IniSection displaySection)
+        protected Display CreateDisplay(DisplayRole role, IniSection displaySection, string mediaPath)
         {
             var enabled = parser.ParseBool(displaySection["Enabled"]) ?? true;
 
@@ -71,11 +71,21 @@ namespace PinJuke.Configuration
                  GetAngle(displaySection["ContentAngle"]) ?? 0
             );
 
+            var backgroundImageFile = parser.ParseString(displaySection["BackgroundImageFile"]) ?? "";
+            if (!backgroundImageFile.IsNullOrEmpty())
+            {
+                backgroundImageFile = GetFullPath(backgroundImageFile, mediaPath);
+            }
+            var songStartFile = parser.ParseString(displaySection["SongStartFile"]) ?? "";
+            if (!songStartFile.IsNullOrEmpty())
+            {
+                songStartFile = GetFullPath(songStartFile, mediaPath);
+            }
             var content = new Content(
                 parser.ParseEnum<BackgroundType>(displaySection["BackgroundType"]) ?? BackgroundType.MilkdropVisualization,
-                parser.ParseString(displaySection["BackgroundImageFile"]) ?? "",
+                backgroundImageFile,
                 parser.ParseBool(displaySection["BrowserEnabled"]) ?? true,
-                parser.ParseString(displaySection["BackgroundImageFile"]) ?? ""
+                songStartFile
             );
 
             return new Display(role, enabled, window, content);
@@ -84,9 +94,9 @@ namespace PinJuke.Configuration
         protected Milkdrop CreateMilkdrop(IniSection milkdropSection, string mediaPath)
         {
             var presetsPath = parser.ParseString(milkdropSection["PresetsPath"]) ?? ".";
-            presetsPath = Path.GetFullPath(presetsPath, mediaPath);
+            presetsPath = GetFullPath(presetsPath, mediaPath);
             var texturesPath = parser.ParseString(milkdropSection["TexturesPath"]) ?? ".";
-            texturesPath = Path.GetFullPath(texturesPath, mediaPath);
+            texturesPath = GetFullPath(texturesPath, mediaPath);
 
             return new Milkdrop(presetsPath, texturesPath);
         }
@@ -96,7 +106,7 @@ namespace PinJuke.Configuration
             var enabled = parser.ParseBool(dofSection["Enabled"]) ?? false;
             var globalConfigFilePath = parser.ParseString(dofSection["GlobalConfigFilePath"]) ?? "";
             var romName = parser.ParseString(dofSection["RomName"]) ?? "";
-            if (string.IsNullOrEmpty(globalConfigFilePath) || string.IsNullOrEmpty(romName))
+            if (globalConfigFilePath.IsNullOrEmpty() || romName.IsNullOrEmpty())
             {
                 enabled = false;
             }
@@ -105,6 +115,11 @@ namespace PinJuke.Configuration
                 globalConfigFilePath,
                 romName
             );
+        }
+
+        protected string GetFullPath(string path, string mediaPath)
+        {
+            return Path.GetFullPath(path, mediaPath);
         }
 
         protected int? GetAngle(string? s)

@@ -68,5 +68,14 @@ namespace PinJuke {
                 return ResourceManager.GetString("BrowserUp", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File &quot;{0}&quot; not found..
+        /// </summary>
+        internal static string FileNotFound {
+            get {
+                return ResourceManager.GetString("FileNotFound", resourceCulture);
+            }
+        }
     }
 }
