@@ -120,7 +120,7 @@
   <data name="BrowserUp" xml:space="preserve">
     <value>(Hoch)</value>
   </data>
-  <data name="FileNotFound" xml:space="preserve">
-    <value>Datei "{0}" nicht gefunden.</value>
+  <data name="ErrorReadingFile" xml:space="preserve">
+    <value>Fehler beim Lesen von Datei "{0}".</value>
   </data>
 </root>

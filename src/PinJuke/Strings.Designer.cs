@@ -70,11 +70,11 @@ namespace PinJuke {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File &quot;{0}&quot; not found..
+        ///   Looks up a localized string similar to Error reading file &quot;{0}&quot;..
         /// </summary>
-        internal static string FileNotFound {
+        internal static string ErrorReadingFile {
             get {
-                return ResourceManager.GetString("FileNotFound", resourceCulture);
+                return ResourceManager.GetString("ErrorReadingFile", resourceCulture);
             }
         }
     }

@@ -63,6 +63,8 @@ namespace PinJuke
                 case Configuration.BackgroundType.Image:
                     backgroundImageControl = new();
                     BackgroundImageContainer.Content = backgroundImageControl;
+                    backgroundImageControl.ErrorImageSource = SvgImageLoader.Instance.GetFromResource(@"icons\image-outline.svg");
+
                     var backgroundImageFile = displayConfig.Content.BackgroundImageFile;
                     if (!backgroundImageFile.IsNullOrEmpty())
                     {
@@ -70,10 +72,9 @@ namespace PinJuke
                         {
                             backgroundImageControl.BackgroundImageSource = new BitmapImage(new Uri(backgroundImageFile));
                         }
-                        catch (FileNotFoundException e)
+                        catch (IOException ex)
                         {
-                            backgroundImageControl.ErrorMessage = string.Format(Strings.FileNotFound, e.FileName);
-                            backgroundImageControl.ErrorImageSource = SvgImageLoader.Instance.GetFromResource(@"icons\image-outline.svg");
+                            backgroundImageControl.ErrorMessage = string.Format(Strings.ErrorReadingFile, backgroundImageFile);
                         }
                     }
                     break;
