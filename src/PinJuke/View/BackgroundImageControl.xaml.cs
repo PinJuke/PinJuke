@@ -70,6 +70,8 @@ namespace PinJuke.View
         {
             InitializeComponent();
             DataContext = this;
+
+            ErrorImageSource = SvgImageLoader.Instance.GetFromResource(@"icons\image-outline.svg");
         }
 
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")

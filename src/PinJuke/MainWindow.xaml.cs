@@ -63,7 +63,6 @@ namespace PinJuke
                 case Configuration.BackgroundType.Image:
                     backgroundImageControl = new();
                     BackgroundImageContainer.Content = backgroundImageControl;
-                    backgroundImageControl.ErrorImageSource = SvgImageLoader.Instance.GetFromResource(@"icons\image-outline.svg");
 
                     var backgroundImageFile = displayConfig.Content.BackgroundImageFile;
                     if (!backgroundImageFile.IsNullOrEmpty())
@@ -174,15 +173,15 @@ namespace PinJuke
 
         private void UpdateBrowser()
         {
-            Browser.FileNode = mainModel.NavigationNode;
-            Browser.ViewVisible = mainModel.BrowserVisible;
+            BrowserControl.FileNode = mainModel.NavigationNode;
+            BrowserControl.ViewVisible = mainModel.BrowserVisible;
         }
 
         private void UpdatePlayingTrack()
         {
-            PlayingTrack.FileNode = mainModel.PlayingFile;
-            PlayingTrack.Playing = mainModel.Playing;
-            PlayingTrack.ViewVisible = mainModel.PlayingTrackVisible;
+            PlayingTrackControl.FileNode = mainModel.PlayingFile;
+            PlayingTrackControl.Playing = mainModel.Playing;
+            PlayingTrackControl.ViewVisible = mainModel.PlayingTrackVisible;
         }
 
         private void MediaElement_MediaEnded(object? sender, EventArgs e)

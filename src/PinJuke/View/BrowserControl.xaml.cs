@@ -21,11 +21,11 @@ using System.Windows.Shapes;
 
 namespace PinJuke.View
 {
-    public partial class Browser : UserControl, INotifyPropertyChanged
+    public partial class BrowserControl : UserControl, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private BrowserList browserList = new();
+        private BrowserListControl browserList = new();
 
         private bool viewVisible = false;
         public bool ViewVisible
@@ -70,7 +70,7 @@ namespace PinJuke.View
             }
         }
 
-        public Browser()
+        public BrowserControl()
         {
             InitializeComponent();
             DataContext = this;
@@ -82,7 +82,7 @@ namespace PinJuke.View
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void AddBrowserList(BrowserList browserList)
+        private void AddBrowserList(BrowserListControl browserList)
         {
             BrowserListContainer.Children.Add(browserList);
             browserList.RemovalRequestedEvent += BrowserList_RemovalRequestedEvent;
@@ -91,7 +91,7 @@ namespace PinJuke.View
         private void BrowserList_RemovalRequestedEvent(object? sender, EventArgs e)
         {
             Debug.WriteLine("Removing browser list.");
-            BrowserListContainer.Children.Remove((BrowserList)sender!);
+            BrowserListContainer.Children.Remove((BrowserListControl)sender!);
         }
 
         private void UpdateView()

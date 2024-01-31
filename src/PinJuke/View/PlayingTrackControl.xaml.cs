@@ -18,7 +18,7 @@ using System.Windows.Shapes;
 
 namespace PinJuke.View
 {
-    public partial class PlayingTrack : UserControl, INotifyPropertyChanged
+    public partial class PlayingTrackControl : UserControl, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -94,7 +94,7 @@ namespace PinJuke.View
             }
         }
 
-        public PlayingTrack()
+        public PlayingTrackControl()
         {
             InitializeComponent();
             DataContext = this;
