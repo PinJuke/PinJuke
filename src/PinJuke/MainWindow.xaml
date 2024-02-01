@@ -32,8 +32,11 @@
         <ContentControl x:Name="CoverContainer">
         </ContentControl>
 
-        <view:BrowserControl x:Name="BrowserControl" />
-        <view:PlayingTrackControl x:Name="PlayingTrackControl" />
+        <ContentControl x:Name="BrowserContainer">
+        </ContentControl>
+
+        <ContentControl x:Name="PlayingTrackContainer">
+        </ContentControl>
     </Grid>
 
 </Window>

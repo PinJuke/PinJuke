@@ -40,6 +40,8 @@ namespace PinJuke
         private readonly BackgroundImageControl? backgroundImageControl = null;
         private readonly VisualizerControl? visualizerControl = null;
         private readonly CoverControl? coverControl = null;
+        private readonly BrowserControl? browserControl = null;
+        private readonly PlayingTrackControl? playingTrackControl = null;
 
         private readonly Unosquare.FFME.MediaElement? mediaElement = null;
         private readonly MediaActionQueue? mediaActionQueue = null;
@@ -64,20 +66,8 @@ namespace PinJuke
             {
                 case Configuration.BackgroundType.Image:
                     backgroundImageControl = new();
+                    new BackgroundImageMediator(backgroundImageControl, displayConfig).Initialize();
                     BackgroundImageContainer.Content = backgroundImageControl;
-
-                    var backgroundImageFile = displayConfig.Content.BackgroundImageFile;
-                    if (!backgroundImageFile.IsNullOrEmpty())
-                    {
-                        try
-                        {
-                            backgroundImageControl.BackgroundImageSource = new BitmapImage(new Uri(backgroundImageFile));
-                        }
-                        catch (IOException ex)
-                        {
-                            backgroundImageControl.ErrorMessage = string.Format(Strings.ErrorReadingFile, backgroundImageFile);
-                        }
-                    }
                     break;
                 case Configuration.BackgroundType.MilkdropVisualization:
                     visualizerControl = new();
@@ -103,9 +93,18 @@ namespace PinJuke
                 CoverContainer.Content = coverControl;
             }
 
+            if (displayConfig.Content.BrowserEnabled)
+            {
+                browserControl = new();
+                new BrowserMediator(browserControl, mainModel).Initialize();
+                BrowserContainer.Content = browserControl;
+            }
+
+            playingTrackControl = new();
+            new PlayingTrackMediator(playingTrackControl, mainModel).Initialize();
+            PlayingTrackContainer.Content = playingTrackControl;
+
             PlayFile();
-            UpdateBrowser();
-            UpdatePlayingTrack();
 
             Loaded += MainWindow_Loaded;
             Closed += MainWindow_Closed;
@@ -135,22 +134,11 @@ namespace PinJuke
         {
             switch (e.PropertyName)
             {
-                case nameof(MainModel.NavigationNode):
-                    UpdateBrowser();
-                    break;
-                case nameof(MainModel.BrowserVisible):
-                    UpdateBrowser();
-                    break;
                 case nameof(MainModel.PlayingFile):
                     PlayFile();
-                    UpdatePlayingTrack();
                     break;
                 case nameof(MainModel.Playing):
                     SetPlayPause();
-                    UpdatePlayingTrack();
-                    break;
-                case nameof(MainModel.PlayingTrackVisible):
-                    UpdatePlayingTrack();
                     break;
             }
         }
@@ -178,19 +166,6 @@ namespace PinJuke
             {
                 mediaActionQueue?.Pause();
             }
-        }
-
-        private void UpdateBrowser()
-        {
-            BrowserControl.FileNode = mainModel.NavigationNode;
-            BrowserControl.ViewVisible = mainModel.BrowserVisible;
-        }
-
-        private void UpdatePlayingTrack()
-        {
-            PlayingTrackControl.FileNode = mainModel.PlayingFile;
-            PlayingTrackControl.Playing = mainModel.Playing;
-            PlayingTrackControl.ViewVisible = mainModel.PlayingTrackVisible;
         }
 
         private void MediaElement_MediaEnded(object? sender, EventArgs e)
