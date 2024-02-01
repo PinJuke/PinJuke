@@ -19,6 +19,7 @@
     <PackageReference Include="NaturalSort.Extension" Version="4.2.0" />
     <PackageReference Include="NAudio.Wasapi" Version="2.2.1" />
     <PackageReference Include="OpenTK.GLWpfControl" Version="4.2.3" />
+    <PackageReference Include="TagLibSharp" Version="2.3.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +36,7 @@
 
   <ItemGroup>
     <Resource Include="icons\arrow-back-outline.svg" />
+    <Resource Include="icons\disc-outline.svg" />
     <Resource Include="icons\folder-outline.svg" />
     <Resource Include="icons\image-outline.svg" />
     <Resource Include="icons\musical-notes-outline.svg" />

@@ -84,6 +84,7 @@ namespace PinJuke.Configuration
             var content = new Content(
                 parser.ParseEnum<BackgroundType>(displaySection["BackgroundType"]) ?? BackgroundType.MilkdropVisualization,
                 backgroundImageFile,
+                parser.ParseBool(displaySection["CoverEnabled"]) ?? role == DisplayRole.DMD,
                 parser.ParseBool(displaySection["BrowserEnabled"]) ?? true,
                 songStartFile
             );

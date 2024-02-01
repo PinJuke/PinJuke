@@ -28,7 +28,10 @@
 
         <ContentControl x:Name="MediaElementContainer">
         </ContentControl>
-        
+
+        <ContentControl x:Name="CoverContainer">
+        </ContentControl>
+
         <view:BrowserControl x:Name="BrowserControl" />
         <view:PlayingTrackControl x:Name="PlayingTrackControl" />
     </Grid>

@@ -123,4 +123,16 @@
   <data name="ErrorReadingFile" xml:space="preserve">
     <value>Fehler beim Lesen von Datei "{0}".</value>
   </data>
+  <data name="CoverTitle" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="CoverArtist" xml:space="preserve">
+    <value>Artist</value>
+  </data>
+  <data name="CoverYear" xml:space="preserve">
+    <value>Jahr</value>
+  </data>
+  <data name="CoverAlbum" xml:space="preserve">
+    <value>Album</value>
+  </data>
 </root>

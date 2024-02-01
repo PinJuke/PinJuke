@@ -1,6 +1,7 @@
 ﻿using PinJuke.Model;
 using PinJuke.Playlist;
 using PinJuke.View;
+using PinJuke.View.Mediator;
 using PinJuke.View.Visualizer;
 using System;
 using System.Collections.Generic;
@@ -38,9 +39,10 @@ namespace PinJuke
 
         private readonly BackgroundImageControl? backgroundImageControl = null;
         private readonly VisualizerControl? visualizerControl = null;
+        private readonly CoverControl? coverControl = null;
 
-        private Unosquare.FFME.MediaElement? mediaElement = null;
-        private MediaActionQueue? mediaActionQueue = null;
+        private readonly Unosquare.FFME.MediaElement? mediaElement = null;
+        private readonly MediaActionQueue? mediaActionQueue = null;
 
         public MainWindow(MainModel mainModel, Configuration.Display displayConfig, VisualizerManager visualizerManager)
         {
@@ -92,6 +94,13 @@ namespace PinJuke
                 mediaElement.MediaEnded += MediaElement_MediaEnded;
                 MediaElementContainer.Content = mediaElement;
                 mediaActionQueue = new(mediaElement);
+            }
+
+            if (displayConfig.Content.CoverEnabled)
+            {
+                coverControl = new();
+                new CoverMediator(coverControl, mainModel).Initialize();
+                CoverContainer.Content = coverControl;
             }
 
             PlayFile();

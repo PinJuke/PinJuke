@@ -70,6 +70,42 @@ namespace PinJuke {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Album.
+        /// </summary>
+        internal static string CoverAlbum {
+            get {
+                return ResourceManager.GetString("CoverAlbum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Artist.
+        /// </summary>
+        internal static string CoverArtist {
+            get {
+                return ResourceManager.GetString("CoverArtist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title.
+        /// </summary>
+        internal static string CoverTitle {
+            get {
+                return ResourceManager.GetString("CoverTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Year.
+        /// </summary>
+        internal static string CoverYear {
+            get {
+                return ResourceManager.GetString("CoverYear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error reading file &quot;{0}&quot;..
         /// </summary>
         internal static string ErrorReadingFile {

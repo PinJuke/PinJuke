@@ -8,6 +8,7 @@
     <Application.Resources>
         <valueConverter:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
         <valueConverter:LeftTrimmingConverter x:Key="LeftTrimmingConverter" />
+        <valueConverter:CoalesceMultiValueConverter x:Key="CoalesceMultiValueConverter" />
 
         <Style x:Key="ViewVisibleFadeStyle" TargetType="{x:Type FrameworkElement}">
             <Setter Property="Opacity" Value="0" />
