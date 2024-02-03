@@ -6,6 +6,16 @@
              xmlns:local="clr-namespace:PinJuke.View"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+
+    <local:PinJukeControl.Resources>
+        <DropShadowEffect x:Key="TextEffect"
+            ShadowDepth="4"
+            Direction="315"
+            Color="Black"
+            Opacity="0.5"
+            BlurRadius="4"/>
+    </local:PinJukeControl.Resources>
+    
     <Grid VerticalAlignment="Center">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -25,14 +35,14 @@
         </Image>
 
         <StackPanel Grid.Column="1" Margin="20" VerticalAlignment="Top">
-            <TextBlock Margin="0,10,0,0" Text="{Binding TitleLabelText}" FontSize="30" Foreground="LightGray" TextTrimming="CharacterEllipsis" />
-            <TextBlock Margin="0,0,0,20" Text="{Binding TitleText}" FontSize="40" Foreground="White" TextTrimming="CharacterEllipsis" />
-            <TextBlock Margin="0,10,0,0" Text="{Binding ArtistLabelText}" FontSize="30" Foreground="LightGray" TextTrimming="CharacterEllipsis" />
-            <TextBlock Margin="0,0,0,20" Text="{Binding ArtistText}" FontSize="40" Foreground="White" TextTrimming="CharacterEllipsis" />
-            <TextBlock Margin="0,10,0,0" Text="{Binding YearLabelText}" FontSize="30" Foreground="LightGray" TextTrimming="CharacterEllipsis" />
-            <TextBlock Margin="0,0,0,20" Text="{Binding YearText}" FontSize="40" Foreground="White" TextTrimming="CharacterEllipsis" />
-            <TextBlock Margin="0,10,0,0" Text="{Binding AlbumLabelText}" FontSize="30" Foreground="LightGray" TextTrimming="CharacterEllipsis" />
-            <TextBlock Margin="0,0,0,20" Text="{Binding AlbumText}" FontSize="40" Foreground="White" TextTrimming="CharacterEllipsis" />
+            <TextBlock Margin="0,10,0,0" Effect="{StaticResource TextEffect}" Text="{Binding TitleLabelText}" FontSize="30" Foreground="LightGray" TextTrimming="CharacterEllipsis" />
+            <TextBlock Margin="0,0,0,20" Effect="{StaticResource TextEffect}" Text="{Binding TitleText}" FontSize="40" Foreground="White" TextTrimming="CharacterEllipsis" />
+            <TextBlock Margin="0,10,0,0" Effect="{StaticResource TextEffect}" Text="{Binding ArtistLabelText}" FontSize="30" Foreground="LightGray" TextTrimming="CharacterEllipsis" />
+            <TextBlock Margin="0,0,0,20" Effect="{StaticResource TextEffect}" Text="{Binding ArtistText}" FontSize="40" Foreground="White" TextTrimming="CharacterEllipsis" />
+            <TextBlock Margin="0,10,0,0" Effect="{StaticResource TextEffect}" Text="{Binding YearLabelText}" FontSize="30" Foreground="LightGray" TextTrimming="CharacterEllipsis" />
+            <TextBlock Margin="0,0,0,20" Effect="{StaticResource TextEffect}" Text="{Binding YearText}" FontSize="40" Foreground="White" TextTrimming="CharacterEllipsis" />
+            <TextBlock Margin="0,10,0,0" Effect="{StaticResource TextEffect}" Text="{Binding AlbumLabelText}" FontSize="30" Foreground="LightGray" TextTrimming="CharacterEllipsis" />
+            <TextBlock Margin="0,0,0,20" Effect="{StaticResource TextEffect}" Text="{Binding AlbumText}" FontSize="40" Foreground="White" TextTrimming="CharacterEllipsis" />
         </StackPanel>
         
     </Grid>
