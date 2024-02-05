@@ -25,6 +25,7 @@ namespace PinJuke.View.Mediator
         protected override void OnLoaded()
         {
             base.OnLoaded();
+            UpdateView();
             mainModel.PropertyChanged += MainModel_PropertyChanged;
         }
 

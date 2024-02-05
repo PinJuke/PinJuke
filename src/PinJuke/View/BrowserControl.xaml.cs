@@ -21,24 +21,15 @@ using System.Windows.Shapes;
 
 namespace PinJuke.View
 {
-    public partial class BrowserControl : UserControl, INotifyPropertyChanged
+    public partial class BrowserControl : BaseControl, INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-
         private BrowserListControl browserList = new();
 
         private bool viewVisible = false;
         public bool ViewVisible
         {
             get => viewVisible;
-            set
-            {
-                if (value != viewVisible)
-                {
-                    viewVisible = value;
-                    NotifyPropertyChanged();
-                }
-            }
+            set => SetField(ref viewVisible, value);
         }
 
         private FileNode? fileNode = null;
@@ -60,26 +51,13 @@ namespace PinJuke.View
         public string NavigationDisplayPath
         {
             get => navigationDisplayPath;
-            private set
-            {
-                if (value != navigationDisplayPath)
-                {
-                    navigationDisplayPath = value;
-                    NotifyPropertyChanged();
-                }
-            }
+            private set => SetField(ref navigationDisplayPath, value);
         }
 
         public BrowserControl()
         {
             InitializeComponent();
-            DataContext = this;
             AddBrowserList(browserList);
-        }
-
-        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void AddBrowserList(BrowserListControl browserList)

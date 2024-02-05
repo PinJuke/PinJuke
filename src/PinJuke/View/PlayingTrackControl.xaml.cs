@@ -18,22 +18,14 @@ using System.Windows.Shapes;
 
 namespace PinJuke.View
 {
-    public partial class PlayingTrackControl : UserControl, INotifyPropertyChanged
+    public partial class PlayingTrackControl : BaseControl, INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         private bool viewVisible = false;
         public bool ViewVisible
         {
             get => viewVisible;
-            set
-            {
-                if (value != viewVisible)
-                {
-                    viewVisible = value;
-                    NotifyPropertyChanged();
-                }
-            }
+            set => SetField(ref viewVisible, value);
         }
 
         private FileNode? fileNode = null;
@@ -42,11 +34,9 @@ namespace PinJuke.View
             get => fileNode;
             set
             {
-                if (value != fileNode)
+                if (SetField(ref fileNode, value))
                 {
-                    fileNode = value;
                     UpdateView();
-                    NotifyPropertyChanged();
                 }
             }
         }
@@ -57,11 +47,9 @@ namespace PinJuke.View
             get => playing;
             set
             {
-                if (value != playing)
+                if (SetField(ref playing, value))
                 {
-                    playing = value;
                     UpdateView();
-                    NotifyPropertyChanged();
                 }
             }
         }
@@ -70,40 +58,20 @@ namespace PinJuke.View
         public DrawingImage? StateImageSource
         {
             get => stateImageSource;
-            private set
-            {
-                if (value != stateImageSource)
-                {
-                    stateImageSource = value;
-                    NotifyPropertyChanged();
-                }
-            }
+            private set => SetField(ref stateImageSource, value);
         }
 
         private string? trackTitle = null;
         public string? TrackTitle
         {
             get => trackTitle;
-            private set
-            {
-                if (value != trackTitle)
-                {
-                    trackTitle = value;
-                    NotifyPropertyChanged();
-                }
-            }
+            private set => SetField(ref trackTitle, value);
         }
 
         public PlayingTrackControl()
         {
             InitializeComponent();
-            DataContext = this;
             UpdateView();
-        }
-
-        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void UpdateView()

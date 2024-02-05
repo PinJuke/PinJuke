@@ -23,7 +23,7 @@ using System.Windows.Shapes;
 
 namespace PinJuke.View
 {
-    public partial class BrowserListControl : UserControl, INotifyPropertyChanged
+    public partial class BrowserListControl : BaseControl, INotifyPropertyChanged
     {
         private static readonly Dictionary<FileType, string> iconPaths = new()
         {
@@ -34,7 +34,6 @@ namespace PinJuke.View
             {FileType.Video, @"icons\videocam-outline.svg"},
         };
 
-        public event PropertyChangedEventHandler? PropertyChanged;
         public event EventHandler? RemovalRequestedEvent;
 
         private FileNode? fileNode = null;
@@ -57,34 +56,19 @@ namespace PinJuke.View
         public List<BrowserListFile> Files
         {
             get => files;
-            private set
-            {
-                if (value != files)
-                {
-                    files = value;
-                    NotifyPropertyChanged();
-                }
-            }
+            private set => SetField(ref files, value);
         }
 
         private int selectedFileIndex = -1;
         public int SelectedFileIndex
         {
             get => selectedFileIndex;
-            private set
-            {
-                if (value != selectedFileIndex)
-                {
-                    selectedFileIndex = value;
-                    NotifyPropertyChanged();
-                }
-            }
+            private set => SetField(ref selectedFileIndex, value);
         }
 
         public BrowserListControl()
         {
             InitializeComponent();
-            DataContext = this;
         }
 
         public void AnimateUpIn()
@@ -110,11 +94,6 @@ namespace PinJuke.View
         private void OutStoryboard_Completed(object sender, EventArgs e)
         {
             RemovalRequestedEvent?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void UpdateView(FileNode? oldFileNode, FileNode? newFileNode)

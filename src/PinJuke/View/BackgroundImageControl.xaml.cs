@@ -20,63 +20,35 @@ namespace PinJuke.View
     /// <summary>
     /// Interaction logic for BackgroundImageControl.xaml
     /// </summary>
-    public partial class BackgroundImageControl : UserControl, INotifyPropertyChanged
+    public partial class BackgroundImageControl : BaseControl, INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-
         private ImageSource? backgroundImageSource = null;
         public ImageSource? BackgroundImageSource
         {
             get => backgroundImageSource;
-            set
-            {
-                if (value != backgroundImageSource)
-                {
-                    backgroundImageSource = value;
-                    NotifyPropertyChanged();
-                }
-            }
+            set => SetField(ref backgroundImageSource, value);
         }
 
         private ImageSource? errorImageSource = null;
         public ImageSource? ErrorImageSource
         {
             get => errorImageSource;
-            set
-            {
-                if (value != errorImageSource)
-                {
-                    errorImageSource = value;
-                    NotifyPropertyChanged();
-                }
-            }
+            set => SetField(ref errorImageSource, value);
         }
 
         private string? errorMessage = null;
         public string? ErrorMessage
         {
             get => errorMessage;
-            set
-            {
-                if (value != errorMessage)
-                {
-                    errorMessage = value;
-                    NotifyPropertyChanged();
-                }
-            }
+            set => SetField(ref errorMessage, value);
         }
 
         public BackgroundImageControl()
         {
             InitializeComponent();
-            DataContext = this;
 
             ErrorImageSource = SvgImageLoader.Instance.GetFromResource(@"icons\image-outline.svg");
         }
 
-        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

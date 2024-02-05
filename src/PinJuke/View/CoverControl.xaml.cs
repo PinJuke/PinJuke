@@ -20,7 +20,7 @@ namespace PinJuke.View
     /// <summary>
     /// Interaction logic for CoverControl.xaml
     /// </summary>
-    public partial class CoverControl : PinJukeControl
+    public partial class CoverControl : BaseControl
     {
         private ImageSource? coverImageSource = null;
         public ImageSource? CoverImageSource

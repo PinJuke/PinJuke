@@ -10,11 +10,11 @@ using System.Windows.Controls;
 
 namespace PinJuke.View
 {
-    public class PinJukeControl : UserControl, INotifyPropertyChanged
+    public class BaseControl : UserControl, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public PinJukeControl()
+        public BaseControl()
         {
             DataContext = this;
         }
@@ -24,15 +24,16 @@ namespace PinJuke.View
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected void SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
         {
             // https://stackoverflow.com/a/1316417
             if (EqualityComparer<T>.Default.Equals(field, value))
             {
-                return;
+                return false;
             }
             field = value;
             NotifyPropertyChanged(propertyName);
+            return true;
         }
     }
 }

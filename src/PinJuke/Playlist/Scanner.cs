@@ -88,8 +88,20 @@ namespace PinJuke.Playlist
         {
             CheckCancellation();
 
-            var directories = directoryInfo.GetDirectories().OrderBy(x => x.Name, new NaturalSortComparer(StringComparison.CurrentCultureIgnoreCase));
-            foreach (var childDirectoryInfo in directories)
+            DirectoryInfo[] directories;
+            FileInfo[] files;
+            try
+            {
+                directories = directoryInfo.GetDirectories();
+                files = directoryInfo.GetFiles();
+            }
+            catch (IOException)
+            {
+                return false;
+            }
+
+            var orderedDirectories = directories.OrderBy(x => x.Name, new NaturalSortComparer(StringComparison.CurrentCultureIgnoreCase));
+            foreach (var childDirectoryInfo in orderedDirectories)
             {
                 var childFileNode = new FileNode(childDirectoryInfo.FullName, GetDisplayName(childDirectoryInfo.FullName), FileType.Directory);
                 var hasChildren = ScanDirectory(childFileNode, childDirectoryInfo);
@@ -99,8 +111,8 @@ namespace PinJuke.Playlist
                     fileNode.AppendChild(childFileNode);
                 }
             }
-            var files = directoryInfo.GetFiles().OrderBy(x => x.Name, new NaturalSortComparer(StringComparison.CurrentCultureIgnoreCase));
-            foreach (var fileInfo in files)
+            var orderedFiles = files.OrderBy(x => x.Name, new NaturalSortComparer(StringComparison.CurrentCultureIgnoreCase));
+            foreach (var fileInfo in orderedFiles)
             {
                 AppendFileIfSupportedType(fileNode, fileInfo);
             }
