@@ -1,5 +1,8 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using PinJuke.Audio;
+using PinJuke.Configuration;
+using PinJuke.View.Visualizer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,11 +19,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PinJuke.View.Visualizer
+namespace PinJuke.View
 {
     public partial class VisualizerControl : UserControl
     {
-        public VisualizerManager? VisualizerManager { get; set; }
+        private AudioManager? audioManager = null;
+        private Milkdrop? milkdrop = null;
 
         private ProjectMRenderer projectMRenderer;
         private ProjectMPlaylist projectMPlaylist;
@@ -42,27 +46,29 @@ namespace PinJuke.View.Visualizer
             projectMPlaylist.Connect(projectMRenderer);
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        public void Initialize(AudioManager audioManager, Milkdrop milkdrop)
         {
-            var visualizerManager = VisualizerManager;
-            if (visualizerManager == null)
+            if (this.audioManager != null)
             {
-                return;
+                throw new InvalidOperationException("AudioManager is already set.");
             }
 
-            projectMRenderer.SetTextureSearchPaths(new string[] { visualizerManager.Milkdrop.TexturesPath });
-            projectMPlaylist.AddPath(visualizerManager.Milkdrop.PresetsPath, true, false);
+            this.audioManager = audioManager;
+            this.milkdrop = milkdrop;
+
+            projectMRenderer.SetTextureSearchPaths(new string[] { milkdrop.TexturesPath });
+            projectMPlaylist.AddPath(milkdrop.PresetsPath, true, false);
             projectMPlaylist.SetShuffle(true);
             projectMPlaylist.PlayNext(true);
 
-            visualizerManager.Add(projectMRenderer);
+            audioManager.AddPcmDataListener(projectMRenderer);
         }
 
         private void Dispatcher_ShutdownStarted(object? sender, EventArgs e)
         {
             Debug.WriteLine("Dispatcher_ShutdownStarted");
 
-            VisualizerManager?.Remove(projectMRenderer);
+            audioManager?.RemovePcmDataListener(projectMRenderer);
 
             projectMPlaylist.Dispose();
             projectMRenderer.Dispose();
@@ -73,12 +79,12 @@ namespace PinJuke.View.Visualizer
             //GL.ClearColor(Color4.Blue);
             //GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            projectMRenderer?.Render();
+            projectMRenderer.Render();
         }
 
         private void OpenTkControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            projectMRenderer?.SetSize((nuint)OpenTkControl.RenderSize.Width, (nuint)OpenTkControl.RenderSize.Height);
+            projectMRenderer.SetSize((nuint)OpenTkControl.RenderSize.Width, (nuint)OpenTkControl.RenderSize.Height);
         }
 
     }

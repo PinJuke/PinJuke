@@ -55,7 +55,9 @@ namespace PinJuke.Configuration
             var previous = parser.ParseEnum<Key>(keyboardSection["Previous"]) ?? Key.LeftShift;
             var next = parser.ParseEnum<Key>(keyboardSection["Next"]) ?? Key.RightShift;
             var playPause = parser.ParseEnum<Key>(keyboardSection["PlayPause"]) ?? Key.D1;
-            return new Keyboard(exit, browse, previous, next, playPause);
+            var volumeDown = parser.ParseEnum<Key>(keyboardSection["VolumeDown"]) ?? Key.LeftCtrl;
+            var volumeUp = parser.ParseEnum<Key>(keyboardSection["VolumeUp"]) ?? Key.RightCtrl;
+            return new Keyboard(exit, browse, previous, next, playPause, volumeDown, volumeUp);
         }
 
         protected Display CreateDisplay(DisplayRole role, IniSection displaySection, string mediaPath)

@@ -13,6 +13,8 @@ namespace PinJuke.Model
         Previous,
         Next,
         PlayPause,
+        VolumeDown,
+        VolumeUp,
     }
 
     public class InputActionEventArgs : EventArgs

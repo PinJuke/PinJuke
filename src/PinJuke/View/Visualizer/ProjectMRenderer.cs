@@ -1,4 +1,5 @@
 ﻿using OpenTK.Windowing.GraphicsLibraryFramework;
+using PinJuke.Audio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace PinJuke.View.Visualizer
         }
     }
 
-    public class ProjectMRenderer : IDisposable
+    public class ProjectMRenderer : IDisposable, PcmDataListener
     {
         private nuint handle = nuint.Zero;
         internal nuint Handle
@@ -67,10 +68,9 @@ namespace PinJuke.View.Visualizer
             LibProjectM.OpenglRenderFrame(Handle);
         }
 
-        public void PcmAddFloat(byte[] samples, uint count, uint channels)
+        public void OnPcmData(byte[] samples, uint count, uint channels)
         {
             LibProjectM.PcmAddFloat(Handle, samples, count, channels);
         }
-
     }
 }

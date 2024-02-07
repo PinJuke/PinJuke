@@ -1,8 +1,8 @@
-﻿using PinJuke.Model;
+﻿using PinJuke.Audio;
+using PinJuke.Model;
 using PinJuke.Playlist;
 using PinJuke.View;
 using PinJuke.View.Mediator;
-using PinJuke.View.Visualizer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -44,7 +44,7 @@ namespace PinJuke
         private readonly BrowserControl? browserControl = null;
         private readonly PlayingTrackControl? playingTrackControl = null;
 
-        public MainWindow(MainModel mainModel, Configuration.Display displayConfig, VisualizerManager visualizerManager)
+        public MainWindow(MainModel mainModel, Configuration.Display displayConfig, AudioManager audioManager)
         {
             this.mainModel = mainModel;
             this.displayConfig = displayConfig;
@@ -69,8 +69,8 @@ namespace PinJuke
                     break;
                 case Configuration.BackgroundType.MilkdropVisualization:
                     visualizerControl = new();
+                    new VisualizerMediator(visualizerControl, mainModel, audioManager).Initialize();
                     VisualizerContainer.Content = visualizerControl;
-                    visualizerControl.VisualizerManager = visualizerManager;
                     break;
             }
 

@@ -38,7 +38,7 @@ namespace PinJuke.Configuration
         MilkdropVisualization = 1,
     }
 
-    public record Keyboard(Key Exit, Key Browse, Key Previous, Key Next, Key PlayPause);
+    public record Keyboard(Key Exit, Key Browse, Key Previous, Key Next, Key PlayPause, Key VolumeDown, Key VolumeUp);
 
     public record Milkdrop(string PresetsPath, string TexturesPath);
 

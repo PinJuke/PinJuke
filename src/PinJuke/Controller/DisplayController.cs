@@ -1,4 +1,5 @@
-﻿using PinJuke.Model;
+﻿using PinJuke.Audio;
+using PinJuke.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,13 +13,15 @@ namespace PinJuke.Controller
     {
         private readonly MainModel mainModel;
         private readonly MainWindow window;
+        private readonly AudioManager audioManager;
 
         private readonly InputManager inputManager;
 
-        public DisplayController(MainModel mainModel, MainWindow window)
+        public DisplayController(MainModel mainModel, MainWindow window, AudioManager audioManager)
         {
             this.mainModel = mainModel;
             this.window = window;
+            this.audioManager = audioManager;
 
             inputManager = new(mainModel.Configuration);
 
@@ -32,6 +35,8 @@ namespace PinJuke.Controller
             inputManager.PreviousEvent += InputManager_PreviousEvent;
             inputManager.NextEvent += InputManager_NextEvent;
             inputManager.PlayPauseEvent += InputManager_PlayPauseEvent;
+            inputManager.VolumeDownEvent += InputManager_VolumeDownEvent;
+            inputManager.VolumeUpEvent += InputManager_VolumeUpEvent;
         }
 
         private void Window_Closed(object? sender, EventArgs e)
@@ -122,6 +127,16 @@ namespace PinJuke.Controller
                     mainModel.TogglePlayPause();
                 }
             }
+        }
+
+        private void InputManager_VolumeDownEvent(object? sender, InputActionEventArgs e)
+        {
+            audioManager.AddVolumeLevel(-0.1f);
+        }
+
+        private void InputManager_VolumeUpEvent(object? sender, InputActionEventArgs e)
+        {
+            audioManager.AddVolumeLevel(0.1f);
         }
 
     }

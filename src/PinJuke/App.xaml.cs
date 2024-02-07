@@ -1,8 +1,8 @@
-﻿using PinJuke.Configuration;
+﻿using PinJuke.Audio;
+using PinJuke.Configuration;
 using PinJuke.Controller;
 using PinJuke.Dof;
 using PinJuke.Model;
-using PinJuke.View.Visualizer;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -17,7 +17,7 @@ namespace PinJuke
     {
         private AppController? appController;
         private DofMediator? dofMediator = null;
-        private VisualizerManager? visualizerManager;
+        private AudioManager? audioManager;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -32,10 +32,10 @@ namespace PinJuke
                 dofMediator = new DofMediator(mainModel, configuration.Dof);
             }
 
-            visualizerManager = new VisualizerManager(configuration.Milkdrop);
-            var backGlassWindow = CreateWindow(mainModel, configuration.BackGlass, visualizerManager);
-            var playFieldWindow = CreateWindow(mainModel, configuration.PlayField, visualizerManager);
-            var dmdWindow = CreateWindow(mainModel, configuration.Dmd, visualizerManager);
+            audioManager = new();
+            var backGlassWindow = CreateWindow(mainModel, configuration.BackGlass, audioManager);
+            var playFieldWindow = CreateWindow(mainModel, configuration.PlayField, audioManager);
+            var dmdWindow = CreateWindow(mainModel, configuration.Dmd, audioManager);
 
             appController = new AppController(mainModel);
             appController.Scan();
@@ -52,7 +52,7 @@ namespace PinJuke
             base.OnExit(e);
 
             appController?.Dispose();
-            visualizerManager?.Dispose();
+            audioManager?.Dispose();
             dofMediator?.Dispose();
         }
 
@@ -69,14 +69,14 @@ namespace PinJuke
             return loader.FromIniFilePaths(iniFilePaths);
         }
 
-        private MainWindow? CreateWindow(MainModel mainModel, Configuration.Display displayConfig, VisualizerManager visualizerManager)
+        private MainWindow? CreateWindow(MainModel mainModel, Configuration.Display displayConfig, AudioManager audioManager)
         {
             if (!displayConfig.Enabled)
             {
                 return null;
             }
-            var window = new MainWindow(mainModel, displayConfig, visualizerManager);
-            var controller = new DisplayController(mainModel, window);
+            var window = new MainWindow(mainModel, displayConfig, audioManager);
+            var controller = new DisplayController(mainModel, window, audioManager);
             return window;
         }
     }

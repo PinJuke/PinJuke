@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PinJuke.View.Visualizer
+namespace PinJuke.Audio
 {
     /// <summary>
     /// WASAPI Loopback Capture

@@ -17,6 +17,8 @@ namespace PinJuke.Controller
         public event EventHandler<InputActionEventArgs>? PreviousEvent;
         public event EventHandler<InputActionEventArgs>? NextEvent;
         public event EventHandler<InputActionEventArgs>? PlayPauseEvent;
+        public event EventHandler<InputActionEventArgs>? VolumeDownEvent;
+        public event EventHandler<InputActionEventArgs>? VolumeUpEvent;
 
         private readonly Configuration.Configuration configuration;
 
@@ -56,6 +58,16 @@ namespace PinJuke.Controller
             {
                 eventArgs = new(InputAction.PlayPause, repeated);
                 PlayPauseEvent?.Invoke(this, eventArgs);
+            }
+            else if (key == keyboard.VolumeDown)
+            {
+                eventArgs = new(InputAction.VolumeDown, repeated);
+                VolumeDownEvent?.Invoke(this, eventArgs);
+            }
+            else if (key == keyboard.VolumeUp)
+            {
+                eventArgs = new(InputAction.VolumeUp, repeated);
+                VolumeUpEvent?.Invoke(this, eventArgs);
             }
 
             if (eventArgs != null)

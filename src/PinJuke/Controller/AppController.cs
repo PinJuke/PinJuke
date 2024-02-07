@@ -1,4 +1,5 @@
-﻿using PinJuke.Model;
+﻿using PinJuke.Audio;
+using PinJuke.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
