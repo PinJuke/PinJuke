@@ -96,9 +96,12 @@ namespace PinJuke
                 BrowserContainer.Content = browserControl;
             }
 
-            playingTrackControl = new();
-            new PlayingTrackMediator(playingTrackControl, mainModel).Initialize();
-            PlayingTrackContainer.Content = playingTrackControl;
+            if (displayConfig.Content.StateEnabled)
+            {
+                playingTrackControl = new();
+                new PlayingTrackMediator(playingTrackControl, mainModel).Initialize();
+                PlayingTrackContainer.Content = playingTrackControl;
+            }
 
             Loaded += MainWindow_Loaded;
             Closed += MainWindow_Closed;

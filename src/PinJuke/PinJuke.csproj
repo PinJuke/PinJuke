@@ -40,10 +40,16 @@
     <Resource Include="icons\folder-outline.svg" />
     <Resource Include="icons\image-outline.svg" />
     <Resource Include="icons\musical-notes-outline.svg" />
-    <Resource Include="icons\pause-outline.svg" />
-    <Resource Include="icons\play-outline.svg" />
-    <Resource Include="icons\stop-outline.svg" />
+    <Resource Include="icons\pause-circle-outline.svg" />
+    <Resource Include="icons\play-circle-outline.svg" />
+    <Resource Include="icons\play-skip-back-circle-outline.svg" />
+    <Resource Include="icons\play-skip-forward-circle-outline.svg" />
+    <Resource Include="icons\stop-circle-outline.svg" />
     <Resource Include="icons\videocam-outline.svg" />
+    <Resource Include="icons\volume-high-outline.svg" />
+    <Resource Include="icons\volume-low-outline.svg" />
+    <Resource Include="icons\volume-medium-outline.svg" />
+    <Resource Include="icons\volume-off-outline.svg" />
   </ItemGroup>
 
   <ItemGroup>

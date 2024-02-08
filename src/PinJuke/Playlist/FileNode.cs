@@ -184,9 +184,9 @@ namespace PinJuke.Playlist
             return node;
         }
 
-        public FileNode? GetNextPlayableInList()
+        public FileNode? FindThisOrNextPlayable()
         {
-            for (var node = GetNextInList(); ; node = node.GetNextInList())
+            for (var node = this; ; node = node.GetNextInList())
             {
                 if (node == null || node.Playable)
                 {
@@ -195,9 +195,9 @@ namespace PinJuke.Playlist
             }
         }
 
-        public FileNode? GetPreviousPlayableInList()
+        public FileNode? FindThisOrPreviousPlayable()
         {
-            for (var node = GetPreviousInList(); ; node = node.GetPreviousInList())
+            for (var node = this; ; node = node.GetPreviousInList())
             {
                 if (node == null || node.Playable)
                 {

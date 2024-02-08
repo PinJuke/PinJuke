@@ -29,12 +29,12 @@ namespace PinJuke.Configuration
             var mediaPath = parser.ParseString(iniDocument["PinJuke"]["MediaPath"]) ?? ".";
             var player = CreatePlayer(iniDocument["Player"]);
             var keyboard = CreateKeyboard(iniDocument["Keyboard"]);
-            var backGlass = CreateDisplay(DisplayRole.BackGlass, iniDocument["BackGlass"], mediaPath);
             var playField = CreateDisplay(DisplayRole.PlayField, iniDocument["PlayField"], mediaPath);
+            var backGlass = CreateDisplay(DisplayRole.BackGlass, iniDocument["BackGlass"], mediaPath);
             var dmd = CreateDisplay(DisplayRole.DMD, iniDocument["DMD"], mediaPath);
             var milkdrop = CreateMilkdrop(iniDocument["Milkdrop"], mediaPath);
             var dof = CreateDof(iniDocument["DOF"]);
-            return new Configuration(mediaPath, player, keyboard, backGlass, playField, dmd, milkdrop, dof);
+            return new Configuration(mediaPath, player, keyboard, playField, backGlass, dmd, milkdrop, dof);
         }
 
         protected Player CreatePlayer(IniSection playerSection)
@@ -57,12 +57,15 @@ namespace PinJuke.Configuration
             var playPause = parser.ParseEnum<Key>(keyboardSection["PlayPause"]) ?? Key.D1;
             var volumeDown = parser.ParseEnum<Key>(keyboardSection["VolumeDown"]) ?? Key.LeftCtrl;
             var volumeUp = parser.ParseEnum<Key>(keyboardSection["VolumeUp"]) ?? Key.RightCtrl;
-            return new Keyboard(exit, browse, previous, next, playPause, volumeDown, volumeUp);
+            var tilt = parser.ParseEnum<Key>(keyboardSection["Tilt"]) ?? Key.T;
+            return new Keyboard(exit, browse, previous, next, playPause, volumeDown, volumeUp, tilt);
         }
 
         protected Display CreateDisplay(DisplayRole role, IniSection displaySection, string mediaPath)
         {
-            var enabled = parser.ParseBool(displaySection["Enabled"]) ?? true;
+            var enabled = role == DisplayRole.PlayField
+                || role == DisplayRole.BackGlass
+                || (parser.ParseBool(displaySection["Enabled"]) ?? false);
 
             var window = new Window(
                  parser.ParseInt(displaySection["WindowLeft"]) ?? 0,
@@ -87,6 +90,7 @@ namespace PinJuke.Configuration
                 parser.ParseEnum<BackgroundType>(displaySection["BackgroundType"]) ?? BackgroundType.MilkdropVisualization,
                 backgroundImageFile,
                 parser.ParseBool(displaySection["CoverEnabled"]) ?? role == DisplayRole.DMD,
+                parser.ParseBool(displaySection["StateEnabled"]) ?? true,
                 parser.ParseBool(displaySection["BrowserEnabled"]) ?? true,
                 songStartFile
             );

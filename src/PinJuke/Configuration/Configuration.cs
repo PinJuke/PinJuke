@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace PinJuke.Configuration
 {
-    public record Configuration(string MediaPath, Player Player, Keyboard Keyboard, Display BackGlass, Display PlayField, Display Dmd, Milkdrop Milkdrop, Dof Dof);
+    public record Configuration(string MediaPath, Player Player, Keyboard Keyboard, Display PlayField, Display BackGlass, Display Dmd, Milkdrop Milkdrop, Dof Dof);
 
     public record Player(string MusicPath, StartupTrackType StartupTrackType, bool PlayOnStartup);
 
@@ -23,14 +23,14 @@ namespace PinJuke.Configuration
 
     public enum DisplayRole
     {
-        BackGlass = 0,
-        PlayField = 1,
+        PlayField = 0,
+        BackGlass = 1,
         DMD = 2,
     }
 
     public record Window(int Left, int Top, int Width, int Height, float ContentScale, int ContentAngle);
 
-    public record Content(BackgroundType BackgroundType, string BackgroundImageFile, bool CoverEnabled, bool BrowserEnabled, string SongStartFile);
+    public record Content(BackgroundType BackgroundType, string BackgroundImageFile, bool CoverEnabled, bool StateEnabled, bool BrowserEnabled, string SongStartFile);
 
     public enum BackgroundType
     {
@@ -38,7 +38,7 @@ namespace PinJuke.Configuration
         MilkdropVisualization = 1,
     }
 
-    public record Keyboard(Key Exit, Key Browse, Key Previous, Key Next, Key PlayPause, Key VolumeDown, Key VolumeUp);
+    public record Keyboard(Key Exit, Key Browse, Key Previous, Key Next, Key PlayPause, Key VolumeDown, Key VolumeUp, Key Tilt);
 
     public record Milkdrop(string PresetsPath, string TexturesPath);
 

@@ -69,7 +69,7 @@ namespace PinJuke.View.Mediator
                 {
                     title = file.Tag.Title;
                     artist = string.Join(", ", file.Tag.Performers);
-                    year = file.Tag.Year.ToString();
+                    year = file.Tag.Year == 0 ? null : file.Tag.Year.ToString();
                     album = file.Tag.Album;
 
                     if (file.Tag.Pictures.Length > 0)

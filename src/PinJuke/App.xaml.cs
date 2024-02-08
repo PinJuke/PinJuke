@@ -33,15 +33,15 @@ namespace PinJuke
             }
 
             audioManager = new();
-            var backGlassWindow = CreateWindow(mainModel, configuration.BackGlass, audioManager);
             var playFieldWindow = CreateWindow(mainModel, configuration.PlayField, audioManager);
+            var backGlassWindow = CreateWindow(mainModel, configuration.BackGlass, audioManager);
             var dmdWindow = CreateWindow(mainModel, configuration.Dmd, audioManager);
 
             appController = new AppController(mainModel);
             appController.Scan();
 
-            backGlassWindow?.Show();
             playFieldWindow?.Show();
+            backGlassWindow?.Show();
             dmdWindow?.Show();
 
             base.OnStartup(e);

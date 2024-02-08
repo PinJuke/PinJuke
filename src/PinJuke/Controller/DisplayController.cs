@@ -37,6 +37,7 @@ namespace PinJuke.Controller
             inputManager.PlayPauseEvent += InputManager_PlayPauseEvent;
             inputManager.VolumeDownEvent += InputManager_VolumeDownEvent;
             inputManager.VolumeUpEvent += InputManager_VolumeUpEvent;
+            inputManager.TiltEvent += InputManager_TiltEvent;
         }
 
         private void Window_Closed(object? sender, EventArgs e)
@@ -131,13 +132,24 @@ namespace PinJuke.Controller
 
         private void InputManager_VolumeDownEvent(object? sender, InputActionEventArgs e)
         {
-            audioManager.AddVolumeLevel(-0.1f);
+            var volumeLevel = audioManager.AddVolumeLevel(-0.05f);
+            ShowVolumeLevel(volumeLevel);
         }
 
         private void InputManager_VolumeUpEvent(object? sender, InputActionEventArgs e)
         {
-            audioManager.AddVolumeLevel(0.1f);
+            var volumeLevel = audioManager.AddVolumeLevel(0.05f);
+            ShowVolumeLevel(volumeLevel);
         }
 
+        private void ShowVolumeLevel(float? volumeLevel)
+        {
+            mainModel.ShowState(new State(StateType.Volume, volumeLevel));
+        }
+
+        private void InputManager_TiltEvent(object? sender, InputActionEventArgs e)
+        {
+            mainModel.ShowState(new State(StateType.Tilt));
+        }
     }
 }

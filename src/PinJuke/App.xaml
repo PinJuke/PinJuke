@@ -24,6 +24,34 @@
                     <DataTrigger.ExitActions>
                         <BeginStoryboard>
                             <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.25" BeginTime="0:0:0.25" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.ExitActions>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ViewVisibleWipeStyle" TargetType="{x:Type FrameworkElement}">
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Opacity" Value="0" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ViewVisible}" Value="True">
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" From="-50" To="0" Duration="0:0:0.25" BeginTime="0:0:0.25" />
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.25" BeginTime="0:0:0.25" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                    <DataTrigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" To="50" Duration="0:0:0.25" />
                                 <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.25" />
                             </Storyboard>
                         </BeginStoryboard>

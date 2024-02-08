@@ -1,4 +1,5 @@
-﻿using PinJuke.Playlist;
+﻿using PinJuke.Model;
+using PinJuke.Playlist;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,9 +19,8 @@ using System.Windows.Shapes;
 
 namespace PinJuke.View
 {
-    public partial class PlayingTrackControl : BaseControl, INotifyPropertyChanged
+    public partial class PlayingTrackControl : BaseControl
     {
-
         private bool viewVisible = false;
         public bool ViewVisible
         {
@@ -28,60 +28,23 @@ namespace PinJuke.View
             set => SetField(ref viewVisible, value);
         }
 
-        private FileNode? fileNode = null;
-        public FileNode? FileNode
-        {
-            get => fileNode;
-            set
-            {
-                if (SetField(ref fileNode, value))
-                {
-                    UpdateView();
-                }
-            }
-        }
-
-        private bool playing = false;
-        public bool Playing
-        {
-            get => playing;
-            set
-            {
-                if (SetField(ref playing, value))
-                {
-                    UpdateView();
-                }
-            }
-        }
-
         private DrawingImage? stateImageSource = null;
         public DrawingImage? StateImageSource
         {
             get => stateImageSource;
-            private set => SetField(ref stateImageSource, value);
+            set => SetField(ref stateImageSource, value);
         }
 
-        private string? trackTitle = null;
-        public string? TrackTitle
+        private string? stateText = null;
+        public string? StateText
         {
-            get => trackTitle;
-            private set => SetField(ref trackTitle, value);
+            get => stateText;
+            set => SetField(ref stateText, value);
         }
 
         public PlayingTrackControl()
         {
             InitializeComponent();
-            UpdateView();
-        }
-
-        private void UpdateView()
-        {
-            TrackTitle = FileNode?.DisplayName;
-            StateImageSource = FileNode == null
-                ? SvgImageLoader.Instance.GetFromResource(@"icons\stop-outline.svg")
-                : Playing
-                    ? SvgImageLoader.Instance.GetFromResource(@"icons\play-outline.svg")
-                    : SvgImageLoader.Instance.GetFromResource(@"icons\pause-outline.svg");
         }
 
     }

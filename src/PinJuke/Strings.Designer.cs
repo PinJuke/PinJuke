@@ -113,5 +113,77 @@ namespace PinJuke {
                 return ResourceManager.GetString("ErrorReadingFile", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No audio device found..
+        /// </summary>
+        internal static string NoAudioDeviceFound {
+            get {
+                return ResourceManager.GetString("NoAudioDeviceFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        internal static string StateNext {
+            get {
+                return ResourceManager.GetString("StateNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pause.
+        /// </summary>
+        internal static string StatePause {
+            get {
+                return ResourceManager.GetString("StatePause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Play.
+        /// </summary>
+        internal static string StatePlay {
+            get {
+                return ResourceManager.GetString("StatePlay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous.
+        /// </summary>
+        internal static string StatePrevious {
+            get {
+                return ResourceManager.GetString("StatePrevious", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop.
+        /// </summary>
+        internal static string StateStop {
+            get {
+                return ResourceManager.GetString("StateStop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tilt!.
+        /// </summary>
+        internal static string StateTilt {
+            get {
+                return ResourceManager.GetString("StateTilt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume {0:00}%.
+        /// </summary>
+        internal static string StateVolumeXPercent {
+            get {
+                return ResourceManager.GetString("StateVolumeXPercent", resourceCulture);
+            }
+        }
     }
 }

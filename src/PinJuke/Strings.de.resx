@@ -135,4 +135,28 @@
   <data name="CoverAlbum" xml:space="preserve">
     <value>Album</value>
   </data>
+  <data name="NoAudioDeviceFound" xml:space="preserve">
+    <value>Kein Audiogerät gefunden.</value>
+  </data>
+  <data name="StateVolumeXPercent" xml:space="preserve">
+    <value>Volume {0:00}%</value>
+  </data>
+  <data name="StateStop" xml:space="preserve">
+    <value>Stopp</value>
+  </data>
+  <data name="StatePlay" xml:space="preserve">
+    <value>Wiedergabe</value>
+  </data>
+  <data name="StatePause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="StatePrevious" xml:space="preserve">
+    <value>Vorheriger</value>
+  </data>
+  <data name="StateNext" xml:space="preserve">
+    <value>Nächster</value>
+  </data>
+  <data name="StateTilt" xml:space="preserve">
+    <value>Tilt!</value>
+  </data>
 </root>

@@ -15,6 +15,7 @@ namespace PinJuke.Model
         PlayPause,
         VolumeDown,
         VolumeUp,
+        Tilt,
     }
 
     public class InputActionEventArgs : EventArgs

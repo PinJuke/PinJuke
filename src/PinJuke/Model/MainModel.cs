@@ -1,4 +1,5 @@
-﻿using PinJuke.Controller;
+﻿using PinJuke.Configuration;
+using PinJuke.Controller;
 using PinJuke.Playlist;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,19 @@ using System.Threading.Tasks;
 
 namespace PinJuke.Model
 {
+    public enum StateType
+    {
+        Previous,
+        Next,
+        Play,
+        Pause,
+        Stop,
+        Volume,
+        Tilt,
+    }
+
+    public record State(StateType Type, object? Data = null);
+
     public class MainModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -111,25 +125,43 @@ namespace PinJuke.Model
 
         private int browserLastHideQueuedAt;
 
-        private bool playingTrackVisible = false;
+        private bool stateVisible = false;
         /// <summary>
-        /// Saves whether the file browsing overlay is currently visible.
+        /// Saves whether the state overlay is currently visible.
         /// </summary>
-        public bool PlayingTrackVisible
+        public bool StateVisible
         {
-            get => playingTrackVisible;
+            get => stateVisible;
             private set
             {
-                if (value == playingTrackVisible)
+                if (value == stateVisible)
                 {
                     return;
                 }
-                playingTrackVisible = value;
+                stateVisible = value;
                 NotifyPropertyChanged();
             }
         }
 
-        private int playingTrackLastHideQueuedAt;
+        private int stateLastHideQueuedAt;
+
+        private State lastState = new State(StateType.Stop);
+        /// <summary>
+        /// Saves the last occurred state.
+        /// </summary>
+        public State LastState
+        {
+            get => lastState;
+            private set
+            {
+                if (value == lastState)
+                {
+                    return;
+                }
+                lastState = value;
+                NotifyPropertyChanged();
+            }
+        }
 
         public MainModel(Configuration.Configuration configuration)
         {
@@ -172,22 +204,31 @@ namespace PinJuke.Model
             BrowserVisible = false;
         }
 
-        public void ShowPlayingTrack()
+        public void ShowState(State state)
         {
-            PlayingTrackVisible = true;
-            HidePlayingTrackAfterDelay();
+            LastState = state;
+            StateVisible = true;
+            HideStateAfterDelay();
         }
 
-        private async void HidePlayingTrackAfterDelay()
+        public void ShowPlaybackState(StateType? playingStateType = null)
         {
-            var hideQueuedAt = playingTrackLastHideQueuedAt = Environment.TickCount;
+            var stateType = PlayingFile == null
+                ? StateType.Stop
+                : Playing ? (playingStateType ?? StateType.Play) : StateType.Pause;
+            ShowState(new State(stateType));
+        }
+
+        private async void HideStateAfterDelay()
+        {
+            var hideQueuedAt = stateLastHideQueuedAt = Environment.TickCount;
 
             await Task.Delay(3000);
-            if (hideQueuedAt != playingTrackLastHideQueuedAt)
+            if (hideQueuedAt != stateLastHideQueuedAt)
             {
                 return;
             }
-            PlayingTrackVisible = false;
+            StateVisible = false;
         }
 
         public void NavigateNext(bool repeated)
@@ -219,33 +260,34 @@ namespace PinJuke.Model
         public void TogglePlayPause()
         {
             Playing = !Playing;
-            ShowPlayingTrack();
+            ShowPlaybackState();
         }
 
-        public void PlayFile(FileNode? node)
+        public void PlayFile(FileNode? node, StateType? playingStateType = null)
         {
             // If a directory is passed, look for a file.
-            if (node != null && !node.Playable)
-            {
-                node = node.GetNextPlayableInList();
-            }
+            node = node?.FindThisOrNextPlayable();
 
             // To restart a track first reset the playing track to trigger an event in any case.
             Playing = false;
             PlayingFile = null;
             PlayingFile = node;
             Playing = node != null;
-            ShowPlayingTrack();
+            ShowPlaybackState(playingStateType);
         }
 
         public void PlayNext()
         {
-            PlayFile(PlayingFile?.GetNextPlayableInList());
+            // The next file can become null when the end is reached.
+            var nextFile = PlayingFile != null ? PlayingFile.GetNextInList() : RootDirectory;
+            PlayFile(nextFile?.FindThisOrNextPlayable(), StateType.Next);
         }
 
         public void PlayPrevious()
         {
-            PlayFile(PlayingFile?.GetPreviousPlayableInList());
+            // The previous file can become null when the beginning is reached.
+            var previousFile = PlayingFile != null ? PlayingFile.GetPreviousInList() : RootDirectory?.GetLastInList();
+            PlayFile(previousFile?.FindThisOrPreviousPlayable(), StateType.Previous);
         }
 
         public void PlayOrFollowDirectory()

@@ -19,6 +19,7 @@ namespace PinJuke.Controller
         public event EventHandler<InputActionEventArgs>? PlayPauseEvent;
         public event EventHandler<InputActionEventArgs>? VolumeDownEvent;
         public event EventHandler<InputActionEventArgs>? VolumeUpEvent;
+        public event EventHandler<InputActionEventArgs>? TiltEvent;
 
         private readonly Configuration.Configuration configuration;
 
@@ -68,6 +69,11 @@ namespace PinJuke.Controller
             {
                 eventArgs = new(InputAction.VolumeUp, repeated);
                 VolumeUpEvent?.Invoke(this, eventArgs);
+            }
+            else if (key == keyboard.Tilt)
+            {
+                eventArgs = new(InputAction.Tilt, repeated);
+                TiltEvent?.Invoke(this, eventArgs);
             }
 
             if (eventArgs != null)
