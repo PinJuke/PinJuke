@@ -51,13 +51,21 @@ namespace PinJuke.Dof
             this.dof = dof;
 
             pinball = new Pinball();
-            pinball.Setup(dof.GlobalConfigFilePath, "", dof.RomName);
+            try
+            {
+                pinball.Setup(dof.GlobalConfigFilePath, "", dof.RomName);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error initializing DOF.");
+                return;
+            }
             pinball.Init();
 
             mainModel.InputEvent += MainModel_InputEvent;
             mainModel.PropertyChanged += MainModel_PropertyChanged;
 
-            Trigger(0);
+            Trigger(Lamp.Startup);
         }
 
         public void Dispose()

@@ -7,6 +7,11 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>PinJuke2.ico</ApplicationIcon>
     <StartupObject>PinJuke.App</StartupObject>
+    <Title>PinJuke music player</Title>
+    <PackageProjectUrl>https://pinjuke.github.io/PinJuke/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/PinJuke/PinJuke</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Authors>The PinJuke developers</Authors>
   </PropertyGroup>
 
   <ItemGroup>

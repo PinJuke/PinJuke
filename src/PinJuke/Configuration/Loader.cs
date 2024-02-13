@@ -112,7 +112,7 @@ namespace PinJuke.Configuration
         {
             var enabled = parser.ParseBool(dofSection["Enabled"]) ?? false;
             var globalConfigFilePath = parser.ParseString(dofSection["GlobalConfigFilePath"]) ?? "";
-            var romName = parser.ParseString(dofSection["RomName"]) ?? "";
+            var romName = parser.ParseString(dofSection["RomName"]) ?? "pinjuke";
             if (globalConfigFilePath.IsNullOrEmpty() || romName.IsNullOrEmpty())
             {
                 enabled = false;
