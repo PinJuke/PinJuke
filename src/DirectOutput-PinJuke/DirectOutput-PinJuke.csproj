@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <!-- https://learn.microsoft.com/en-us/visualstudio/ide/how-to-change-the-build-output-directory -->
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <RootNamespace>DirectOutput_PinJuke</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>

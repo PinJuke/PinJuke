@@ -1,0 +1,44 @@
+name: Build release for tag
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    name: Build release and upload
+    runs-on: windows-2022 # For a list of available runner types, refer to
+                          # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x' # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
+      - name: Building projectm
+        run: |
+          cd deps\projectm
+          cmake . -B build -DCMAKE_BUILD_TYPE=Release "-DCMAKE_INSTALL_PREFIX=$PWD/dist" "-DCMAKE_TOOLCHAIN_FILE=$Env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
+          cmake --build build --target install --config Release
+      - name: Build solution
+        run: dotnet build --configuration Release
+      - name: Create zip archive
+        # https://github.com/marketplace/actions/zip-release
+        uses: thedoctor0/zip-release@0.7.5
+        with:
+          type: zip
+          # e.g. PinJuke_1.0.0-alpha.1.zip
+          filename: PinJuke_${{ github.ref_name }}.zip
+          directory: src/PinJuke/bin/Release
+          path: PinJuke
+      - name: Upload release
+        # https://github.com/ncipollo/release-action
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: src/PinJuke/bin/Release/PinJuke_${{ github.ref_name }}.zip
