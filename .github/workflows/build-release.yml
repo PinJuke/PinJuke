@@ -21,7 +21,18 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x' # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
-      - name: Building projectm
+      - name: Get FFmpeg
+        uses: robinraju/release-downloader@v1.9
+        with:
+          repository: "BtbN/FFmpeg-Builds"
+          latest: true
+          fileName: "ffmpeg-n4.4-latest-win64-gpl-shared-4.4.zip"
+          extract: true
+      - name: Copy FFmpeg
+        run: |
+          rm src/PinJuke/ffmpeg/.gitignore
+          cp ffmpeg-n4.4-latest-win64-gpl-shared-4.4/LICENSE.txt ffmpeg-n4.4-latest-win64-gpl-shared-4.4/bin/*.dll src/PinJuke/ffmpeg/
+      - name: Build projectm
         run: |
           cd deps\projectm
           cmake . -B build -DCMAKE_BUILD_TYPE=Release "-DCMAKE_INSTALL_PREFIX=$PWD/dist" "-DCMAKE_TOOLCHAIN_FILE=$Env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
