@@ -29,9 +29,11 @@ jobs:
           fileName: "ffmpeg-n4.4-latest-win64-gpl-shared-4.4.zip"
           extract: true
       - name: Copy FFmpeg
+        # Must be a Powershell script.
         run: |
           rm src/PinJuke/ffmpeg/.gitignore
-          cp ffmpeg-n4.4-latest-win64-gpl-shared-4.4/LICENSE.txt ffmpeg-n4.4-latest-win64-gpl-shared-4.4/bin/*.dll src/PinJuke/ffmpeg/
+          cp ffmpeg-n4.4-latest-win64-gpl-shared-4.4/LICENSE.txt src/PinJuke/ffmpeg/
+          cp ffmpeg-n4.4-latest-win64-gpl-shared-4.4/bin/*.dll src/PinJuke/ffmpeg/
       - name: Build projectm
         run: |
           cd deps\projectm
