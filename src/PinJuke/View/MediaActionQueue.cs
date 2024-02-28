@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unosquare.FFME.Common;
 
 namespace PinJuke.View
 {
@@ -12,6 +13,7 @@ namespace PinJuke.View
         private readonly Unosquare.FFME.MediaElement mediaElement;
 
         private string? openFileQueued = null;
+        private IMediaInputStream? openMediaInputStreamQueued = null;
         private bool closeQueued = false;
         private bool playQueued = false;
         private bool pauseQueued = false;
@@ -26,6 +28,18 @@ namespace PinJuke.View
         public void Open(string file)
         {
             openFileQueued = file;
+            openMediaInputStreamQueued?.Dispose();
+            openMediaInputStreamQueued = null;
+            closeQueued = false;
+            playQueued = false;
+            pauseQueued = false;
+            Do();
+        }
+
+        public void Open(IMediaInputStream mediaInputStream)
+        {
+            openFileQueued = null;
+            openMediaInputStreamQueued = mediaInputStream;
             closeQueued = false;
             playQueued = false;
             pauseQueued = false;
@@ -36,6 +50,8 @@ namespace PinJuke.View
         {
             closeQueued = true;
             openFileQueued = null;
+            openMediaInputStreamQueued?.Dispose();
+            openMediaInputStreamQueued = null;
             playQueued = false;
             pauseQueued = false;
             Do();
@@ -76,6 +92,18 @@ namespace PinJuke.View
                     await Task.Delay(100);
 
                     await mediaElement.Open(new Uri(file));
+                    continue;
+                }
+                if (openMediaInputStreamQueued != null)
+                {
+                    var mediaInputStream = openMediaInputStreamQueued;
+                    openMediaInputStreamQueued = null;
+                    Debug.WriteLine("Opening media input stram...");
+
+                    await mediaElement.Stop();
+                    await Task.Delay(100);
+
+                    await mediaElement.Open(mediaInputStream);
                     continue;
                 }
                 if (closeQueued)

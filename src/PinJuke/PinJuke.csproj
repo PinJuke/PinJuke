@@ -9,18 +9,17 @@
     <OutputPath>bin\$(Configuration)\PinJuke</OutputPath>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>PinJuke2.ico</ApplicationIcon>
+    <ApplicationIcon>PinJuke.ico</ApplicationIcon>
     <StartupObject>PinJuke.App</StartupObject>
     <Title>PinJuke music player</Title>
     <PackageProjectUrl>https://pinjuke.github.io/PinJuke/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/PinJuke/PinJuke</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <Authors>The PinJuke developers</Authors>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <FileVersion>1.0.0.2</FileVersion>
+    <Version>1.0.0-alpha.2</Version>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Include="PinJuke2.ico" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DotNetProjects.SVGImage" Version="5.1.1" />
@@ -59,9 +58,14 @@
     <Resource Include="icons\volume-low-outline.svg" />
     <Resource Include="icons\volume-medium-outline.svg" />
     <Resource Include="icons\volume-off-outline.svg" />
+    <Resource Include="media\intro.mp4" />
   </ItemGroup>
 
   <ItemGroup>
+    <ContentWithTargetPath Include="..\..\LICENSE">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>LICENSE</TargetPath>
+    </ContentWithTargetPath>
     <ContentWithTargetPath Include="..\..\deps\projectm\dist\lib\projectM-4.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>projectM-4.dll</TargetPath>

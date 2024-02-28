@@ -53,7 +53,15 @@ namespace PinJuke.Controller
 
         private void Window_MediaEndedEvent(object? sender, EventArgs e)
         {
-            mainModel.PlayNext();
+            switch (mainModel.SceneType)
+            {
+                case SceneType.Intro:
+                    mainModel.EnterPlayback();
+                    break;
+                case SceneType.Playback:
+                    mainModel.PlayNext();
+                    break;
+            }
         }
 
         private void InputManager_InputEvent(object? sender, InputActionEventArgs e)

@@ -23,6 +23,12 @@ namespace PinJuke.Model
         Tilt,
     }
 
+    public enum SceneType
+    {
+        Intro,
+        Playback,
+    }
+
     public record State(StateType Type, object? Data = null);
 
     public class MainModel : INotifyPropertyChanged
@@ -32,6 +38,24 @@ namespace PinJuke.Model
         public event EventHandler<InputActionEventArgs>? InputEvent;
 
         public Configuration.Configuration Configuration { get; }
+
+        private SceneType sceneType = SceneType.Intro;
+        /// <summary>
+        /// The current scene type to separate between modes.
+        /// </summary>
+        public SceneType SceneType
+        {
+            get => sceneType;
+            private set
+            {
+                if (value == sceneType)
+                {
+                    return;
+                }
+                sceneType = value;
+                NotifyPropertyChanged();
+            }
+        }
 
         private FileNode? rootDirectory = null;
         /// <summary>
@@ -257,6 +281,11 @@ namespace PinJuke.Model
             }
         }
 
+        public void EnterPlayback()
+        {
+            SceneType = SceneType.Playback;
+        }
+
         public void TogglePlayPause()
         {
             Playing = !Playing;
@@ -265,6 +294,8 @@ namespace PinJuke.Model
 
         public void PlayFile(FileNode? node, StateType? playingStateType = null)
         {
+            EnterPlayback();
+
             // If a directory is passed, look for a file.
             node = node?.FindThisOrNextPlayable();
 

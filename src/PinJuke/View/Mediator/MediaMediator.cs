@@ -1,5 +1,7 @@
 ﻿using DirectOutput.Cab.Out.DMX;
 using PinJuke.Model;
+using PinJuke.Playlist;
+using PinJuke.View.Media;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -29,7 +31,6 @@ namespace PinJuke.View.Mediator
         protected override void OnLoaded()
         {
             base.OnLoaded();
-            UpdateView();
             PlayFile();
             mainModel.PropertyChanged += MainModel_PropertyChanged;
         }
@@ -45,7 +46,7 @@ namespace PinJuke.View.Mediator
             switch (e.PropertyName)
             {
                 case nameof(MainModel.PlayingFile):
-                    UpdateView();
+                case nameof(MainModel.SceneType):
                     PlayFile();
                     break;
                 case nameof(MainModel.Playing):
@@ -56,15 +57,32 @@ namespace PinJuke.View.Mediator
 
         private void PlayFile()
         {
-            if (mainModel.PlayingFile != null)
+            FileType? fileType = null;
+
+            switch (mainModel.SceneType)
             {
-                mediaActionQueue.Open(mainModel.PlayingFile.FullName);
-                SetPlayPause();
+                case SceneType.Intro:
+                    var uri = new Uri(@"media\intro.mp4", UriKind.Relative);
+                    var stream = Application.GetResourceStream(uri).Stream;
+                    mediaActionQueue.Open(new MediaInputStream(stream, uri));
+                    mediaActionQueue.Play();
+                    fileType = FileType.Video;
+                    break;
+                case SceneType.Playback:
+                    if (mainModel.PlayingFile != null)
+                    {
+                        mediaActionQueue.Open(mainModel.PlayingFile.FullName);
+                        SetPlayPause();
+                    }
+                    else
+                    {
+                        mediaActionQueue.Close();
+                    }
+                    fileType = mainModel.PlayingFile?.Type;
+                    break;
             }
-            else
-            {
-                mediaActionQueue.Close();
-            }
+
+            mediaControl.MediaElement.Visibility = fileType == FileType.Video ? Visibility.Visible : Visibility.Hidden;
         }
 
         private void SetPlayPause()
@@ -79,10 +97,5 @@ namespace PinJuke.View.Mediator
             }
         }
 
-        private void UpdateView()
-        {
-            var fileType = mainModel.PlayingFile?.Type;
-            mediaControl.MediaElement.Visibility = fileType == Playlist.FileType.Video ? Visibility.Visible : Visibility.Hidden;
-        }
     }
 }
