@@ -98,7 +98,7 @@ namespace PinJuke.View
                 {
                     var mediaInputStream = openMediaInputStreamQueued;
                     openMediaInputStreamQueued = null;
-                    Debug.WriteLine("Opening media input stram...");
+                    Debug.WriteLine("Opening media input stream...");
 
                     await mediaElement.Stop();
                     await Task.Delay(100);
