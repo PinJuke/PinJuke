@@ -31,10 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="PinJuke.global.ini">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="PinJuke.user.sample.ini">
+    <None Include="configs\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="ffmpeg\**">

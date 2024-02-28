@@ -90,12 +90,26 @@ namespace PinJuke.Configuration
         }
     }
 
+    public class IniIoException : Exception
+    {
+        public IniIoException(string message, string filePath, Exception innerException) : base(message, innerException)
+        {
+        }
+    }
+
     public class IniReader
     {
         public IniDocument Read(string filePath)
         {
-            using var streamReader = new StreamReader(filePath, true);
-            return Read(streamReader);
+            try
+            {
+                using var streamReader = new StreamReader(filePath, true);
+                return Read(streamReader);
+            }
+            catch (IOException ex)
+            {
+                throw new IniIoException(string.Format(Strings.ErrorReadingFile, filePath), filePath, ex);
+            }
         }
 
         /// <summary>

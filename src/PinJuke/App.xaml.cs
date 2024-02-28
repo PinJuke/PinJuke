@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -21,7 +22,17 @@ namespace PinJuke
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            var configuration = LoadConfiguration(e);
+            Configuration.Configuration configuration;
+            try
+            {
+                configuration = LoadConfiguration(e);
+            }
+            catch (IniIoException ex)
+            {
+                MessageBox.Show(ex.Message, AppDomain.CurrentDomain.FriendlyName);
+                Application.Current.Shutdown(1);
+                return;
+            }
 
             Unosquare.FFME.Library.FFmpegDirectory = @"ffmpeg";
 
@@ -59,7 +70,7 @@ namespace PinJuke
         private Configuration.Configuration LoadConfiguration(StartupEventArgs e)
         {
             List<string> iniFilePaths = new();
-            iniFilePaths.Add("PinJuke.global.ini");
+            iniFilePaths.Add(@"configs\PinJuke.global.ini");
             if (e.Args.Length >= 1)
             {
                 iniFilePaths.Add(e.Args[0]);
