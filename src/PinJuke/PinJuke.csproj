@@ -31,7 +31,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="configs\**">
+    <None Include="Configs\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Media\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Milkdrop\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="ffmpeg\**">
@@ -55,7 +61,7 @@
     <Resource Include="icons\volume-low-outline.svg" />
     <Resource Include="icons\volume-medium-outline.svg" />
     <Resource Include="icons\volume-off-outline.svg" />
-    <Resource Include="media\intro.mp4" />
+    <Resource Include="resources\intro.mp4" />
   </ItemGroup>
 
   <ItemGroup>

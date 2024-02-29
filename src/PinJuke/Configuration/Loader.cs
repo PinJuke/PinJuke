@@ -27,12 +27,14 @@ namespace PinJuke.Configuration
         public Configuration FromIniDocument(IniDocument iniDocument)
         {
             var mediaPath = parser.ParseString(iniDocument["PinJuke"]["MediaPath"]) ?? ".";
+            // The media path should be a full path so that it can be used as a base path.
+            mediaPath = GetFullPath(mediaPath);
             var player = CreatePlayer(iniDocument["Player"]);
             var keyboard = CreateKeyboard(iniDocument["Keyboard"]);
             var playField = CreateDisplay(DisplayRole.PlayField, iniDocument["PlayField"], mediaPath);
             var backGlass = CreateDisplay(DisplayRole.BackGlass, iniDocument["BackGlass"], mediaPath);
             var dmd = CreateDisplay(DisplayRole.DMD, iniDocument["DMD"], mediaPath);
-            var milkdrop = CreateMilkdrop(iniDocument["Milkdrop"], mediaPath);
+            var milkdrop = CreateMilkdrop(iniDocument["Milkdrop"]);
             var dof = CreateDof(iniDocument["DOF"]);
             return new Configuration(mediaPath, player, keyboard, playField, backGlass, dmd, milkdrop, dof);
         }
@@ -79,12 +81,12 @@ namespace PinJuke.Configuration
             var backgroundImageFile = parser.ParseString(displaySection["BackgroundImageFile"]) ?? "";
             if (!backgroundImageFile.IsNullOrEmpty())
             {
-                backgroundImageFile = GetFullPath(backgroundImageFile, mediaPath);
+                backgroundImageFile = GetFullPathFromMediaPath(backgroundImageFile, mediaPath);
             }
             var songStartFile = parser.ParseString(displaySection["SongStartFile"]) ?? "";
             if (!songStartFile.IsNullOrEmpty())
             {
-                songStartFile = GetFullPath(songStartFile, mediaPath);
+                songStartFile = GetFullPathFromMediaPath(songStartFile, mediaPath);
             }
             var content = new Content(
                 parser.ParseEnum<BackgroundType>(displaySection["BackgroundType"]) ?? BackgroundType.MilkdropVisualization,
@@ -98,12 +100,12 @@ namespace PinJuke.Configuration
             return new Display(role, enabled, window, content);
         }
 
-        protected Milkdrop CreateMilkdrop(IniSection milkdropSection, string mediaPath)
+        protected Milkdrop CreateMilkdrop(IniSection milkdropSection)
         {
             var presetsPath = parser.ParseString(milkdropSection["PresetsPath"]) ?? ".";
-            presetsPath = GetFullPath(presetsPath, mediaPath);
+            presetsPath = GetFullPath(presetsPath);
             var texturesPath = parser.ParseString(milkdropSection["TexturesPath"]) ?? ".";
-            texturesPath = GetFullPath(texturesPath, mediaPath);
+            texturesPath = GetFullPath(texturesPath);
 
             return new Milkdrop(presetsPath, texturesPath);
         }
@@ -117,6 +119,10 @@ namespace PinJuke.Configuration
             {
                 enabled = false;
             }
+            else
+            {
+                globalConfigFilePath = GetFullPath(globalConfigFilePath);
+            }
             return new Dof(
                 enabled,
                 globalConfigFilePath,
@@ -124,7 +130,12 @@ namespace PinJuke.Configuration
             );
         }
 
-        protected string GetFullPath(string path, string mediaPath)
+        protected string GetFullPath(string path)
+        {
+            return Path.GetFullPath(path);
+        }
+
+        protected string GetFullPathFromMediaPath(string path, string mediaPath)
         {
             return Path.GetFullPath(path, mediaPath);
         }

@@ -62,7 +62,7 @@ namespace PinJuke.View.Mediator
             switch (mainModel.SceneType)
             {
                 case SceneType.Intro:
-                    var uri = new Uri(@"media\intro.mp4", UriKind.Relative);
+                    var uri = new Uri(@"resources\intro.mp4", UriKind.Relative);
                     var stream = Application.GetResourceStream(uri).Stream;
                     mediaActionQueue.Open(new MediaInputStream(stream, uri));
                     mediaActionQueue.Play();

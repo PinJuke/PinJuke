@@ -70,7 +70,7 @@ namespace PinJuke
         private Configuration.Configuration LoadConfiguration(StartupEventArgs e)
         {
             List<string> iniFilePaths = new();
-            iniFilePaths.Add(@"configs\PinJuke.global.ini");
+            iniFilePaths.Add(@"Configs\PinJuke.global.ini");
             if (e.Args.Length >= 1)
             {
                 iniFilePaths.Add(e.Args[0]);

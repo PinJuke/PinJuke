@@ -22,7 +22,7 @@ jobs:
         with:
           dotnet-version: '8.0.x' # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
       - name: Get FFmpeg
-        uses: robinraju/release-downloader@v1.9
+        uses: robinraju/release-downloader@v1.8
         with:
           repository: "BtbN/FFmpeg-Builds"
           latest: true
@@ -31,7 +31,6 @@ jobs:
       - name: Copy FFmpeg
         # Must be a Powershell script.
         run: |
-          rm src/PinJuke/ffmpeg/.gitignore
           cp ffmpeg-n4.4-latest-win64-gpl-shared-4.4/LICENSE.txt src/PinJuke/ffmpeg/
           cp ffmpeg-n4.4-latest-win64-gpl-shared-4.4/bin/*.dll src/PinJuke/ffmpeg/
       - name: Build projectm
@@ -41,17 +40,23 @@ jobs:
           cmake --build build --target install --config Release
       - name: Build solution
         run: dotnet build --configuration Release
+      - name: Clean output
+        run: |
+          rm src/PinJuke/bin/Release/PinJuke/Media/.gitignore
+          rm src/PinJuke/bin/Release/PinJuke/Milkdrop/Presets/.gitignore
+          rm src/PinJuke/bin/Release/PinJuke/Milkdrop/Textures/.gitignore
+          rm src/PinJuke/bin/Release/PinJuke/ffmpeg/.gitignore
       - name: Create zip archive
         # https://github.com/marketplace/actions/zip-release
         uses: thedoctor0/zip-release@0.7.5
         with:
           type: zip
-          # e.g. PinJuke_1.0.0-alpha.1.zip
-          filename: PinJuke_${{ github.ref_name }}.zip
+          # e.g. PinJuke_App_1.0.0-alpha.1.zip
+          filename: PinJuke_App_${{ github.ref_name }}.zip
           directory: src/PinJuke/bin/Release
           path: PinJuke
       - name: Upload release
         # https://github.com/ncipollo/release-action
         uses: ncipollo/release-action@v1
         with:
-          artifacts: src/PinJuke/bin/Release/PinJuke_${{ github.ref_name }}.zip
+          artifacts: src/PinJuke/bin/Release/PinJuke_App_${{ github.ref_name }}.zip
