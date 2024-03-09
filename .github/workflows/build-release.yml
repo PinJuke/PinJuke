@@ -42,6 +42,7 @@ jobs:
         run: dotnet build --configuration Release
       - name: Clean output
         run: |
+          rm src/PinJuke/bin/Release/PinJuke/Configs/Playlists/.gitignore
           rm src/PinJuke/bin/Release/PinJuke/Media/.gitignore
           rm src/PinJuke/bin/Release/PinJuke/Milkdrop/Presets/.gitignore
           rm src/PinJuke/bin/Release/PinJuke/Milkdrop/Textures/.gitignore
