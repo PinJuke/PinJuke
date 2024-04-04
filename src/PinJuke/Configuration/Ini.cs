@@ -1,30 +1,36 @@
-﻿using PinJuke.Util;
+﻿using SoftCircuits.Collections;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace PinJuke.Configuration
 {
-    public class IniDocument : IEnumerable<(string, IniSection)>
+    public class IniDocument : IEnumerable<KeyValuePair<string, IniSection>>
     {
-        private readonly OrderedDictionary sectionByName = new();
+        private readonly OrderedDictionary<string, IniSection> sectionByName = new();
+        private readonly List<IniComment> footerComments = new();
 
         public IniSection this[string name]
         {
             get
             {
-                return (IniSection?)sectionByName[name] ?? ((IniSection)(sectionByName[name] = new IniSection(name)));
+                return sectionByName.GetValueOrDefault(name) ?? (sectionByName[name] = new IniSection(name));
             }
         }
 
-        public IEnumerator<(string, IniSection)> GetEnumerator()
+        public void AddFooterComments(ICollection<IniComment> comments)
         {
-            return new DictionaryEnumerator<string, IniSection>(sectionByName.GetEnumerator());
+            this.footerComments.AddRange(comments);
+        }
+
+        public IEnumerator<KeyValuePair<string, IniSection>> GetEnumerator()
+        {
+            return sectionByName.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -34,16 +40,30 @@ namespace PinJuke.Configuration
 
         public void MergeFrom(IniDocument otherDocument)
         {
-            foreach (var (_, otherSection) in otherDocument)
+            foreach (var (name, otherSection) in otherDocument)
             {
-                this[otherSection.Name].MergeFrom(otherSection);
+                this[name].MergeFrom(otherSection);
+            }
+            this.footerComments.AddRange(otherDocument.footerComments);
+        }
+
+        public void WriteTo(TextWriter textWriter)
+        {
+            foreach (var (name, section) in sectionByName)
+            {
+                section.WriteTo(textWriter);
+            }
+            foreach (var comment in footerComments)
+            {
+                comment.WriteTo(textWriter);
             }
         }
     }
 
-    public class IniSection : IEnumerable<(string, string)>
+    public class IniSection : IEnumerable<KeyValuePair<string, string>>
     {
-        private readonly OrderedDictionary valueByName = new();
+        private readonly OrderedDictionary<string, IniEntry> iniEntryByName = new();
+        private readonly List<IniComment> comments = new();
 
         public string Name { get; }
 
@@ -56,24 +76,42 @@ namespace PinJuke.Configuration
         {
             get
             {
-                return (string?)valueByName[name];
+                return iniEntryByName.GetValueOrDefault(name)?.Value;
             }
             set
             {
                 if (value == null)
                 {
-                    valueByName.Remove(name);
+                    iniEntryByName.Remove(name);
                 }
                 else
                 {
-                    valueByName[name] = value;
+                    ProvideEntry(name).Value = value;
                 }
             }
         }
 
-        public IEnumerator<(string, string)> GetEnumerator()
+        public IniEntry ProvideEntry(string name)
         {
-            return new DictionaryEnumerator<string, string>(valueByName.GetEnumerator());
+            var iniEntry = iniEntryByName.GetValueOrDefault(name);
+            if (iniEntry == null)
+            {
+                iniEntry = new(name);
+                iniEntryByName[name] = iniEntry;
+            }
+            return iniEntry;
+        }
+
+        public void AddComments(ICollection<IniComment> comments)
+        {
+            this.comments.AddRange(comments);
+        }
+
+        public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
+        {
+            return iniEntryByName
+                .Select(keyValuePair => new KeyValuePair<string, string>(keyValuePair.Key, keyValuePair.Value.Value))
+                .GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -83,10 +121,83 @@ namespace PinJuke.Configuration
 
         public void MergeFrom(IniSection otherSection)
         {
-            foreach (var (name, value) in otherSection)
+            this.comments.AddRange(otherSection.comments);
+            foreach (var (name, otherEntry) in otherSection.iniEntryByName)
             {
-                this[name] = value;
+                ProvideEntry(name).MergeFrom(otherEntry);
             }
+        }
+
+        public void WriteTo(TextWriter textWriter)
+        {
+            foreach (var comment in comments)
+            {
+                comment.WriteTo(textWriter);
+            }
+
+            if (Name.Length != 0)
+            {
+                textWriter.Write('[');
+                textWriter.Write(Name);
+                textWriter.Write(']');
+                textWriter.WriteLine();
+            }
+
+            foreach (var (name, iniEntry) in iniEntryByName)
+            {
+                iniEntry.WriteTo(textWriter);
+            }
+        }
+    }
+
+    public class IniEntry
+    {
+        public string Name { get; }
+        public string Value { get; set; } = "";
+
+        private readonly List<IniComment> comments = new();
+
+        public IniEntry(string name)
+        {
+            Name = name;
+        }
+
+        public void AddComments(ICollection<IniComment> comments)
+        {
+            this.comments.AddRange(comments);
+        }
+
+        public void MergeFrom(IniEntry otherEntry)
+        {
+            this.comments.AddRange(otherEntry.comments);
+            Value = otherEntry.Value;
+        }
+
+        public void WriteTo(TextWriter textWriter)
+        {
+            foreach (var comment in comments)
+            {
+                comment.WriteTo(textWriter);
+            }
+            textWriter.Write(Name);
+            textWriter.Write(" = ");
+            textWriter.Write(Value);
+            textWriter.WriteLine();
+        }
+    }
+
+    public class IniComment
+    {
+        public string Line { get; }
+
+        public IniComment(string line)
+        {
+            Line = line;
+        }
+
+        public void WriteTo(TextWriter textWriter)
+        {
+            textWriter.WriteLine(Line);
         }
     }
 
@@ -112,14 +223,11 @@ namespace PinJuke.Configuration
             }
         }
 
-        /// <summary>
-        /// Some ideas taken from:
-        /// https://github.com/FabioJe/INIParser/blob/5b3b91468190683e42c217093bee75e09208335c/INIParser/IniFile.cs
-        /// </summary>
         public IniDocument Read(TextReader textReader)
         {
-            IniDocument document = new();
-            IniSection section = document[""];
+            var document = new IniDocument();
+            var section = document[""];
+            var comments = new List<IniComment>();
             for (; ; )
             {
                 var line = textReader.ReadLine();
@@ -130,24 +238,34 @@ namespace PinJuke.Configuration
                 line = line.Trim();
                 if (line.Length == 0 || line[0] == ';')
                 {
-                    // Line is empty or comment
+                    // Line is empty or a comment
+                    comments.Add(new IniComment(line));
                     continue;
                 }
                 if (line[0] == '[' && line[^1] == ']')
                 {
-                    // Line is section
+                    // Line is a section
                     var sectionName = line[1..^1];
                     section = document[sectionName];
+                    section.AddComments(comments);
+                    comments.Clear();
                     continue;
                 }
                 var pair = line.Split('=', 2);
                 if (pair.Length != 2)
                 {
                     // Line is not recognized
+                    comments.Add(new IniComment(line));
                     continue;
                 }
-                section[pair[0].Trim()] = pair[1].Trim();
+                var name = pair[0].Trim();
+                var value = pair[1].Trim();
+                var entry = section.ProvideEntry(name);
+                entry.Value = value;
+                entry.AddComments(comments);
+                comments.Clear();
             }
+            document.AddFooterComments(comments);
             return document;
         }
     }
