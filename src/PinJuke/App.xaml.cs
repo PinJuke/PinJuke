@@ -1,12 +1,12 @@
 ﻿using PinJuke.Audio;
-using PinJuke.Configuration;
 using PinJuke.Controller;
 using PinJuke.Dof;
 using PinJuke.Model;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -16,27 +16,45 @@ namespace PinJuke
 {
     public partial class App : Application
     {
+        private MainModel? mainModel;
         private AppController? appController;
         private DofMediator? dofMediator = null;
         private AudioManager? audioManager;
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            string? playlistConfigFilePath = null;
+            if (e.Args.Length >= 1)
+            {
+                playlistConfigFilePath = Path.GetFullPath(e.Args[0]);
+            }
+
             Configuration.Configuration configuration;
             try
             {
-                configuration = LoadConfiguration(e);
+                configuration = LoadConfiguration(playlistConfigFilePath);
             }
-            catch (IniIoException ex)
+            catch (Configuration.IniIoException ex)
             {
                 MessageBox.Show(ex.Message, AppDomain.CurrentDomain.FriendlyName);
                 Application.Current.Shutdown(1);
                 return;
             }
 
+            Configuration.UserConfiguration userConfiguration;
+            try
+            {
+                userConfiguration = LoadUserConfiguration();
+            }
+            catch (Configuration.IniIoException ex)
+            {
+                Debug.WriteLine("Error reading user configuration ini file: " + ex.Message);
+                userConfiguration = new(new Configuration.IniDocument());
+            }
+
             Unosquare.FFME.Library.FFmpegDirectory = @"ffmpeg";
 
-            var mainModel = new MainModel(configuration);
+            mainModel = new MainModel(configuration, userConfiguration);
 
             if (configuration.Dof.Enabled)
             {
@@ -62,22 +80,43 @@ namespace PinJuke
         {
             base.OnExit(e);
 
+            SaveUserConfiguration();
+
             appController?.Dispose();
             audioManager?.Dispose();
             dofMediator?.Dispose();
         }
 
-        private Configuration.Configuration LoadConfiguration(StartupEventArgs e)
+        private Configuration.Configuration LoadConfiguration(string? playlistConfigFilePath)
         {
             List<string> iniFilePaths = new();
             iniFilePaths.Add(@"Configs\PinJuke.global.ini");
-            if (e.Args.Length >= 1)
+            if (playlistConfigFilePath != null)
             {
-                iniFilePaths.Add(e.Args[0]);
+                iniFilePaths.Add(playlistConfigFilePath);
             }
 
-            var loader = new Configuration.Loader();
-            return loader.FromIniFilePaths(iniFilePaths);
+            var loader = new Configuration.ConfigurationLoader();
+            return loader.FromIniFilePaths(iniFilePaths, playlistConfigFilePath);
+        }
+
+        private Configuration.UserConfiguration LoadUserConfiguration()
+        {
+            var userConfigDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\PinJuke";
+            var userConfigFile = userConfigDir + @"\PinJuke.user.ini";
+
+            var loader = new Configuration.UserConfigurationLoader();
+            return loader.FromIniFilePath(userConfigFile);
+        }
+
+        private void SaveUserConfiguration()
+        {
+            var userConfigDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\PinJuke";
+            var userConfigFile = userConfigDir + @"\PinJuke.user.ini";
+
+            Directory.CreateDirectory(userConfigDir);
+            using var textWriter = new StreamWriter(userConfigFile);
+            mainModel?.UserConfiguration.IniDocument.WriteTo(textWriter);
         }
 
         private MainWindow? CreateWindow(MainModel mainModel, Configuration.Display displayConfig, AudioManager audioManager)

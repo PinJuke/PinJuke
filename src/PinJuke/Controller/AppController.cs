@@ -1,5 +1,6 @@
 ﻿using PinJuke.Audio;
 using PinJuke.Model;
+using PinJuke.Playlist;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,8 +49,8 @@ namespace PinJuke.Controller
             {
                 return;
             }
-            mainModel.RootDirectory = (Playlist.FileNode?)e.Result;
-            mainModel.NavigationNode = mainModel.RootDirectory?.FindChild() ?? mainModel.RootDirectory;
+            var scanResult = (ScanResult)e.Result!;
+            mainModel.SetScanResult(scanResult);
         }
 
     }

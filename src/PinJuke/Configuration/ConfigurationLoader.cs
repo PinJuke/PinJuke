@@ -9,11 +9,11 @@ using System.Windows.Input;
 
 namespace PinJuke.Configuration
 {
-    public class Loader
+    public class ConfigurationLoader
     {
         protected readonly Parser parser = new();
 
-        public Configuration FromIniFilePaths(IEnumerable<string> iniFilePaths)
+        public Configuration FromIniFilePaths(IEnumerable<string> iniFilePaths, string? playlistConfigFilePath)
         {
             var iniDocument = new IniDocument();
             var iniReader = new IniReader();
@@ -21,10 +21,10 @@ namespace PinJuke.Configuration
             {
                 iniDocument.MergeFrom(iniReader.Read(iniFilePath));
             }
-            return FromIniDocument(iniDocument);
+            return FromIniDocument(iniDocument, playlistConfigFilePath);
         }
 
-        public Configuration FromIniDocument(IniDocument iniDocument)
+        public Configuration FromIniDocument(IniDocument iniDocument, string? playlistConfigFilePath)
         {
             var mediaPath = parser.ParseString(iniDocument["PinJuke"]["MediaPath"]) ?? ".";
             // The media path should be a full path so that it can be used as a base path.
@@ -36,7 +36,7 @@ namespace PinJuke.Configuration
             var dmd = CreateDisplay(DisplayRole.DMD, iniDocument["DMD"], mediaPath);
             var milkdrop = CreateMilkdrop(iniDocument["Milkdrop"]);
             var dof = CreateDof(iniDocument["DOF"]);
-            return new Configuration(mediaPath, player, keyboard, playField, backGlass, dmd, milkdrop, dof);
+            return new Configuration(playlistConfigFilePath, mediaPath, player, keyboard, playField, backGlass, dmd, milkdrop, dof);
         }
 
         protected Player CreatePlayer(IniSection playerSection)
@@ -158,76 +158,6 @@ namespace PinJuke.Configuration
 
             return angle;
         }
-    }
-
-    public class Parser
-    {
-        /// <summary>
-        /// Should at least check for null.
-        /// </summary>
-        public bool IsUndefined(string? s)
-        {
-            return s == null;
-        }
-
-        public string? ParseString(string? s)
-        {
-            if (IsUndefined(s))
-            {
-                return null;
-            }
-            return s;
-        }
-
-        public int? ParseInt(string? s)
-        {
-            if (IsUndefined(s))
-            {
-                return null;
-            }
-            if (int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out var result))
-            {
-                return result;
-            }
-            return null;
-        }
-
-        public float? ParseFloat(string? s)
-        {
-            if (IsUndefined(s))
-            {
-                return null;
-            }
-            if (float.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out var result))
-            {
-                return result;
-            }
-            return null;
-        }
-
-        public bool? ParseBool(string? s)
-        {
-            var i = ParseInt(s);
-            if (i == null)
-            {
-                return null;
-            }
-            return i != 0;
-        }
-
-        public TEnum? ParseEnum<TEnum>(string? s) where TEnum : struct
-        {
-            if (IsUndefined(s))
-            {
-                return null;
-            }
-            if (Enum.TryParse<TEnum>(s, out var result))
-            {
-                return result;
-            }
-            return null;
-        }
-
     }
 
 }

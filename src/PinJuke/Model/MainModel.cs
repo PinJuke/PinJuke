@@ -38,6 +38,7 @@ namespace PinJuke.Model
         public event EventHandler<InputActionEventArgs>? InputEvent;
 
         public Configuration.Configuration Configuration { get; }
+        public Configuration.UserConfiguration UserConfiguration { get; }
 
         private SceneType sceneType = SceneType.Intro;
         /// <summary>
@@ -64,7 +65,7 @@ namespace PinJuke.Model
         public FileNode? RootDirectory
         {
             get => rootDirectory;
-            set
+            private set
             {
                 if (value == rootDirectory)
                 {
@@ -82,7 +83,7 @@ namespace PinJuke.Model
         public FileNode? NavigationNode
         {
             get => navigationNode;
-            set
+            private set
             {
                 if (value == navigationNode)
                 {
@@ -187,9 +188,10 @@ namespace PinJuke.Model
             }
         }
 
-        public MainModel(Configuration.Configuration configuration)
+        public MainModel(Configuration.Configuration configuration, Configuration.UserConfiguration userConfiguration)
         {
             Configuration = configuration;
+            UserConfiguration = userConfiguration;
         }
 
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
@@ -255,6 +257,28 @@ namespace PinJuke.Model
             StateVisible = false;
         }
 
+        private UserPlaylist GetUserPlaylist()
+        {
+            return UserConfiguration.ProvidePlaylist(Configuration.PlaylistConfigFilePath ?? "");
+        }
+
+        public void SetScanResult(ScanResult scanResult)
+        {
+            RootDirectory = scanResult.RootFileNode;
+
+            FileNode? navigationNode = null;
+            if (Configuration.Player.StartupTrackType == StartupTrackType.LastPlayedTrack)
+            {
+                navigationNode = scanResult.TryGetPlayableFileNodeOrDefault(GetUserPlaylist().TrackFilePath);
+            }
+            NavigationNode = navigationNode ?? RootDirectory?.FindChild() ?? RootDirectory;
+        }
+
+        public void NavigateTo(FileNode? fileNode)
+        {
+            NavigationNode = fileNode;
+        }
+
         public void NavigateNext(bool repeated)
         {
             var node = NavigationNode?.NextSibling;
@@ -305,6 +329,8 @@ namespace PinJuke.Model
             PlayingFile = node;
             Playing = node != null;
             ShowPlaybackState(playingStateType);
+
+            GetUserPlaylist().TrackFilePath = node?.FullName ?? "";
         }
 
         public void PlayNext()

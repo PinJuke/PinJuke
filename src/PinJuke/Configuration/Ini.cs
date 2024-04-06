@@ -19,8 +19,19 @@ namespace PinJuke.Configuration
         {
             get
             {
-                return sectionByName.GetValueOrDefault(name) ?? (sectionByName[name] = new IniSection(name));
+                return ProvideSection(name); // maybe rethink this
             }
+        }
+
+        public IniSection ProvideSection(string name)
+        {
+            var iniSection = sectionByName.GetValueOrDefault(name);
+            if (iniSection == null)
+            {
+                iniSection = new(name);
+                sectionByName[name] = iniSection;
+            }
+            return iniSection;
         }
 
         public void AddFooterComments(ICollection<IniComment> comments)
@@ -226,7 +237,7 @@ namespace PinJuke.Configuration
         public IniDocument Read(TextReader textReader)
         {
             var document = new IniDocument();
-            var section = document[""];
+            var section = document.ProvideSection("");
             var comments = new List<IniComment>();
             for (; ; )
             {
@@ -246,7 +257,7 @@ namespace PinJuke.Configuration
                 {
                     // Line is a section
                     var sectionName = line[1..^1];
-                    section = document[sectionName];
+                    section = document.ProvideSection(sectionName);
                     section.AddComments(comments);
                     comments.Clear();
                     continue;

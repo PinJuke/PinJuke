@@ -86,11 +86,8 @@ namespace PinJuke.View
                 {
                     var file = openFileQueued;
                     openFileQueued = null;
-                    Debug.WriteLine("Opening file...");
 
-                    await mediaElement.Stop();
-                    await Task.Delay(100);
-
+                    Debug.WriteLine(string.Format("Opening file \"{0}\"...", file));
                     await mediaElement.Open(new Uri(file));
                     continue;
                 }
@@ -98,11 +95,8 @@ namespace PinJuke.View
                 {
                     var mediaInputStream = openMediaInputStreamQueued;
                     openMediaInputStreamQueued = null;
+
                     Debug.WriteLine("Opening media input stream...");
-
-                    await mediaElement.Stop();
-                    await Task.Delay(100);
-
                     await mediaElement.Open(mediaInputStream);
                     continue;
                 }

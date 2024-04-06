@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,40 @@ using System.Xml.Linq;
 
 namespace PinJuke.Playlist
 {
+    public class ScanResult
+    {
+        public FileNode RootFileNode { get; }
+        private Dictionary<string, FileNode> PlayableFileNodesByFullName { get; } = new();
+        public List<FileNode> M3uFileNodes { get; } = new();
+
+        public ScanResult(FileNode rootFileNode)
+        {
+            RootFileNode = rootFileNode;
+
+            for (var eachFileNode = rootFileNode.FirstChild; eachFileNode != null; eachFileNode = eachFileNode.GetNextInList())
+            {
+                if (eachFileNode.Type == FileType.M3u)
+                {
+                    M3uFileNodes.Add(eachFileNode);
+                }
+                else if (eachFileNode.Playable)
+                {
+                    PlayableFileNodesByFullName.Add(eachFileNode.FullName.ToLowerInvariant(), eachFileNode);
+                }
+            }
+        }
+
+        public bool TryGetPlayableFileNode(string fullPath, [MaybeNullWhen(false)] out FileNode fileNode)
+        {
+            return PlayableFileNodesByFullName.TryGetValue(fullPath.ToLowerInvariant(), out fileNode);
+        }
+
+        public FileNode? TryGetPlayableFileNodeOrDefault(string fullPath)
+        {
+            return TryGetPlayableFileNode(fullPath, out var fileNode) ? fileNode : null;
+        }
+    }
+
     class ScanCanceledException : Exception
     {
     }
@@ -39,17 +74,19 @@ namespace PinJuke.Playlist
         {
             var directoryInfo = new DirectoryInfo(path);
             var rootFileNode = new FileNode(directoryInfo.FullName, GetDisplayName(directoryInfo.FullName), FileType.Directory);
+            ScanResult scanResult;
             try
             {
                 ScanDirectory(rootFileNode, directoryInfo);
-                ResolveM3uFiles(rootFileNode);
+                ResolveM3uFiles(new ScanResult(rootFileNode));
+                scanResult = new ScanResult(rootFileNode);
             }
             catch (ScanCanceledException)
             {
                 e.Cancel = true;
                 return;
             }
-            e.Result = rootFileNode;
+            e.Result = scanResult;
         }
 
         protected void CheckCancellation()
@@ -126,25 +163,9 @@ namespace PinJuke.Playlist
             return true;
         }
 
-        protected void ResolveM3uFiles(FileNode rootFileNode)
+        protected void ResolveM3uFiles(ScanResult scanResult)
         {
-            // lower case full path => FileNode
-            var playableFileNodesByFullName = new Dictionary<string, FileNode>();
-            var m3uFileNodes = new List<FileNode>();
-
-            for (var eachFileNode = rootFileNode.FirstChild; eachFileNode != null; eachFileNode = eachFileNode.GetNextInList())
-            {
-                if (eachFileNode.Type == FileType.M3u)
-                {
-                    m3uFileNodes.Add(eachFileNode);
-                }
-                else if (eachFileNode.Playable)
-                {
-                    playableFileNodesByFullName.Add(eachFileNode.FullName.ToLowerInvariant(), eachFileNode);
-                }
-            }
-
-            foreach (var m3uFileNode in m3uFileNodes)
+            foreach (var m3uFileNode in scanResult.M3uFileNodes)
             {
                 CheckCancellation();
 
@@ -172,14 +193,14 @@ namespace PinJuke.Playlist
                     AppendFileIfSupportedType(m3uFileNode, new FileInfo(fullPath), true);
 
                     // avoid duplicates
-                    if (playableFileNodesByFullName.TryGetValue(fullPath.ToLowerInvariant(), out var replacedFileNode))
+                    if (scanResult.TryGetPlayableFileNode(fullPath, out var replacedFileNode))
                     {
                         replacedFileNode.Remove();
                     }
                 }
             }
 
-            foreach (var m3uFileNode in m3uFileNodes)
+            foreach (var m3uFileNode in scanResult.M3uFileNodes)
             {
                 if (m3uFileNode.ChildCount == 0)
                 {

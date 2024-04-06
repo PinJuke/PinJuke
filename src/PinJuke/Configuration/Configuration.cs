@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace PinJuke.Configuration
 {
-    public record Configuration(string MediaPath, Player Player, Keyboard Keyboard, Display PlayField, Display BackGlass, Display Dmd, Milkdrop Milkdrop, Dof Dof);
+    public record Configuration(string? PlaylistConfigFilePath, string MediaPath, Player Player, Keyboard Keyboard, Display PlayField, Display BackGlass, Display Dmd, Milkdrop Milkdrop, Dof Dof);
 
     public record Player(string MusicPath, StartupTrackType StartupTrackType, bool PlayOnStartup);
 
