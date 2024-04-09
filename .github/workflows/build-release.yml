@@ -24,15 +24,15 @@ jobs:
       - name: Get FFmpeg
         uses: robinraju/release-downloader@v1.8
         with:
-          repository: "BtbN/FFmpeg-Builds"
+          repository: "PinJuke/FFmpeg-Builds"
           latest: true
-          fileName: "ffmpeg-n4.4-latest-win64-gpl-shared-4.4.zip"
+          fileName: "ffmpeg-n4.4.4-95-gb6fa0f9d08-win64-gpl-shared-4.4.zip"
           extract: true
       - name: Copy FFmpeg
         # Must be a Powershell script.
         run: |
-          cp ffmpeg-n4.4-latest-win64-gpl-shared-4.4/LICENSE.txt src/PinJuke/ffmpeg/
-          cp ffmpeg-n4.4-latest-win64-gpl-shared-4.4/bin/*.dll src/PinJuke/ffmpeg/
+          cp ffmpeg-n4.4.4-95-gb6fa0f9d08-win64-gpl-shared-4.4/LICENSE.txt src/PinJuke/ffmpeg/
+          cp ffmpeg-n4.4.4-95-gb6fa0f9d08-win64-gpl-shared-4.4/bin/*.dll src/PinJuke/ffmpeg/
       - name: Build projectm
         run: |
           cd deps\projectm
