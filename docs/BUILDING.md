@@ -11,9 +11,7 @@ cd PinJuke
 
 ## Getting FFmpeg
 
-Download `ffmpeg-n4.4-latest-win64-gpl-shared-4.4.zip` from https://github.com/BtbN/FFmpeg-Builds/releases and place the dll files and LICENSE.txt from the archive in `src\PinJuke\ffmpeg`.
-
-Note: https://github.com/unosquare/ffmediaelement/issues/213#issuecomment-1120111735.
+Download the zip archive from https://github.com/PinJuke/FFmpeg-Builds/releases and place the dll files and LICENSE.txt from the archive in `src\PinJuke\ffmpeg`.
 
 ## Building projectM
 
