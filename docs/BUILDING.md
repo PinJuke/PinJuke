@@ -1,3 +1,5 @@
+![Jukebox](images/jukebox-header.png)
+
 # Building PinJuke from source
 
 ## Cloning the project

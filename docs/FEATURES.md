@@ -1,12 +1,11 @@
-![Jukebox](docs/images/jukebox-header.png)
+![Jukebox](images/jukebox-header.png)
 
-# PinJuke music player
+- [Start](index.md)
+- [Features](FEATURES.md)
+- [Installation](INSTALLATION.md)
+- [Configuration](CONFIGURATION.md)
 
-A music player tailor-made for virtual pinball cabinets.
-
-[Read more...](https://pinjuke.github.io/PinJuke/)
-
-## Features
+# Features
 
 This open source software adds a media player to your virtual pinball cabinet, featuring:
 - An animated, GPU-accelerated (WPF) user interface that supports scaling and rotation according to your displays (Playfield, Backglass, DMD)

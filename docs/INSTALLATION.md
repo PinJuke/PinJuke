@@ -1,0 +1,30 @@
+![Jukebox](images/jukebox-header.png)
+
+- [Start](index.md)
+- [Features](FEATURES.md)
+- [Installation](INSTALLATION.md)
+- [Configuration](CONFIGURATION.md)
+
+# Installation
+
+## Download
+
+Head over to the [releases page](https://github.com/PinJuke/PinJuke/releases) to download the latest *application*.
+
+## Extract the archive
+
+The zip archive contains a top level `PinJuke` folder so you can extract the files for example to `C:\vPinball` (the default location of the PinUP System).
+
+If you extract the zip archive using the archiver software integrated in Windows you probably get a hint, when you want to run the application:
+
+![Jukebox](images/windows-protection.png)
+
+To solve this, open the context menu by right clicking `PinJuke.exe`. Click on properties. Here you can unblock the prevention of the execution. Check the appropriate box labeled `Unblock` and click OK:
+
+![Jukebox](images/windows-unblock.png)
+
+## Install the .NET runtime
+
+If you run PinJuke for the first time it is likely that you need to install the .NET runtime. A message box may appear leading to the .NET download website from Microsoft:
+
+![Jukebox](images/installation-dot-net.png)
