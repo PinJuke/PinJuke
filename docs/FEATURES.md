@@ -4,6 +4,8 @@
 - [Features](FEATURES.md)
 - [Installation](INSTALLATION.md)
 - [Configuration](CONFIGURATION.md)
+- [Pinup Popper](PINUP-POPPER.md)
+- [FAQ](FAQ.md)
 
 # Features
 

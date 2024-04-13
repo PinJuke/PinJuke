@@ -4,6 +4,8 @@
 - [Features](FEATURES.md)
 - [Installation](INSTALLATION.md)
 - [Configuration](CONFIGURATION.md)
+- [Pinup Popper](PINUP-POPPER.md)
+- [FAQ](FAQ.md)
 
 # Installation
 
@@ -11,9 +13,11 @@
 
 Head over to the [releases page](https://github.com/PinJuke/PinJuke/releases) to download the latest *application*.
 
+You may also want to download the [PinJuke Milkdrop assets](https://github.com/PinJuke/PinJuke-Milkdrop/releases).
+
 ## Extract the archive
 
-The zip archive contains a top level `PinJuke` folder so you can extract the files for example to `C:\vPinball` (the default location of the PinUP System).
+The zip archives contain a top level `PinJuke` folder so you can extract the files for example to `C:\vPinball` (the default location of the *PinUP Popper Baller Installer*).
 
 If you extract the zip archive using the archiver software integrated in Windows you probably get a hint, when you want to run the application:
 
