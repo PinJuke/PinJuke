@@ -31,7 +31,8 @@ jobs:
       - name: Copy FFmpeg
         # Must be a Powershell script.
         run: |
-          cp ffmpeg-6.0-full_build-shared/LICENSE.txt src/PinJuke/ffmpeg/
+          cp ffmpeg-6.0-full_build-shared/LICENSE src/PinJuke/ffmpeg/
+          cp ffmpeg-6.0-full_build-shared/README.txt src/PinJuke/ffmpeg/
           cp ffmpeg-6.0-full_build-shared/bin/*.dll src/PinJuke/ffmpeg/
       - name: Build projectm
         run: |
