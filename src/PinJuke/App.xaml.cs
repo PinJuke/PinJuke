@@ -53,6 +53,8 @@ namespace PinJuke
             }
 
             Unosquare.FFME.Library.FFmpegDirectory = @"ffmpeg";
+            var result = Unosquare.FFME.Library.LoadFFmpeg();
+            Debug.WriteLine(result ? "FFmpeg loaded." : "FFmpeg NOT loaded.");
 
             mainModel = new MainModel(configuration, userConfiguration);
 

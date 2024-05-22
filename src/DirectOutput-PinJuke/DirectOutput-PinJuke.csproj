@@ -288,7 +288,7 @@
     <PackageReference Include="ManagedBass.Mix" Version="3.1.1" />
     <PackageReference Include="Q42.HueApi" Version="3.23.1" />
     <PackageReference Include="Q42.HueApi.ColorConverters" Version="3.23.1" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.3" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.5" />
     <PackageReference Include="System.IO.Ports" Version="8.0.0" />
   </ItemGroup>
 

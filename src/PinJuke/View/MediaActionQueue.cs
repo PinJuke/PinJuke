@@ -10,6 +10,8 @@ namespace PinJuke.View
 {
     public class MediaActionQueue
     {
+        private const int DELAY = 100; // millis
+
         private readonly Unosquare.FFME.MediaElement mediaElement;
 
         private string? openFileQueued = null;
@@ -80,12 +82,14 @@ namespace PinJuke.View
 
             running = true;
 
-            for (; ; await Task.Delay(100))
+            for (; ; await Task.Delay(DELAY))
             {
                 if (openFileQueued != null)
                 {
                     var file = openFileQueued;
                     openFileQueued = null;
+
+                    await Unload();
 
                     Debug.WriteLine(string.Format("Opening file \"{0}\"...", file));
                     await mediaElement.Open(new Uri(file));
@@ -96,6 +100,8 @@ namespace PinJuke.View
                     var mediaInputStream = openMediaInputStreamQueued;
                     openMediaInputStreamQueued = null;
 
+                    await Unload();
+
                     Debug.WriteLine("Opening media input stream...");
                     await mediaElement.Open(mediaInputStream);
                     continue;
@@ -103,8 +109,7 @@ namespace PinJuke.View
                 if (closeQueued)
                 {
                     closeQueued = false;
-                    Debug.WriteLine("Closing...");
-                    await mediaElement.Close();
+                    await Unload();
                     continue;
                 }
                 if (playQueued)
@@ -125,6 +130,24 @@ namespace PinJuke.View
             }
 
             running = false;
+        }
+        
+        private async Task Unload()
+        {
+            if (mediaElement.IsPlaying)
+            {
+                Debug.WriteLine("Stopping...");
+                await mediaElement.Stop();
+                await Task.Delay(DELAY);
+            }
+            if (mediaElement.IsOpen)
+            {
+                Debug.WriteLine("Closing...");
+                await mediaElement.Close();
+                await Task.Delay(DELAY);
+            }
+            // Still testing...
+            GC.Collect();
         }
     }
 }
