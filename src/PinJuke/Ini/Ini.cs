@@ -7,8 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace PinJuke.Configuration
+namespace PinJuke.Ini
 {
     public class IniDocument : IEnumerable<KeyValuePair<string, IniSection>>
     {
@@ -36,7 +37,7 @@ namespace PinJuke.Configuration
 
         public void AddFooterComments(ICollection<IniComment> comments)
         {
-            this.footerComments.AddRange(comments);
+            footerComments.AddRange(comments);
         }
 
         public IEnumerator<KeyValuePair<string, IniSection>> GetEnumerator()
@@ -55,7 +56,7 @@ namespace PinJuke.Configuration
             {
                 this[name].MergeFrom(otherSection);
             }
-            this.footerComments.AddRange(otherDocument.footerComments);
+            footerComments.AddRange(otherDocument.footerComments);
         }
 
         public void WriteTo(TextWriter textWriter)
@@ -80,7 +81,7 @@ namespace PinJuke.Configuration
 
         public IniSection(string name)
         {
-            this.Name = name;
+            Name = name;
         }
 
         public string? this[string name]
@@ -132,7 +133,7 @@ namespace PinJuke.Configuration
 
         public void MergeFrom(IniSection otherSection)
         {
-            this.comments.AddRange(otherSection.comments);
+            comments.AddRange(otherSection.comments);
             foreach (var (name, otherEntry) in otherSection.iniEntryByName)
             {
                 ProvideEntry(name).MergeFrom(otherEntry);
@@ -180,7 +181,7 @@ namespace PinJuke.Configuration
 
         public void MergeFrom(IniEntry otherEntry)
         {
-            this.comments.AddRange(otherEntry.comments);
+            comments.AddRange(otherEntry.comments);
             Value = otherEntry.Value;
         }
 
@@ -214,8 +215,11 @@ namespace PinJuke.Configuration
 
     public class IniIoException : Exception
     {
+        public string FilePath { get;  }
+
         public IniIoException(string message, string filePath, Exception innerException) : base(message, innerException)
         {
+            FilePath = filePath;
         }
     }
 
@@ -230,7 +234,7 @@ namespace PinJuke.Configuration
             }
             catch (IOException ex)
             {
-                throw new IniIoException(string.Format(Strings.ErrorReadingFile, filePath), filePath, ex);
+                throw new IniIoException(string.Format("Error reading file \"{0}\".", filePath), filePath, ex);
             }
         }
 

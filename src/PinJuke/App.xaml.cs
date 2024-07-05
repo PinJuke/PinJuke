@@ -1,6 +1,8 @@
 ﻿using PinJuke.Audio;
+using PinJuke.Configurator;
 using PinJuke.Controller;
 using PinJuke.Dof;
+using PinJuke.Ini;
 using PinJuke.Model;
 using System;
 using System.Collections.Generic;
@@ -23,21 +25,64 @@ namespace PinJuke
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            base.OnStartup(e);
+
             string? playlistConfigFilePath = null;
-            if (e.Args.Length >= 1)
+            bool configurator = false;
+
+            foreach (var arg in e.Args)
             {
-                playlistConfigFilePath = Path.GetFullPath(e.Args[0]);
+                if (arg.StartsWith('-'))
+                {
+                    switch (arg)
+                    {
+                        case "--configurator":
+                            configurator = true;
+                            break;
+                        default:
+                            MessageBox.Show(string.Format("Unknown argument \"{0}\".", arg), AppDomain.CurrentDomain.FriendlyName);
+                            Application.Current.Shutdown(1);
+                            return;
+                    }
+                }
+                else
+                {
+                    playlistConfigFilePath = Path.GetFullPath(arg);
+                }
             }
 
+            if (configurator)
+            {
+                RunConfigurator();
+                return;
+            }
+
+            RunPlayer(playlistConfigFilePath);
+        }
+
+        private void RunConfigurator()
+        {
+            var configuratorWindow = new ConfiguratorWindow();
+            configuratorWindow.Show();
+        }
+
+        private void RunPlayer(string? playlistConfigFilePath)
+        {
             Configuration.Configuration configuration;
             try
             {
                 configuration = LoadConfiguration(playlistConfigFilePath);
             }
-            catch (Configuration.IniIoException ex)
+            catch (IniIoException ex)
             {
-                MessageBox.Show(ex.Message, AppDomain.CurrentDomain.FriendlyName);
-                Application.Current.Shutdown(1);
+                if (MessageBox.Show(Strings.WantToStartConfigurator, string.Format(Strings.ErrorReadingFile, ex.FilePath), MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    RunConfigurator();
+                }
+                else
+                {
+                    Application.Current.Shutdown(1);
+                }
                 return;
             }
 
@@ -46,10 +91,10 @@ namespace PinJuke
             {
                 userConfiguration = LoadUserConfiguration();
             }
-            catch (Configuration.IniIoException ex)
+            catch (IniIoException ex)
             {
                 Debug.WriteLine("Error reading user configuration ini file: " + ex.Message);
-                userConfiguration = new(new Configuration.IniDocument());
+                userConfiguration = new(new IniDocument());
             }
 
             Unosquare.FFME.Library.FFmpegDirectory = @"ffmpeg";
@@ -74,8 +119,6 @@ namespace PinJuke
             playFieldWindow?.Show();
             backGlassWindow?.Show();
             dmdWindow?.Show();
-
-            base.OnStartup(e);
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -92,7 +135,7 @@ namespace PinJuke
         private Configuration.Configuration LoadConfiguration(string? playlistConfigFilePath)
         {
             List<string> iniFilePaths = new();
-            iniFilePaths.Add(@"Configs\PinJuke.global.ini");
+            iniFilePaths.Add(Configuration.ConfigPath.CONFIG_GLOBAL_FILE_PATH);
             if (playlistConfigFilePath != null)
             {
                 iniFilePaths.Add(playlistConfigFilePath);
@@ -105,7 +148,7 @@ namespace PinJuke
         private Configuration.UserConfiguration LoadUserConfiguration()
         {
             var userConfigDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\PinJuke";
-            var userConfigFile = userConfigDir + @"\PinJuke.user.ini";
+            var userConfigFile = Path.Combine(userConfigDir, Configuration.ConfigPath.USER_FILE_NAME);
 
             var loader = new Configuration.UserConfigurationLoader();
             return loader.FromIniFilePath(userConfigFile);
@@ -114,7 +157,7 @@ namespace PinJuke
         private void SaveUserConfiguration()
         {
             var userConfigDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\PinJuke";
-            var userConfigFile = userConfigDir + @"\PinJuke.user.ini";
+            var userConfigFile = Path.Combine(userConfigDir, Configuration.ConfigPath.USER_FILE_NAME);
 
             Directory.CreateDirectory(userConfigDir);
             using var textWriter = new StreamWriter(userConfigFile);

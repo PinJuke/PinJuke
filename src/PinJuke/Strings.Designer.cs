@@ -70,6 +70,24 @@ namespace PinJuke {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Choose directory….
+        /// </summary>
+        internal static string ChooseDirectory {
+            get {
+                return ResourceManager.GetString("ChooseDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose file….
+        /// </summary>
+        internal static string ChooseFile {
+            get {
+                return ResourceManager.GetString("ChooseFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Album.
         /// </summary>
         internal static string CoverAlbum {
@@ -120,6 +138,15 @@ namespace PinJuke {
         internal static string NoAudioDeviceFound {
             get {
                 return ResourceManager.GetString("NoAudioDeviceFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Relative path.
+        /// </summary>
+        internal static string RelativePath {
+            get {
+                return ResourceManager.GetString("RelativePath", resourceCulture);
             }
         }
         
@@ -183,6 +210,15 @@ namespace PinJuke {
         internal static string StateVolumeXPercent {
             get {
                 return ResourceManager.GetString("StateVolumeXPercent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to start the configurator?.
+        /// </summary>
+        internal static string WantToStartConfigurator {
+            get {
+                return ResourceManager.GetString("WantToStartConfigurator", resourceCulture);
             }
         }
     }

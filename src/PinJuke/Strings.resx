@@ -159,4 +159,16 @@
   <data name="StateTilt" xml:space="preserve">
     <value>Tilt!</value>
   </data>
+  <data name="ChooseFile" xml:space="preserve">
+    <value>Choose file…</value>
+  </data>
+  <data name="RelativePath" xml:space="preserve">
+    <value>Relative path</value>
+  </data>
+  <data name="ChooseDirectory" xml:space="preserve">
+    <value>Choose directory…</value>
+  </data>
+  <data name="WantToStartConfigurator" xml:space="preserve">
+    <value>Do you want to start the configurator?</value>
+  </data>
 </root>

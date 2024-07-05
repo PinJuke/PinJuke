@@ -13,7 +13,7 @@ cd PinJuke
 
 ## Getting FFmpeg
 
-Download the zip archive from https://github.com/PinJuke/FFmpeg-Builds/releases and place the dll files and LICENSE.txt from the archive in `src\PinJuke\ffmpeg`.
+Download the zip archive `ffmpeg-6.0-full_build-shared.zip` from https://github.com/GyanD/codexffmpeg/releases/tag/6.0 and place the dll files and LICENSE.txt from the archive in `src\PinJuke\ffmpeg`.
 
 ## Building projectM
 
