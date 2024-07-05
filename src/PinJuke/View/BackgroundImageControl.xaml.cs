@@ -20,7 +20,7 @@ namespace PinJuke.View
     /// <summary>
     /// Interaction logic for BackgroundImageControl.xaml
     /// </summary>
-    public partial class BackgroundImageControl : BaseControl, INotifyPropertyChanged
+    public partial class BackgroundImageControl : BaseControl
     {
         private ImageSource? backgroundImageSource = null;
         public ImageSource? BackgroundImageSource

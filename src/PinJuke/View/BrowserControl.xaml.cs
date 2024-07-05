@@ -21,7 +21,7 @@ using System.Windows.Shapes;
 
 namespace PinJuke.View
 {
-    public partial class BrowserControl : BaseControl, INotifyPropertyChanged
+    public partial class BrowserControl : BaseControl
     {
         private BrowserListControl browserList = new();
 

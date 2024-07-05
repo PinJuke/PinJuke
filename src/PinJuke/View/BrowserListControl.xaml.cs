@@ -23,7 +23,7 @@ using System.Windows.Shapes;
 
 namespace PinJuke.View
 {
-    public partial class BrowserListControl : BaseControl, INotifyPropertyChanged
+    public partial class BrowserListControl : BaseControl
     {
         private static readonly Dictionary<FileType, string> iconPaths = new()
         {
