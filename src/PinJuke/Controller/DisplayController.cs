@@ -56,7 +56,7 @@ namespace PinJuke.Controller
             switch (mainModel.SceneType)
             {
                 case SceneType.Intro:
-                    mainModel.EnterPlayback();
+                    mainModel.IntroEnded();
                     break;
                 case SceneType.Playback:
                     mainModel.PlayNext();

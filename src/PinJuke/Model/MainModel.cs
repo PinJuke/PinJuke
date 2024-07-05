@@ -272,6 +272,7 @@ namespace PinJuke.Model
                 navigationNode = scanResult.TryGetPlayableFileNodeOrDefault(GetUserPlaylist().TrackFilePath);
             }
             NavigationNode = navigationNode ?? RootDirectory?.FindChild() ?? RootDirectory;
+            CheckPlayOnStartup();
         }
 
         public void NavigateTo(FileNode? fileNode)
@@ -305,9 +306,23 @@ namespace PinJuke.Model
             }
         }
 
+        public void IntroEnded()
+        {
+            EnterPlayback();
+            CheckPlayOnStartup();
+        }
+
         public void EnterPlayback()
         {
             SceneType = SceneType.Playback;
+        }
+
+        private void CheckPlayOnStartup()
+        {
+            if (Configuration.Player.PlayOnStartup && SceneType == SceneType.Playback)
+            {
+                PlayFile(NavigationNode);
+            }
         }
 
         public void TogglePlayPause()
