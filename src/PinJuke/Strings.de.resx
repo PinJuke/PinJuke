@@ -171,4 +171,7 @@
   <data name="WantToStartConfigurator" xml:space="preserve">
     <value>Möchten Sie den Konfigurator starten?</value>
   </data>
+  <data name="PathNotFound" xml:space="preserve">
+    <value>"{0}" nicht gefunden.</value>
+  </data>
 </root>

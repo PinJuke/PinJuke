@@ -142,6 +142,15 @@ namespace PinJuke {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &quot;{0}&quot; not found..
+        /// </summary>
+        internal static string PathNotFound {
+            get {
+                return ResourceManager.GetString("PathNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Relative path.
         /// </summary>
         internal static string RelativePath {

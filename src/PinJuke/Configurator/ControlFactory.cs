@@ -134,4 +134,15 @@ namespace PinJuke.Configurator
             return new SelectControl() { Items = Items };
         }
     }
+
+    public class ButtonControlFactory : BaseControlFactory<ButtonControl>
+    {
+        public string Text { get; set; } = "";
+        public ButtonControlClickHandler? ClickHandler { get; set; } = null;
+
+        public override ButtonControl CreateControlForRow()
+        {
+            return new ButtonControl() { Text = Text, ClickHandler = ClickHandler, };
+        }
+    }
 }

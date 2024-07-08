@@ -1,5 +1,6 @@
 ﻿using PinJuke.Configuration;
 using PinJuke.Configurator.View;
+using PinJuke.Ini;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace PinJuke.Configurator.Factory
 {
     public class GlobalGroupControlFactory : GroupControlFactory
     {
-        public GlobalGroupControlFactory(Parser parser)
+        public GlobalGroupControlFactory(Parser parser, PinUpPlayerIniReader pinUpReader)
         {
             // Some cases of Key share the same value.
             var keys = Enum.GetNames<Key>().Select(name => new Item(name, Enum.Parse<Key>(name))).ToList();
@@ -32,15 +33,15 @@ namespace PinJuke.Configurator.Factory
                         },
                     ]
                 },
-                new WindowGroupControlFactory(parser, "PlayField", false)
+                new WindowGroupControlFactory(parser, "PlayField", false, pinUpReader, "INFO3")
                 {
                     LabelText = "Play field",
                 },
-                new WindowGroupControlFactory(parser, "BackGlass", false)
+                new WindowGroupControlFactory(parser, "BackGlass", false, pinUpReader, "INFO2")
                 {
                     LabelText = "Back glass",
                 },
-                new WindowGroupControlFactory(parser, "DMD", true)
+                new WindowGroupControlFactory(parser, "DMD", true, pinUpReader, "INFO1")
                 {
                     LabelText = "DMD",
                 },
@@ -136,7 +137,7 @@ namespace PinJuke.Configurator.Factory
 
     public class WindowGroupControlFactory : GroupControlFactory
     {
-        public WindowGroupControlFactory(Parser parser, string sectionName, bool enabledAvailable)
+        public WindowGroupControlFactory(Parser parser, string sectionName, bool enabledAvailable, PinUpPlayerIniReader pinUpReader, string pinUpSectionName)
         {
             ControlFactory<UIElement>[] enabledControls = enabledAvailable
                 ? [
@@ -150,6 +151,33 @@ namespace PinJuke.Configurator.Factory
 
             Controls = [
                 ..enabledControls,
+                new ButtonControlFactory()
+                {
+                    LabelText = "",
+                    Text = "Get display position from PinUP",
+                    ClickHandler = (buttonControl) =>
+                    {
+                        (int, int, int, int)? position;
+                        try
+                        {
+                            position = pinUpReader.FindPosition(pinUpSectionName);
+                        }
+                        catch (IniIoException ex)
+                        {
+                            MessageBox.Show(string.Format(Strings.ErrorReadingFile, ex.FilePath), AppDomain.CurrentDomain.FriendlyName);
+                            return;
+                        }
+                        if (position == null)
+                        {
+                            MessageBox.Show(string.Format(Strings.PathNotFound, "PinUpPlayer.ini"), AppDomain.CurrentDomain.FriendlyName);
+                            return;
+                        }
+                        ((NumberControl)buttonControl.GetSibling(1)).Value = position.Value.Item1;
+                        ((NumberControl)buttonControl.GetSibling(2)).Value = position.Value.Item2;
+                        ((NumberControl)buttonControl.GetSibling(3)).Value = position.Value.Item3;
+                        ((NumberControl)buttonControl.GetSibling(4)).Value = position.Value.Item4;
+                    },
+                },
                 new NumberControlFactory()
                 {
                     LabelText = "Left",

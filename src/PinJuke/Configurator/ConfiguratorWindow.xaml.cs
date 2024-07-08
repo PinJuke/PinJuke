@@ -23,8 +23,13 @@ namespace PinJuke.Configurator
             InitializeComponent();
 
             var parser = new Configuration.Parser();
+            var pinUpReader = new PinUpPlayerIniReader(new()
+            {
+                Directory.GetCurrentDirectory(),
+                @"C:\vPinball"
+            });
 
-            GlobalGroupControlFactory = new(parser);
+            GlobalGroupControlFactory = new(parser, pinUpReader);
             PlaylistGroupControlFactory = new(parser);
 
             AddTabItems();

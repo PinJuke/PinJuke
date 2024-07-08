@@ -1,5 +1,4 @@
-﻿using PinJuke.View;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +15,7 @@ using System.Windows.Shapes;
 
 namespace PinJuke.Configurator.View
 {
-    public partial class RowControl : BaseControl
+    public partial class RowControl : ConfiguratorControl
     {
         private string labelText = "";
         public string LabelText

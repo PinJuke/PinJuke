@@ -1,11 +1,10 @@
-﻿using PinJuke.View;
-using System.IO;
+﻿using System.IO;
 using System.Windows;
 
 
 namespace PinJuke.Configurator.View
 {
-    public partial class PathControl : BaseControl
+    public partial class PathControl : ConfiguratorControl
     {
         private bool emptyEnabled = false;
         public bool EmptyEnabled

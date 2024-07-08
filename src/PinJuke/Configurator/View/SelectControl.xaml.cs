@@ -1,5 +1,4 @@
-﻿using PinJuke.View;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
@@ -25,7 +24,7 @@ namespace PinJuke.Configurator.View
         }
     }
 
-    public partial class SelectControl : BaseControl
+    public partial class SelectControl : ConfiguratorControl
     {
         private List<Item> items = new();
         public List<Item> Items

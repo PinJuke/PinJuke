@@ -1,12 +1,11 @@
-﻿using PinJuke.View;
-using System;
+﻿using System;
 using System.IO;
 using System.Windows;
 
 
 namespace PinJuke.Configurator.View
 {
-    public partial class NumberControl : BaseControl
+    public partial class NumberControl : ConfiguratorControl
     {
         private float? value = null;
         public float? Value
