@@ -92,5 +92,23 @@ namespace PinJuke.View.Visualizer
         {
             LibProjectMPlaylist.PlayNext(Handle, hardCut);
         }
+
+        unsafe public string? GetCurrentItem()
+        {
+            var position = LibProjectMPlaylist.GetPosition(Handle);
+            var str = LibProjectMPlaylist.Item(Handle, position);
+            if (str == null)
+            {
+                return null;
+            }
+            try
+            {
+                return Marshal.PtrToStringAnsi((nint)str);
+            }
+            finally
+            {
+                LibProjectMPlaylist.FreeString(str);
+            }
+        }
     }
 }

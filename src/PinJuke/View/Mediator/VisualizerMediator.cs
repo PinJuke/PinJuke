@@ -29,7 +29,31 @@ namespace PinJuke.View.Mediator
         {
             base.OnLoaded();
 
+            UpdateView();
+            mainModel.PropertyChanged += MainModel_PropertyChanged;
+
             visualizerControl.Initialize(audioManager, mainModel.Configuration.Milkdrop);
+        }
+
+        protected override void OnUnloaded()
+        {
+            mainModel.PropertyChanged -= MainModel_PropertyChanged;
+            base.OnUnloaded();
+        }
+
+        private void MainModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(MainModel.MilkdropInfoVisible):
+                    UpdateView();
+                    break;
+            }
+        }
+
+        private void UpdateView()
+        {
+            visualizerControl.MilkdropInfoVisible = mainModel.MilkdropInfoVisible;
         }
     }
 }

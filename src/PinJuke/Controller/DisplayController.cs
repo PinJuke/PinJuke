@@ -140,14 +140,28 @@ namespace PinJuke.Controller
 
         private void InputManager_VolumeDownEvent(object? sender, InputActionEventArgs e)
         {
-            var volumeLevel = audioManager.AddVolumeLevel(-0.05f);
-            ShowVolumeLevel(volumeLevel);
+            if (mainModel.BrowserVisible)
+            {
+                mainModel.ShowMilkdropInfo();
+            }
+            else
+            {
+                var volumeLevel = audioManager.AddVolumeLevel(-0.05f);
+                ShowVolumeLevel(volumeLevel);
+            }
         }
 
         private void InputManager_VolumeUpEvent(object? sender, InputActionEventArgs e)
         {
-            var volumeLevel = audioManager.AddVolumeLevel(0.05f);
-            ShowVolumeLevel(volumeLevel);
+            if (mainModel.BrowserVisible)
+            {
+                mainModel.ShowMilkdropInfo();
+            }
+            else
+            {
+                var volumeLevel = audioManager.AddVolumeLevel(0.05f);
+                ShowVolumeLevel(volumeLevel);
+            }
         }
 
         private void ShowVolumeLevel(float? volumeLevel)

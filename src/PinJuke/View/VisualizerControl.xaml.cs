@@ -29,6 +29,15 @@ namespace PinJuke.View
         private ProjectMRenderer projectMRenderer;
         private ProjectMPlaylist projectMPlaylist;
 
+        public bool MilkdropInfoVisible
+        {
+            get => MilkdropInfoControl.ViewVisible;
+            set
+            {
+                SetMilkdropInfoVisible(value);
+            }
+        }
+
         public VisualizerControl()
         {
             // https://stackoverflow.com/questions/1550212/proper-cleanup-of-wpf-user-controls
@@ -85,6 +94,28 @@ namespace PinJuke.View
         private void OpenTkControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             projectMRenderer.SetSize((nuint)OpenTkControl.RenderSize.Width, (nuint)OpenTkControl.RenderSize.Height);
+        }
+
+        private void SetMilkdropInfoVisible(bool visible)
+        {
+            if (visible)
+            {
+                var item = projectMPlaylist.GetCurrentItem();
+                var presetsPath = milkdrop?.PresetsPath;
+                if (item != null && presetsPath != null)
+                {
+                    if (!presetsPath.EndsWith('\\'))
+                    {
+                        presetsPath += '\\';
+                    }
+                    if (item.ToLowerInvariant().StartsWith(presetsPath.ToLowerInvariant()))
+                    {
+                        item = item.Substring(presetsPath.Length);
+                    }
+                }
+                MilkdropInfoControl.StateText = item;
+            }
+            MilkdropInfoControl.ViewVisible = visible;
         }
 
     }

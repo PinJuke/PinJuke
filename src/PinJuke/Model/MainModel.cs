@@ -170,6 +170,26 @@ namespace PinJuke.Model
 
         private int stateLastHideQueuedAt;
 
+        private bool milkdropInfoVisible = false;
+        /// <summary>
+        /// Saves whether the milkdrop info overlay is currently visible.
+        /// </summary>
+        public bool MilkdropInfoVisible
+        {
+            get => milkdropInfoVisible;
+            private set
+            {
+                if (value == milkdropInfoVisible)
+                {
+                    return;
+                }
+                milkdropInfoVisible = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private int milkdropInfoLastHideQueuedAt;
+
         private State lastState = new State(StateType.Stop);
         /// <summary>
         /// Saves the last occurred state.
@@ -255,6 +275,24 @@ namespace PinJuke.Model
                 return;
             }
             StateVisible = false;
+        }
+
+        public void ShowMilkdropInfo()
+        {
+            MilkdropInfoVisible = true;
+            HideMilkdropInfoAfterDelay();
+        }
+
+        private async void HideMilkdropInfoAfterDelay()
+        {
+            var hideQueuedAt = milkdropInfoLastHideQueuedAt = Environment.TickCount;
+
+            await Task.Delay(5000);
+            if (hideQueuedAt != milkdropInfoLastHideQueuedAt)
+            {
+                return;
+            }
+            MilkdropInfoVisible = false;
         }
 
         private UserPlaylist GetUserPlaylist()
