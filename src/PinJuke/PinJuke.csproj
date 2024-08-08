@@ -25,7 +25,7 @@
     <PackageReference Include="DotNetProjects.SVGImage" Version="5.2.1" />
     <PackageReference Include="NaturalSort.Extension" Version="4.3.0" />
     <PackageReference Include="NAudio.Wasapi" Version="2.2.1" />
-    <PackageReference Include="OpenTK.GLWpfControl" Version="4.2.3" />
+    <PackageReference Include="OpenTK.GLWpfControl" Version="4.3.2" />
     <PackageReference Include="SoftCircuits.OrderedDictionary" Version="3.2.0" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
     <PackageReference Include="zgabi.FFME.Windows" Version="6.0.2" />
