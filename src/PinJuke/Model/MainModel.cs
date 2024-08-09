@@ -34,8 +34,11 @@ namespace PinJuke.Model
     public class MainModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        // TODO: Move these into an event bus.
         public event EventHandler? ShutdownEvent;
         public event EventHandler<InputActionEventArgs>? InputEvent;
+        public event EventHandler<PresetActionEventArgs>? PresetEvent;
 
         public Configuration.Configuration Configuration { get; }
         public Configuration.UserConfiguration UserConfiguration { get; }
@@ -170,25 +173,25 @@ namespace PinJuke.Model
 
         private int stateLastHideQueuedAt;
 
-        private bool milkdropInfoVisible = false;
+        private bool presetInfoVisible = false;
         /// <summary>
-        /// Saves whether the milkdrop info overlay is currently visible.
+        /// Saves whether the preset info overlay is currently visible.
         /// </summary>
-        public bool MilkdropInfoVisible
+        public bool PresetInfoVisible
         {
-            get => milkdropInfoVisible;
+            get => presetInfoVisible;
             private set
             {
-                if (value == milkdropInfoVisible)
+                if (value == presetInfoVisible)
                 {
                     return;
                 }
-                milkdropInfoVisible = value;
+                presetInfoVisible = value;
                 NotifyPropertyChanged();
             }
         }
 
-        private int milkdropInfoLastHideQueuedAt;
+        private int presetInfoLastHideQueuedAt;
 
         private State lastState = new State(StateType.Stop);
         /// <summary>
@@ -277,22 +280,34 @@ namespace PinJuke.Model
             StateVisible = false;
         }
 
-        public void ShowMilkdropInfo()
+        public void ShowPresetInfo()
         {
-            MilkdropInfoVisible = true;
-            HideMilkdropInfoAfterDelay();
+            PresetInfoVisible = true;
+            HidePresetInfoAfterDelay();
         }
 
-        private async void HideMilkdropInfoAfterDelay()
+        private async void HidePresetInfoAfterDelay()
         {
-            var hideQueuedAt = milkdropInfoLastHideQueuedAt = Environment.TickCount;
+            var hideQueuedAt = presetInfoLastHideQueuedAt = Environment.TickCount;
 
             await Task.Delay(5000);
-            if (hideQueuedAt != milkdropInfoLastHideQueuedAt)
+            if (hideQueuedAt != presetInfoLastHideQueuedAt)
             {
                 return;
             }
-            MilkdropInfoVisible = false;
+            PresetInfoVisible = false;
+        }
+
+        public void TriggerPreviousPreset()
+        {
+            PresetEvent?.Invoke(this, new(PresetAction.Previous));
+            ShowPresetInfo();
+        }
+
+        public void TriggerNextPreset()
+        {
+            PresetEvent?.Invoke(this, new(PresetAction.Next));
+            ShowPresetInfo();
         }
 
         private UserPlaylist GetUserPlaylist()

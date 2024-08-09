@@ -27,11 +27,17 @@ namespace PinJuke.View.Visualizer
         [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_play_next")]
         public static extern uint PlayNext(nuint projectMPlaylistHandle, bool hardCut);
 
+        [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_play_previous")]
+        public static extern uint PlayPrevious(nuint projectMPlaylistHandle, bool hardCut);
+
+        [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_play_last")]
+        public static extern uint PlayLast(nuint projectMPlaylistHandle, bool hardCut);
+
         [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_item")]
-        unsafe public static extern byte* Item(nuint projectMPlaylistHandle, uint index);
+        public static extern nuint Item(nuint projectMPlaylistHandle, uint index);
 
         [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_free_string")]
-        unsafe public static extern void FreeString(byte* str);
+        public static extern void FreeString(nuint pString);
 
         [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_get_position")]
         public static extern uint GetPosition(nuint projectMPlaylistHandle);

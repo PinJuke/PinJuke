@@ -1,5 +1,6 @@
 ﻿using DirectOutput.Cab.Out.DMX;
 using PinJuke.Audio;
+using PinJuke.Configuration;
 using PinJuke.Model;
 using System;
 using System.Collections.Generic;
@@ -16,12 +17,14 @@ namespace PinJuke.View.Mediator
     {
         private readonly VisualizerControl visualizerControl;
         private readonly MainModel mainModel;
+        private readonly Display displayConfig;
         private readonly AudioManager audioManager;
 
-        public VisualizerMediator(VisualizerControl visualizerControl, MainModel mainModel, AudioManager audioManager) : base(visualizerControl)
+        public VisualizerMediator(VisualizerControl visualizerControl, MainModel mainModel, Display displayConfig, AudioManager audioManager) : base(visualizerControl)
         {
             this.visualizerControl = visualizerControl;
             this.mainModel = mainModel;
+            this.displayConfig = displayConfig;
             this.audioManager = audioManager;
         }
 
@@ -31,6 +34,7 @@ namespace PinJuke.View.Mediator
 
             UpdateView();
             mainModel.PropertyChanged += MainModel_PropertyChanged;
+            mainModel.PresetEvent += MainModel_PresetEvent;
 
             visualizerControl.Initialize(audioManager, mainModel.Configuration.Milkdrop);
         }
@@ -38,6 +42,7 @@ namespace PinJuke.View.Mediator
         protected override void OnUnloaded()
         {
             mainModel.PropertyChanged -= MainModel_PropertyChanged;
+            mainModel.PresetEvent -= MainModel_PresetEvent;
             base.OnUnloaded();
         }
 
@@ -45,15 +50,36 @@ namespace PinJuke.View.Mediator
         {
             switch (e.PropertyName)
             {
-                case nameof(MainModel.MilkdropInfoVisible):
+                case nameof(MainModel.PresetInfoVisible):
                     UpdateView();
+                    break;
+            }
+        }
+
+        private void MainModel_PresetEvent(object? sender, PresetActionEventArgs e)
+        {
+            Play(e.PresetAction);
+        }
+
+        private async void Play(PresetAction presetAction)
+        {
+            // TODO: Does this help if more than one visualizer is displayed?
+            await Task.Delay((int)displayConfig.Role * 2000);
+
+            switch (presetAction)
+            {
+                case PresetAction.Next:
+                    visualizerControl.PlayNext();
+                    break;
+                case PresetAction.Previous:
+                    visualizerControl.PlayPrevious();
                     break;
             }
         }
 
         private void UpdateView()
         {
-            visualizerControl.MilkdropInfoVisible = mainModel.MilkdropInfoVisible;
+            visualizerControl.PresetInfoVisible = mainModel.PresetInfoVisible;
         }
     }
 }

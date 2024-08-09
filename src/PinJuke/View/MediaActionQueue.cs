@@ -147,7 +147,7 @@ namespace PinJuke.View
                 await Task.Delay(DELAY);
             }
             // Still testing...
-            GC.Collect();
+            // GC.Collect();
         }
     }
 }

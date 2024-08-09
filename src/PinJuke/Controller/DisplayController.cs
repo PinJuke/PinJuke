@@ -83,6 +83,7 @@ namespace PinJuke.Controller
             else
             {
                 mainModel.ShowBrowser();
+                mainModel.ShowPresetInfo();
             }
         }
 
@@ -142,7 +143,7 @@ namespace PinJuke.Controller
         {
             if (mainModel.BrowserVisible)
             {
-                mainModel.ShowMilkdropInfo();
+                mainModel.TriggerPreviousPreset();
             }
             else
             {
@@ -155,7 +156,7 @@ namespace PinJuke.Controller
         {
             if (mainModel.BrowserVisible)
             {
-                mainModel.ShowMilkdropInfo();
+                mainModel.TriggerNextPreset();
             }
             else
             {

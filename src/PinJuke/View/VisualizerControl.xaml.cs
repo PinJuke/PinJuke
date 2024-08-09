@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,12 +30,12 @@ namespace PinJuke.View
         private ProjectMRenderer projectMRenderer;
         private ProjectMPlaylist projectMPlaylist;
 
-        public bool MilkdropInfoVisible
+        public bool PresetInfoVisible
         {
-            get => MilkdropInfoControl.ViewVisible;
+            get => PresetInfoControl.ViewVisible;
             set
             {
-                SetMilkdropInfoVisible(value);
+                SetPresetInfoVisible(value);
             }
         }
 
@@ -65,7 +66,8 @@ namespace PinJuke.View
             this.audioManager = audioManager;
             this.milkdrop = milkdrop;
 
-            projectMRenderer.SetTextureSearchPaths(new string[] { milkdrop.TexturesPath });
+            projectMRenderer.SetTextureSearchPaths([milkdrop.TexturesPath]);
+            projectMRenderer.SetPresetDuration(60);
             projectMPlaylist.AddPath(milkdrop.PresetsPath, true, false);
             projectMPlaylist.SetShuffle(true);
             projectMPlaylist.PlayNext(true);
@@ -96,27 +98,43 @@ namespace PinJuke.View
             projectMRenderer.SetSize((nuint)OpenTkControl.RenderSize.Width, (nuint)OpenTkControl.RenderSize.Height);
         }
 
-        private void SetMilkdropInfoVisible(bool visible)
+        private void SetPresetInfoVisible(bool visible)
         {
             if (visible)
             {
-                var item = projectMPlaylist.GetCurrentItem();
-                var presetsPath = milkdrop?.PresetsPath;
-                if (item != null && presetsPath != null)
-                {
-                    if (!presetsPath.EndsWith('\\'))
-                    {
-                        presetsPath += '\\';
-                    }
-                    if (item.ToLowerInvariant().StartsWith(presetsPath.ToLowerInvariant()))
-                    {
-                        item = item.Substring(presetsPath.Length);
-                    }
-                }
-                MilkdropInfoControl.StateText = item;
+                UpdatePresetInfoText();
             }
-            MilkdropInfoControl.ViewVisible = visible;
+            PresetInfoControl.ViewVisible = visible;
         }
 
+        private void UpdatePresetInfoText()
+        {
+            var item = projectMPlaylist.GetCurrentItem();
+            var presetsPath = milkdrop?.PresetsPath;
+            if (item != null && presetsPath != null)
+            {
+                if (!presetsPath.EndsWith('\\'))
+                {
+                    presetsPath += '\\';
+                }
+                if (item.ToLowerInvariant().StartsWith(presetsPath.ToLowerInvariant()))
+                {
+                    item = item.Substring(presetsPath.Length);
+                }
+            }
+            PresetInfoControl.StateText = item;
+        }
+
+        public void PlayNext()
+        {
+            projectMPlaylist.PlayNext(false);
+            UpdatePresetInfoText();
+        }
+
+        public void PlayPrevious()
+        {
+            projectMPlaylist.PlayLast(false);
+            UpdatePresetInfoText();
+        }
     }
 }

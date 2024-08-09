@@ -27,5 +27,8 @@ namespace PinJuke.View.Visualizer
         [DllImport("projectM-4.dll", EntryPoint = "projectm_pcm_add_float")]
         public static extern void PcmAddFloat(nuint projectMHandle, byte[] samples, uint count, uint channels);
 
+        [DllImport("projectM-4.dll", EntryPoint = "projectm_set_preset_duration")]
+        public static extern void SetPresetDuration(nuint projectMHandle, double seconds);
+
     }
 }

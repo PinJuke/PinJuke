@@ -14,6 +14,6 @@
             SizeChanged="OpenTkControl_SizeChanged">
         </glWpfControl:GLWpfControl>
 
-        <local:MilkdropInfoControl x:Name="MilkdropInfoControl"></local:MilkdropInfoControl>
+        <local:PresetInfoControl x:Name="PresetInfoControl"></local:PresetInfoControl>
     </Grid>
 </UserControl>

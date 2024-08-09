@@ -93,21 +93,26 @@ namespace PinJuke.View.Visualizer
             LibProjectMPlaylist.PlayNext(Handle, hardCut);
         }
 
-        unsafe public string? GetCurrentItem()
+        public void PlayLast(bool hardCut)
+        {
+            LibProjectMPlaylist.PlayLast(Handle, hardCut);
+        }
+
+        public string? GetCurrentItem()
         {
             var position = LibProjectMPlaylist.GetPosition(Handle);
-            var str = LibProjectMPlaylist.Item(Handle, position);
-            if (str == null)
+            var pString = LibProjectMPlaylist.Item(Handle, position);
+            if (pString == nuint.Zero)
             {
                 return null;
             }
             try
             {
-                return Marshal.PtrToStringAnsi((nint)str);
+                return Marshal.PtrToStringAnsi((nint)pString);
             }
             finally
             {
-                LibProjectMPlaylist.FreeString(str);
+                LibProjectMPlaylist.FreeString(pString);
             }
         }
     }

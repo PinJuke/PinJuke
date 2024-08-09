@@ -69,7 +69,7 @@ namespace PinJuke
                     break;
                 case Configuration.BackgroundType.MilkdropVisualization:
                     visualizerControl = new();
-                    new VisualizerMediator(visualizerControl, mainModel, audioManager).Initialize();
+                    new VisualizerMediator(visualizerControl, mainModel, displayConfig, audioManager).Initialize();
                     VisualizerContainer.Content = visualizerControl;
                     break;
             }

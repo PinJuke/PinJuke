@@ -58,6 +58,11 @@ namespace PinJuke.View.Visualizer
             LibProjectM.SetTextureSearchPaths(Handle, textureSearchPaths, (nuint)textureSearchPaths.Length);
         }
 
+        public void SetPresetDuration(double seconds)
+        {
+            LibProjectM.SetPresetDuration(Handle, seconds);
+        }
+
         public void SetSize(nuint width, nuint height)
         {
             LibProjectM.SetWindowSize(Handle, width, height);

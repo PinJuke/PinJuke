@@ -19,7 +19,7 @@ using System.Windows.Shapes;
 
 namespace PinJuke.View
 {
-    public partial class MilkdropInfoControl : BaseControl
+    public partial class PresetInfoControl : BaseControl
     {
         private bool viewVisible = false;
         public bool ViewVisible
@@ -35,7 +35,7 @@ namespace PinJuke.View
             set => SetField(ref stateText, value);
         }
 
-        public MilkdropInfoControl()
+        public PresetInfoControl()
         {
             InitializeComponent();
         }
