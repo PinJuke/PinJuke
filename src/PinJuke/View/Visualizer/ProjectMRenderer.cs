@@ -63,14 +63,14 @@ namespace PinJuke.View.Visualizer
             LibProjectM.SetPresetDuration(Handle, seconds);
         }
 
-        public void SetSize(nuint width, nuint height)
+        public void SetSize(int width, int height)
         {
-            LibProjectM.SetWindowSize(Handle, width, height);
+            LibProjectM.SetWindowSize(Handle, (nuint)width, (nuint)height);
         }
 
-        public void Render()
+        public void Render(int framebuffer)
         {
-            LibProjectM.OpenglRenderFrame(Handle);
+            LibProjectM.OpenglRenderFrame(Handle, (uint)framebuffer);
         }
 
         public void OnPcmData(byte[] samples, uint count, uint channels)

@@ -9,37 +9,39 @@ namespace PinJuke.View.Visualizer
 {
     public class LibProjectMPlaylist
     {
-        [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_create")]
+        private const string DLL = "projectM-4-playlist.dll";
+
+        [DllImport(DLL, EntryPoint = "projectm_playlist_create")]
         public static extern nuint Create(nuint projectMHandle);
 
-        [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_destroy")]
+        [DllImport(DLL, EntryPoint = "projectm_playlist_destroy")]
         public static extern void Destroy(nuint projectMPlaylistHandle);
 
-        [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_connect")]
+        [DllImport(DLL, EntryPoint = "projectm_playlist_connect")]
         public static extern void Connect(nuint projectMPlaylistHandle, nuint projectMHandle);
 
-        [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_add_path")]
+        [DllImport(DLL, EntryPoint = "projectm_playlist_add_path")]
         public static extern uint AddPath(nuint projectMPlaylistHandle, string path, bool recurseSubdirs, bool allowDuplicates);
 
-        [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_set_shuffle")]
+        [DllImport(DLL, EntryPoint = "projectm_playlist_set_shuffle")]
         public static extern void SetShuffle(nuint projectMPlaylistHandle, bool shuffle);
 
-        [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_play_next")]
+        [DllImport(DLL, EntryPoint = "projectm_playlist_play_next")]
         public static extern uint PlayNext(nuint projectMPlaylistHandle, bool hardCut);
 
-        [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_play_previous")]
+        [DllImport(DLL, EntryPoint = "projectm_playlist_play_previous")]
         public static extern uint PlayPrevious(nuint projectMPlaylistHandle, bool hardCut);
 
-        [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_play_last")]
+        [DllImport(DLL, EntryPoint = "projectm_playlist_play_last")]
         public static extern uint PlayLast(nuint projectMPlaylistHandle, bool hardCut);
 
-        [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_item")]
+        [DllImport(DLL, EntryPoint = "projectm_playlist_item")]
         public static extern nuint Item(nuint projectMPlaylistHandle, uint index);
 
-        [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_free_string")]
+        [DllImport(DLL, EntryPoint = "projectm_playlist_free_string")]
         public static extern void FreeString(nuint pString);
 
-        [DllImport("projectM-4-playlist.dll", EntryPoint = "projectm_playlist_get_position")]
+        [DllImport(DLL, EntryPoint = "projectm_playlist_get_position")]
         public static extern uint GetPosition(nuint projectMPlaylistHandle);
     }
 }

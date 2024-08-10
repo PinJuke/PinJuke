@@ -9,25 +9,27 @@ namespace PinJuke.View.Visualizer
 {
     public class LibProjectM
     {
-        [DllImport("projectM-4.dll", EntryPoint = "projectm_create")]
+        private const string DLL = "projectM-4.dll";
+
+        [DllImport(DLL, EntryPoint = "projectm_create")]
         public static extern nuint Create();
 
-        [DllImport("projectM-4.dll", EntryPoint = "projectm_destroy")]
+        [DllImport(DLL, EntryPoint = "projectm_destroy")]
         public static extern void Destroy(nuint projectMHandle);
 
-        [DllImport("projectM-4.dll", EntryPoint = "projectm_set_window_size")]
+        [DllImport(DLL, EntryPoint = "projectm_set_window_size")]
         public static extern void SetWindowSize(nuint projectMHandle, nuint width, nuint size);
 
-        [DllImport("projectM-4.dll", EntryPoint = "projectm_opengl_render_frame")]
-        public static extern void OpenglRenderFrame(nuint projectMHandle);
+        [DllImport(DLL, EntryPoint = "projectm_opengl_render_frame_fbo")]
+        public static extern void OpenglRenderFrame(nuint projectMHandle, uint framebuffer);
 
-        [DllImport("projectM-4.dll", EntryPoint = "projectm_set_texture_search_paths")]
+        [DllImport(DLL, EntryPoint = "projectm_set_texture_search_paths")]
         public static extern void SetTextureSearchPaths(nuint projectMHandle, string[] textureSearchPaths, nuint count);
 
-        [DllImport("projectM-4.dll", EntryPoint = "projectm_pcm_add_float")]
+        [DllImport(DLL, EntryPoint = "projectm_pcm_add_float")]
         public static extern void PcmAddFloat(nuint projectMHandle, byte[] samples, uint count, uint channels);
 
-        [DllImport("projectM-4.dll", EntryPoint = "projectm_set_preset_duration")]
+        [DllImport(DLL, EntryPoint = "projectm_set_preset_duration")]
         public static extern void SetPresetDuration(nuint projectMHandle, double seconds);
 
     }

@@ -1,34 +1,26 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using OpenTK.Wpf;
 using PinJuke.Audio;
 using PinJuke.Configuration;
+using PinJuke.View;
 using PinJuke.View.Visualizer;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PinJuke.View
 {
     public partial class VisualizerControl : UserControl
     {
-        private AudioManager? audioManager = null;
+        private Visualizer.Visualizer? visualizer = null;
         private Milkdrop? milkdrop = null;
-
-        private ProjectMRenderer projectMRenderer;
-        private ProjectMPlaylist projectMPlaylist;
 
         public bool PresetInfoVisible
         {
@@ -41,61 +33,88 @@ namespace PinJuke.View
 
         public VisualizerControl()
         {
-            // https://stackoverflow.com/questions/1550212/proper-cleanup-of-wpf-user-controls
-            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
             InitializeComponent();
-
-            // https://github.com/opentk/GLWpfControl/issues/82#issuecomment-1516503816
-            OpenTkControl.RegisterToEventsDirectly = false;
+            Loaded += VisualizerControl_Loaded;
+            Unloaded += VisualizerControl_Unloaded;
 
             var settings = new OpenTK.Wpf.GLWpfControlSettings();
             OpenTkControl.Start(settings);
 
-            projectMRenderer = new();
-            projectMPlaylist = new();
-            projectMPlaylist.Connect(projectMRenderer);
+            Glew.Initialize();
         }
 
-        public void Initialize(AudioManager audioManager, Milkdrop milkdrop)
+        private void VisualizerControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if (this.audioManager != null)
-            {
-                throw new InvalidOperationException("AudioManager is already set.");
-            }
+            OpenTkControl.Context!.MakeCurrent();
+            visualizer = new();
+            UpdateSize();
+            // https://stackoverflow.com/questions/1550212/proper-cleanup-of-wpf-user-controls
+            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+            OpenTkControl.Render += OpenTkControl_Render;
+            OpenTkControl.SizeChanged += OpenTkControl_SizeChanged;
+        }
 
-            this.audioManager = audioManager;
-            this.milkdrop = milkdrop;
-
-            projectMRenderer.SetTextureSearchPaths([milkdrop.TexturesPath]);
-            projectMRenderer.SetPresetDuration(60);
-            projectMPlaylist.AddPath(milkdrop.PresetsPath, true, false);
-            projectMPlaylist.SetShuffle(true);
-            projectMPlaylist.PlayNext(true);
-
-            audioManager.AddPcmDataListener(projectMRenderer);
+        private void VisualizerControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Unload();
         }
 
         private void Dispatcher_ShutdownStarted(object? sender, EventArgs e)
         {
-            Debug.WriteLine("Dispatcher_ShutdownStarted");
-
-            audioManager?.RemovePcmDataListener(projectMRenderer);
-
-            projectMPlaylist.Dispose();
-            projectMRenderer.Dispose();
+            Unload();
         }
 
-        private void OpenTkControl_OnRender(TimeSpan delta)
+        private void Unload()
+        {
+            OpenTkControl.Context!.MakeCurrent();
+            Dispatcher.ShutdownStarted -= Dispatcher_ShutdownStarted;
+            OpenTkControl.Render -= OpenTkControl_Render;
+            OpenTkControl.SizeChanged -= OpenTkControl_SizeChanged;
+            visualizer?.Dispose();
+            visualizer = null;
+        }
+
+        public void Initialize(AudioManager audioManager, Milkdrop milkdrop)
+        {
+            visualizer!.Initialize(audioManager, milkdrop);
+        }
+
+        private void OpenTkControl_Render(TimeSpan delta)
         {
             //GL.ClearColor(Color4.Blue);
             //GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            projectMRenderer.Render();
+            var framebuffer = getFramebuffer();
+            visualizer!.Render(framebuffer);
+        }
+
+        /// <summary>
+        /// TODO: This is temporary...
+        /// </summary>
+        private int getFramebuffer()
+        {
+            var rendererFieldInfo = typeof(GLWpfControl).GetField("_renderer", BindingFlags.NonPublic | BindingFlags.Instance)
+                ?? throw new Exception("Field _renderer not found.");
+            var renderer = rendererFieldInfo.GetValue(OpenTkControl);
+            if (renderer == null)
+            {
+                return 0;
+            }
+            var framebufferFieldInfo = renderer.GetType().GetProperty("GLFramebufferHandle", BindingFlags.Public | BindingFlags.Instance)
+                ?? throw new Exception("Property GLFramebufferHandle not found.");
+            var framebuffer = framebufferFieldInfo.GetValue(renderer)
+                ?? throw new Exception("GLFramebufferHandle expected to be an int.");
+            return (int)framebuffer;
         }
 
         private void OpenTkControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            projectMRenderer.SetSize((nuint)OpenTkControl.RenderSize.Width, (nuint)OpenTkControl.RenderSize.Height);
+            UpdateSize();
+        }
+
+        private void UpdateSize()
+        {
+            visualizer!.SetSize((int)OpenTkControl.RenderSize.Width, (int)OpenTkControl.RenderSize.Height);
         }
 
         private void SetPresetInfoVisible(bool visible)
@@ -109,7 +128,7 @@ namespace PinJuke.View
 
         private void UpdatePresetInfoText()
         {
-            var item = projectMPlaylist.GetCurrentItem();
+            var item = visualizer?.GetCurrentItem();
             var presetsPath = milkdrop?.PresetsPath;
             if (item != null && presetsPath != null)
             {
@@ -127,13 +146,15 @@ namespace PinJuke.View
 
         public void PlayNext()
         {
-            projectMPlaylist.PlayNext(false);
+            OpenTkControl.Context!.MakeCurrent();
+            visualizer?.PlayNext(false);
             UpdatePresetInfoText();
         }
 
         public void PlayPrevious()
         {
-            projectMPlaylist.PlayLast(false);
+            OpenTkControl.Context!.MakeCurrent();
+            visualizer?.PlayLast(false);
             UpdatePresetInfoText();
         }
     }

@@ -10,8 +10,7 @@
     <Grid>
         <glWpfControl:GLWpfControl
             x:Name="OpenTkControl"
-            Render="OpenTkControl_OnRender"
-            SizeChanged="OpenTkControl_SizeChanged">
+            >
         </glWpfControl:GLWpfControl>
 
         <local:PresetInfoControl x:Name="PresetInfoControl"></local:PresetInfoControl>

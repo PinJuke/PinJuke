@@ -61,11 +61,8 @@ namespace PinJuke.View.Mediator
             Play(e.PresetAction);
         }
 
-        private async void Play(PresetAction presetAction)
+        private void Play(PresetAction presetAction)
         {
-            // TODO: Does this help if more than one visualizer is displayed?
-            await Task.Delay((int)displayConfig.Role * 2000);
-
             switch (presetAction)
             {
                 case PresetAction.Next:

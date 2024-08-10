@@ -3,4 +3,4 @@
 	url = https://github.com/PinJuke/DirectOutput
 [submodule "deps/projectm"]
 	path = deps/projectm
-	url = https://github.com/PinJuke/projectm
+	url = https://github.com/projectM-visualizer/projectm

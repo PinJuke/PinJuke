@@ -76,11 +76,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>LICENSE</TargetPath>
     </ContentWithTargetPath>
-    <ContentWithTargetPath Include="..\..\deps\projectm\dist\lib\projectM-4.dll">
+    <ContentWithTargetPath Include="..\..\deps\projectm\dist\bin\projectM-4.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>projectM-4.dll</TargetPath>
     </ContentWithTargetPath>
-    <ContentWithTargetPath Include="..\..\deps\projectm\dist\lib\projectM-4-playlist.dll">
+    <ContentWithTargetPath Include="..\..\deps\projectm\dist\bin\projectM-4-playlist.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>projectM-4-playlist.dll</TargetPath>
     </ContentWithTargetPath>
