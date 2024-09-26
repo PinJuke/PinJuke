@@ -77,6 +77,7 @@ namespace PinJuke.View
         public void Initialize(AudioManager audioManager, Milkdrop milkdrop)
         {
             visualizer!.Initialize(audioManager, milkdrop);
+            this.milkdrop = milkdrop;
         }
 
         private void OpenTkControl_Render(TimeSpan delta)

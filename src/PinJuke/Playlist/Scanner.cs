@@ -1,4 +1,5 @@
 ﻿using NaturalSort.Extension;
+using SoftCircuits.Collections;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,7 +19,7 @@ namespace PinJuke.Playlist
     public class ScanResult
     {
         public FileNode RootFileNode { get; }
-        private Dictionary<string, FileNode> PlayableFileNodesByFullName { get; } = new();
+        public OrderedDictionary<string, FileNode> PlayableFileNodesByFullName { get; } = new();
         public List<FileNode> M3uFileNodes { get; } = new();
 
         public ScanResult(FileNode rootFileNode)

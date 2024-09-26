@@ -97,21 +97,49 @@ namespace PinJuke.Model
             }
         }
 
-        private FileNode? playingFile = null;
+        private List<FileNode> playlist = new();
+        private List<FileNode> Playlist
+        {
+            get => playlist;
+            set
+            {
+                var oldPlayingFile = PlayingFile;
+                playlist = value;
+                if (PlayingFile != oldPlayingFile)
+                {
+                    NotifyPropertyChanged(nameof(PlayingFile));
+                }
+            }
+        }
+
+        private int playingFileIndex = -1;
+        private int PlayingFileIndex
+        {
+            get => playingFileIndex;
+            set
+            {
+                var oldPlayingFile = PlayingFile;
+                playingFileIndex = value;
+                if (PlayingFile != oldPlayingFile)
+                {
+                    NotifyPropertyChanged(nameof(PlayingFile));
+                }
+            }
+        }
+
         /// <summary>
         /// The node which is currently selected (playing or paused).
         /// </summary>
         public FileNode? PlayingFile
         {
-            get => playingFile;
+            get => Playlist.ElementAtOrDefault(PlayingFileIndex);
             private set
             {
-                if (value == playingFile)
+                if (value == PlayingFile)
                 {
                     return;
                 }
-                playingFile = value;
-                NotifyPropertyChanged();
+                PlayingFileIndex = value == null ? -1 : Playlist.IndexOf(value);
             }
         }
 
@@ -319,12 +347,27 @@ namespace PinJuke.Model
         {
             RootDirectory = scanResult.RootFileNode;
 
-            FileNode? navigationNode = null;
+            var playlist = new List<FileNode>(scanResult.PlayableFileNodesByFullName.Values);
+            var index = -1;
+            if (Configuration.Player.StartupTrackType == StartupTrackType.Random)
+            {
+                playlist.Shuffle();
+            }
             if (Configuration.Player.StartupTrackType == StartupTrackType.LastPlayedTrack)
             {
-                navigationNode = scanResult.TryGetPlayableFileNodeOrDefault(GetUserPlaylist().TrackFilePath);
+                var fileNode = scanResult.TryGetPlayableFileNodeOrDefault(GetUserPlaylist().TrackFilePath);
+                if (fileNode != null)
+                {
+                    index = playlist.IndexOf(fileNode);
+                }
             }
+
+            PlayingFileIndex = -1;
+            Playlist = playlist;
+            PlayingFileIndex = index;
+
             NavigationNode = navigationNode ?? RootDirectory?.FindChild() ?? RootDirectory;
+
             CheckPlayOnStartup();
         }
 
@@ -374,7 +417,15 @@ namespace PinJuke.Model
         {
             if (Configuration.Player.PlayOnStartup && SceneType == SceneType.Playback)
             {
-                PlayFile(NavigationNode);
+                if (PlayingFile != null)
+                {
+                    // Play paused file.
+                    PlayFile(PlayingFile);
+                }
+                else
+                {
+                    PlayNext();
+                }
             }
         }
 
@@ -404,15 +455,17 @@ namespace PinJuke.Model
         public void PlayNext()
         {
             // The next file can become null when the end is reached.
-            var nextFile = PlayingFile != null ? PlayingFile.GetNextInList() : RootDirectory;
-            PlayFile(nextFile?.FindThisOrNextPlayable(), StateType.Next);
+            var nextIndex = PlayingFile == null ? 0 : PlayingFileIndex + 1;
+            var nextFile = Playlist.ElementAtOrDefault(nextIndex);
+            PlayFile(nextFile, StateType.Next);
         }
 
         public void PlayPrevious()
         {
             // The previous file can become null when the beginning is reached.
-            var previousFile = PlayingFile != null ? PlayingFile.GetPreviousInList() : RootDirectory?.GetLastInList();
-            PlayFile(previousFile?.FindThisOrPreviousPlayable(), StateType.Previous);
+            var previousIndex = PlayingFile == null ? Playlist.Count - 1 : PlayingFileIndex - 1;
+            var previousFile = Playlist.ElementAtOrDefault(previousIndex);
+            PlayFile(previousFile, StateType.Previous);
         }
 
         public void PlayOrFollowDirectory()

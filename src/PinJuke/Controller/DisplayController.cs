@@ -130,7 +130,7 @@ namespace PinJuke.Controller
             {
                 if (mainModel.PlayingFile == null)
                 {
-                    mainModel.PlayFile(mainModel.NavigationNode);
+                    mainModel.PlayNext();
                 }
                 else
                 {
