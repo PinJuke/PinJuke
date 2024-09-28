@@ -25,15 +25,15 @@ jobs:
         uses: robinraju/release-downloader@v1.8
         with:
           repository: "GyanD/codexffmpeg"
-          tag: '6.0'
-          fileName: "ffmpeg-6.0-full_build-shared.zip"
+          tag: '7.0.2'
+          fileName: "ffmpeg-7.0.2-full_build-shared.zip"
           extract: true
       - name: Copy FFmpeg
         # Must be a Powershell script.
         run: |
-          cp ffmpeg-6.0-full_build-shared/LICENSE src/PinJuke/ffmpeg/
-          cp ffmpeg-6.0-full_build-shared/README.txt src/PinJuke/ffmpeg/
-          cp ffmpeg-6.0-full_build-shared/bin/*.dll src/PinJuke/ffmpeg/
+          cp ffmpeg-7.0.2-full_build-shared/LICENSE src/PinJuke/ffmpeg/
+          cp ffmpeg-7.0.2-full_build-shared/README.txt src/PinJuke/ffmpeg/
+          cp ffmpeg-7.0.2-full_build-shared/bin/*.dll src/PinJuke/ffmpeg/
       - name: Build projectm
         run: |
           cd deps\projectm
@@ -44,6 +44,7 @@ jobs:
       - name: Clean output
         run: |
           rm src/PinJuke/bin/Release/PinJuke/Configs/Playlists/.gitignore
+          rm src/PinJuke/bin/Release/PinJuke/Media/Videos/.gitignore
           rm src/PinJuke/bin/Release/PinJuke/Milkdrop/Presets/.gitignore
           rm src/PinJuke/bin/Release/PinJuke/Milkdrop/Textures/.gitignore
           rm src/PinJuke/bin/Release/PinJuke/ffmpeg/.gitignore

@@ -22,8 +22,11 @@
 
         <ContentControl x:Name="BackgroundImageContainer">
         </ContentControl>
-        
+
         <ContentControl x:Name="VisualizerContainer">
+        </ContentControl>
+
+        <ContentControl x:Name="ThemeVideoContainer">
         </ContentControl>
 
         <ContentControl x:Name="MediaElementContainer">

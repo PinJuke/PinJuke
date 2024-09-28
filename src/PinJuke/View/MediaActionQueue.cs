@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DirectOutput.FX.TimmedFX;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,23 +9,32 @@ using Unosquare.FFME.Common;
 
 namespace PinJuke.View
 {
+    public enum MediaActionQueueState
+    {
+        None,
+        Play,
+        Pause,
+        Stop,
+    }
+
     public class MediaActionQueue
     {
         private const int DELAY = 100; // millis
 
         private readonly Unosquare.FFME.MediaElement mediaElement;
+        private readonly int delay;
 
         private string? openFileQueued = null;
         private IMediaInputStream? openMediaInputStreamQueued = null;
         private bool closeQueued = false;
-        private bool playQueued = false;
-        private bool pauseQueued = false;
+        private MediaActionQueueState stateQueued = MediaActionQueueState.None;
 
         private bool running = false;
         
-        public MediaActionQueue(Unosquare.FFME.MediaElement mediaElement)
+        public MediaActionQueue(Unosquare.FFME.MediaElement mediaElement, int delay = DELAY)
         {
             this.mediaElement = mediaElement;
+            this.delay = delay;
         }
 
         public void Open(string file)
@@ -33,8 +43,7 @@ namespace PinJuke.View
             openMediaInputStreamQueued?.Dispose();
             openMediaInputStreamQueued = null;
             closeQueued = false;
-            playQueued = false;
-            pauseQueued = false;
+            stateQueued = MediaActionQueueState.None;
             Do();
         }
 
@@ -43,33 +52,35 @@ namespace PinJuke.View
             openFileQueued = null;
             openMediaInputStreamQueued = mediaInputStream;
             closeQueued = false;
-            playQueued = false;
-            pauseQueued = false;
+            stateQueued = MediaActionQueueState.None;
             Do();
         }
 
         public void Close()
         {
-            closeQueued = true;
             openFileQueued = null;
             openMediaInputStreamQueued?.Dispose();
             openMediaInputStreamQueued = null;
-            playQueued = false;
-            pauseQueued = false;
+            closeQueued = true;
+            stateQueued = MediaActionQueueState.None;
             Do();
         }
 
         public void Play()
         {
-            playQueued = true;
-            pauseQueued = false;
+            stateQueued = MediaActionQueueState.Play;
             Do();
         }
 
         public void Pause()
         {
-            pauseQueued = true;
-            playQueued = false;
+            stateQueued = MediaActionQueueState.Pause;
+            Do();
+        }
+
+        public void Stop()
+        {
+            stateQueued = MediaActionQueueState.Stop;
             Do();
         }
 
@@ -82,7 +93,7 @@ namespace PinJuke.View
 
             running = true;
 
-            for (; ; await Task.Delay(DELAY))
+            for (; ; await Task.Delay(delay))
             {
                 if (openFileQueued != null)
                 {
@@ -112,18 +123,25 @@ namespace PinJuke.View
                     await Unload();
                     continue;
                 }
-                if (playQueued)
+                if (stateQueued == MediaActionQueueState.Play)
                 {
-                    playQueued = false;
+                    stateQueued = MediaActionQueueState.None;
                     Debug.WriteLine("Playing...");
                     await mediaElement.Play();
                     continue;
                 }
-                if (pauseQueued)
+                if (stateQueued == MediaActionQueueState.Pause)
                 {
-                    pauseQueued = false;
+                    stateQueued = MediaActionQueueState.None;
                     Debug.WriteLine("Pausing...");
                     await mediaElement.Pause();
+                    continue;
+                }
+                if (stateQueued == MediaActionQueueState.Stop)
+                {
+                    stateQueued = MediaActionQueueState.None;
+                    Debug.WriteLine("Stopping...");
+                    await mediaElement.Stop();
                     continue;
                 }
                 break;
@@ -138,13 +156,13 @@ namespace PinJuke.View
             {
                 Debug.WriteLine("Stopping...");
                 await mediaElement.Stop();
-                await Task.Delay(DELAY);
+                await Task.Delay(delay);
             }
             if (mediaElement.IsOpen)
             {
                 Debug.WriteLine("Closing...");
                 await mediaElement.Close();
-                await Task.Delay(DELAY);
+                await Task.Delay(delay);
             }
             // Still testing...
             // GC.Collect();

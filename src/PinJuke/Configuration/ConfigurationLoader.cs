@@ -84,18 +84,31 @@ namespace PinJuke.Configuration
             {
                 backgroundImageFile = GetFullPathFromMediaPath(backgroundImageFile, mediaPath);
             }
-            var songStartFile = parser.ParseString(displaySection["SongStartFile"]) ?? "";
-            if (!songStartFile.IsNullOrEmpty())
+            var themeVideoStartFile = parser.ParseString(displaySection["ThemeVideoStartFile"]) ?? "";
+            if (!themeVideoStartFile.IsNullOrEmpty())
             {
-                songStartFile = GetFullPathFromMediaPath(songStartFile, mediaPath);
+                themeVideoStartFile = GetFullPathFromMediaPath(themeVideoStartFile, mediaPath);
             }
+            var themeVideoLoopFile = parser.ParseString(displaySection["ThemeVideoLoopFile"]) ?? "";
+            if (!themeVideoLoopFile.IsNullOrEmpty())
+            {
+                themeVideoLoopFile = GetFullPathFromMediaPath(themeVideoLoopFile, mediaPath);
+            }
+            var themeVideoStopFile = parser.ParseString(displaySection["ThemeVideoStopFile"]) ?? "";
+            if (!themeVideoStopFile.IsNullOrEmpty())
+            {
+                themeVideoStopFile = GetFullPathFromMediaPath(themeVideoStopFile, mediaPath);
+            }
+
             var content = new Content(
                 parser.ParseEnum<BackgroundType>(displaySection["BackgroundType"]) ?? BackgroundType.MilkdropVisualization,
                 backgroundImageFile,
                 parser.ParseBool(displaySection["CoverEnabled"]) ?? role == DisplayRole.DMD,
                 parser.ParseBool(displaySection["StateEnabled"]) ?? true,
                 parser.ParseBool(displaySection["BrowserEnabled"]) ?? true,
-                songStartFile
+                themeVideoStartFile,
+                themeVideoLoopFile,
+                themeVideoStopFile
             );
 
             return new Display(role, enabled, window, content);

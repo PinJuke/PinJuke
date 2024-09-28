@@ -29,7 +29,6 @@ namespace PinJuke
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
-        public event EventHandler? MediaEndedEvent;
 
         public float ContentScale { get; }
         public float ContentAngle { get; }
@@ -39,6 +38,7 @@ namespace PinJuke
 
         private readonly BackgroundImageControl? backgroundImageControl = null;
         private readonly VisualizerControl? visualizerControl = null;
+        private readonly ThemeVideoControl? themeVideoControl = null;
         private readonly MediaControl? mediaControl = null;
         private readonly CoverControl? coverControl = null;
         private readonly BrowserControl? browserControl = null;
@@ -74,10 +74,18 @@ namespace PinJuke
                     break;
             }
 
+            if (!displayConfig.Content.ThemeVideoStartFile.IsNullOrEmpty()
+                || !displayConfig.Content.ThemeVideoLoopFile.IsNullOrEmpty()
+                || !displayConfig.Content.ThemeVideoStopFile.IsNullOrEmpty())
+            {
+                themeVideoControl = new();
+                new ThemeVideoMediator(themeVideoControl, mainModel, displayConfig).Initialize();
+                ThemeVideoContainer.Content = themeVideoControl;
+            }
+
             if (displayConfig.Role == Configuration.DisplayRole.BackGlass)
             {
                 mediaControl = new();
-                mediaControl.MediaEndedEvent += MediaControl_MediaEndedEvent;
                 new MediaMediator(mediaControl, mainModel).Initialize();
                 MediaElementContainer.Content = mediaControl;
             }
@@ -105,11 +113,6 @@ namespace PinJuke
 
             Loaded += MainWindow_Loaded;
             Closed += MainWindow_Closed;
-        }
-
-        private void MediaControl_MediaEndedEvent(object? sender, EventArgs e)
-        {
-            MediaEndedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)

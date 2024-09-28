@@ -16,6 +16,7 @@ namespace PinJuke.View.Media
     public unsafe class MediaInputStream : IMediaInputStream
     {
         private readonly Stream stream;
+        private readonly bool dontDispose;
         private readonly object readLock = new object();
         private readonly byte[] readBuffer;
 
@@ -29,16 +30,26 @@ namespace PinJuke.View.Media
 
         public InputStreamInitialized? OnInitialized { get; }
 
-        public MediaInputStream(Stream stream, Uri streamUri)
+        public MediaInputStream(Stream stream, Uri streamUri, bool dontDispose = false)
         {
             this.stream = stream;
             this.StreamUri = streamUri;
+            this.dontDispose = dontDispose;
             readBuffer = new byte[ReadBufferLength];
         }
 
         public void Dispose()
         {
+            if (dontDispose)
+            {
+                return;
+            }
             stream.Dispose();
+        }
+
+        public void Reset()
+        {
+            stream.Seek(0, SeekOrigin.Begin);
         }
 
         public unsafe int Read(void* opaque, byte* targetBuffer, int targetBufferLength)

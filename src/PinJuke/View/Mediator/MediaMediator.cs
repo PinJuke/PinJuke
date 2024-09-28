@@ -26,6 +26,13 @@ namespace PinJuke.View.Mediator
             this.mainModel = mainModel;
 
             mediaActionQueue = new(mediaControl.MediaElement);
+
+            mediaControl.MediaEndedEvent += MediaControl_MediaEndedEvent; ;
+        }
+
+        private void MediaControl_MediaEndedEvent(object? sender, EventArgs e)
+        {
+            mainModel.MediaEnded();
         }
 
         protected override void OnLoaded()
@@ -49,7 +56,7 @@ namespace PinJuke.View.Mediator
                 case nameof(MainModel.SceneType):
                     PlayFile();
                     break;
-                case nameof(MainModel.Playing):
+                case nameof(MainModel.MediaPlaying):
                     SetPlayPause();
                     break;
             }
@@ -87,7 +94,7 @@ namespace PinJuke.View.Mediator
 
         private void SetPlayPause()
         {
-            if (mainModel.Playing)
+            if (mainModel.MediaPlaying)
             {
                 mediaActionQueue.Play();
             }

@@ -99,10 +99,24 @@ namespace PinJuke.Configurator.Factory
                 },
                 new PathControlFactory()
                 {
-                    LabelText = "Song start file",
+                    LabelText = "Theme video start file",
                     FileMode = true,
                     RelativeEnabled = true,
-                    Converter = new PathConverter(parser, sectionName, "SongStartFile"),
+                    Converter = new PathConverter(parser, sectionName, "ThemeVideoStartFile"),
+                },
+                new PathControlFactory()
+                {
+                    LabelText = "Theme video loop file",
+                    FileMode = true,
+                    RelativeEnabled = true,
+                    Converter = new PathConverter(parser, sectionName, "ThemeVideoLoopFile"),
+                },
+                new PathControlFactory()
+                {
+                    LabelText = "Theme video stop file",
+                    FileMode = true,
+                    RelativeEnabled = true,
+                    Converter = new PathConverter(parser, sectionName, "ThemeVideoStopFile"),
                 },
             ];
         }

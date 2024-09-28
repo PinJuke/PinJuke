@@ -27,7 +27,6 @@ namespace PinJuke.Controller
 
             window.Closed += Window_Closed;
             window.KeyDown += Window_KeyDown;
-            window.MediaEndedEvent += Window_MediaEndedEvent;
 
             inputManager.InputEvent += InputManager_InputEvent;
             inputManager.ExitEvent += InputManager_ExitEvent;
@@ -49,19 +48,6 @@ namespace PinJuke.Controller
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             e.Handled = inputManager.HandleKeyDown(e);
-        }
-
-        private void Window_MediaEndedEvent(object? sender, EventArgs e)
-        {
-            switch (mainModel.SceneType)
-            {
-                case SceneType.Intro:
-                    mainModel.IntroEnded();
-                    break;
-                case SceneType.Playback:
-                    mainModel.PlayNext();
-                    break;
-            }
         }
 
         private void InputManager_InputEvent(object? sender, InputActionEventArgs e)

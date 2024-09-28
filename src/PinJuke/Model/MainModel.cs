@@ -1,4 +1,5 @@
-﻿using PinJuke.Configuration;
+﻿using Newtonsoft.Json.Linq;
+using PinJuke.Configuration;
 using PinJuke.Controller;
 using PinJuke.Playlist;
 using System;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace PinJuke.Model
 {
@@ -29,6 +31,13 @@ namespace PinJuke.Model
         Playback,
     }
 
+    public enum PlayFileType
+    {
+        Play,
+        Resume,
+        Pause,
+    }
+
     public record State(StateType Type, object? Data = null);
 
     public class MainModel : INotifyPropertyChanged
@@ -39,6 +48,11 @@ namespace PinJuke.Model
         public event EventHandler? ShutdownEvent;
         public event EventHandler<InputActionEventArgs>? InputEvent;
         public event EventHandler<PresetActionEventArgs>? PresetEvent;
+        public event EventHandler<PlayMediaEventArgs>? PlayMediaEvent;
+        public event EventHandler<EndMediaEventArgs>? EndMediaEvent;
+
+        private PlayMediaEventArgs? playMediaEventArgs = null;
+        private EndMediaEventArgs? endMediaEventArgs = null;
 
         public Configuration.Configuration Configuration { get; }
         public Configuration.UserConfiguration UserConfiguration { get; }
@@ -157,6 +171,24 @@ namespace PinJuke.Model
                     return;
                 }
                 playing = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private bool mediaPlaying = false;
+        /// <summary>
+        /// Saves whether the selected file is currently playing by the media control.
+        /// </summary>
+        public bool MediaPlaying
+        {
+            get => mediaPlaying;
+            private set
+            {
+                if (value == mediaPlaying)
+                {
+                    return;
+                }
+                mediaPlaying = value;
                 NotifyPropertyChanged();
             }
         }
@@ -402,6 +434,19 @@ namespace PinJuke.Model
             }
         }
 
+        public void MediaEnded()
+        {
+            switch (SceneType)
+            {
+                case SceneType.Intro:
+                    IntroEnded();
+                    break;
+                case SceneType.Playback:
+                    PlayNext();
+                    break;
+            }
+        }
+
         public void IntroEnded()
         {
             EnterPlayback();
@@ -431,25 +476,66 @@ namespace PinJuke.Model
 
         public void TogglePlayPause()
         {
-            Playing = !Playing;
-            ShowPlaybackState();
+            PlayFile(PlayingFile, null, Playing ? PlayFileType.Pause : PlayFileType.Resume);
         }
 
-        public void PlayFile(FileNode? node, StateType? playingStateType = null)
+        public void PlayFile(FileNode? node, StateType? playingStateType = null, PlayFileType type = PlayFileType.Play)
         {
             EnterPlayback();
 
+            if (playMediaEventArgs != null || endMediaEventArgs != null)
+            {
+                Debug.WriteLine("Ignoring request to play file!");
+                return;
+            }
+
+            playMediaEventArgs = null;
+            endMediaEventArgs = new((MediaEventArgs mediaEventArgs) => { EndMedia(mediaEventArgs, node, playingStateType, type); });
+            EndMediaEvent?.Invoke(this, endMediaEventArgs);
+            endMediaEventArgs.ContinueIfNotIntercepted();
+        }
+
+        private void EndMedia(MediaEventArgs mediaEventArgs, FileNode? node, StateType? playingStateType, PlayFileType type)
+        {
+            endMediaEventArgs = null;
+            PlayFileNow(node, playingStateType, type);
+        }
+
+        private void PlayFileNow(FileNode? node, StateType? playingStateType = null, PlayFileType type = PlayFileType.Play)
+        {
             // If a directory is passed, look for a file.
             node = node?.FindThisOrNextPlayable();
 
-            // To restart a track first reset the playing track to trigger an event in any case.
-            Playing = false;
-            PlayingFile = null;
-            PlayingFile = node;
-            Playing = node != null;
+            MediaPlaying = false;
+
+            if (type == PlayFileType.Resume || type == PlayFileType.Pause)
+            {
+                Playing = type == PlayFileType.Resume;
+            }
+            else
+            {
+                // To restart a track first reset the playing track to trigger an event in any case.
+                Playing = false;
+                PlayingFile = null;
+                PlayingFile = node;
+                Playing = node != null;
+            }
+
             ShowPlaybackState(playingStateType);
 
             GetUserPlaylist().TrackFilePath = node?.FullName ?? "";
+
+            endMediaEventArgs = null;
+            // Playing may be false if no following track is played.
+            playMediaEventArgs = new(PlayMedia);
+            PlayMediaEvent?.Invoke(this, playMediaEventArgs);
+            playMediaEventArgs.ContinueIfNotIntercepted();
+        }
+
+        private void PlayMedia(MediaEventArgs mediaEventArgs)
+        {
+            playMediaEventArgs = null;
+            MediaPlaying = Playing;
         }
 
         public void PlayNext()

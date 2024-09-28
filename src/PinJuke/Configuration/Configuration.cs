@@ -30,7 +30,7 @@ namespace PinJuke.Configuration
 
     public record Window(int Left, int Top, int Width, int Height, float ContentScale, int ContentAngle);
 
-    public record Content(BackgroundType BackgroundType, string BackgroundImageFile, bool CoverEnabled, bool StateEnabled, bool BrowserEnabled, string SongStartFile);
+    public record Content(BackgroundType BackgroundType, string BackgroundImageFile, bool CoverEnabled, bool StateEnabled, bool BrowserEnabled, string ThemeVideoStartFile, string ThemeVideoLoopFile, string ThemeVideoStopFile);
 
     public enum BackgroundType
     {
