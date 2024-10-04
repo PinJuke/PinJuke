@@ -20,6 +20,7 @@ namespace PinJuke
     {
         private MainModel? mainModel;
         private AppController? appController;
+        private DisplayController? displayController;
         private DofMediator? dofMediator = null;
         private AudioManager? audioManager;
 
@@ -115,6 +116,19 @@ namespace PinJuke
 
             appController = new AppController(mainModel);
             appController.Scan();
+            displayController = new DisplayController(mainModel, audioManager);
+            if (playFieldWindow != null)
+            {
+                displayController.ObserveWindow(playFieldWindow);
+            }
+            if (backGlassWindow != null)
+            {
+                displayController.ObserveWindow(backGlassWindow);
+            }
+            if (dmdWindow != null)
+            {
+                displayController.ObserveWindow(dmdWindow);
+            }
 
             playFieldWindow?.Show();
             backGlassWindow?.Show();
@@ -127,6 +141,7 @@ namespace PinJuke
 
             SaveUserConfiguration();
 
+            displayController?.Dispose();
             appController?.Dispose();
             audioManager?.Dispose();
             dofMediator?.Dispose();
@@ -171,7 +186,6 @@ namespace PinJuke
                 return null;
             }
             var window = new MainWindow(mainModel, displayConfig, audioManager);
-            var controller = new DisplayController(mainModel, window, audioManager);
             return window;
         }
     }

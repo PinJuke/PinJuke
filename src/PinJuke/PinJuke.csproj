@@ -69,6 +69,7 @@
     <Resource Include="icons\volume-medium-outline.svg" />
     <Resource Include="icons\volume-off-outline.svg" />
     <Resource Include="resources\intro.mp4" />
+    <Resource Include="resources\record-needle-rip-100415-edit.wav" />
   </ItemGroup>
 
   <ItemGroup>

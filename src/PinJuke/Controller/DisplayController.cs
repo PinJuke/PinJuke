@@ -1,32 +1,40 @@
 ﻿using PinJuke.Audio;
 using PinJuke.Model;
+using PinJuke.View.Media;
+using PinJuke.View;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows;
 
 namespace PinJuke.Controller
 {
-    public class DisplayController
+    public class DisplayController : IDisposable
     {
         private readonly MainModel mainModel;
-        private readonly MainWindow window;
         private readonly AudioManager audioManager;
 
         private readonly InputManager inputManager;
 
-        public DisplayController(MainModel mainModel, MainWindow window, AudioManager audioManager)
+        private int tiltLastPlayed = 0;
+        private readonly SoundPlayer tiltSoundPlayer;
+
+        public DisplayController(MainModel mainModel, AudioManager audioManager)
         {
             this.mainModel = mainModel;
-            this.window = window;
             this.audioManager = audioManager;
 
             inputManager = new(mainModel.Configuration);
 
-            window.Closed += Window_Closed;
-            window.KeyDown += Window_KeyDown;
+            var uri = new Uri(@"resources\record-needle-rip-100415-edit.wav", UriKind.Relative);
+            var stream = Application.GetResourceStream(uri).Stream;
+            tiltSoundPlayer = new SoundPlayer(stream);
+            tiltSoundPlayer.Load();
 
             inputManager.InputEvent += InputManager_InputEvent;
             inputManager.ExitEvent += InputManager_ExitEvent;
@@ -37,6 +45,17 @@ namespace PinJuke.Controller
             inputManager.VolumeDownEvent += InputManager_VolumeDownEvent;
             inputManager.VolumeUpEvent += InputManager_VolumeUpEvent;
             inputManager.TiltEvent += InputManager_TiltEvent;
+        }
+
+        public void Dispose()
+        {
+            tiltSoundPlayer.Dispose();
+        }
+
+        public void ObserveWindow(Window window)
+        {
+            window.Closed += Window_Closed;
+            window.KeyDown += Window_KeyDown;
         }
 
         private void Window_Closed(object? sender, EventArgs e)
@@ -159,6 +178,13 @@ namespace PinJuke.Controller
         private void InputManager_TiltEvent(object? sender, InputActionEventArgs e)
         {
             mainModel.ShowState(new State(StateType.Tilt));
+
+            var now = Environment.TickCount;
+            if (now - tiltLastPlayed >= 2_000)
+            {
+                tiltLastPlayed = now;
+                tiltSoundPlayer.Play();
+            }
         }
     }
 }
