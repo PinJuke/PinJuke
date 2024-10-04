@@ -52,7 +52,7 @@ namespace PinJuke.View.Mediator
         {
             switch (e.PropertyName)
             {
-                case nameof(MainModel.PlayingFile):
+                case nameof(MainModel.MediaPlayingFile):
                 case nameof(MainModel.SceneType):
                     PlayFile();
                     break;
@@ -76,16 +76,16 @@ namespace PinJuke.View.Mediator
                     fileType = FileType.Video;
                     break;
                 case SceneType.Playback:
-                    if (mainModel.PlayingFile != null)
+                    if (mainModel.MediaPlayingFile != null)
                     {
-                        mediaActionQueue.Open(mainModel.PlayingFile.FullName);
+                        mediaActionQueue.Open(mainModel.MediaPlayingFile.FullName);
                         SetPlayPause();
                     }
                     else
                     {
                         mediaActionQueue.Close();
                     }
-                    fileType = mainModel.PlayingFile?.Type;
+                    fileType = mainModel.MediaPlayingFile?.Type;
                     break;
             }
 

@@ -163,6 +163,15 @@ namespace PinJuke.View.Mediator
             themeVideoControl.StartMediaElement.Visibility = Visibility.Hidden;
             startMediaActionQueue.Stop();
 
+            playing = mainModel.Playing;
+            if (!playing)
+            {
+                // Stopped while starting to play...
+                stopMediaActionQueue.Play();
+                themeVideoControl.StopMediaElement.Visibility = Visibility.Visible;
+                return;
+            }
+
             playMediaEventToken?.Continue();
             playMediaEventToken = null;
             if (loopMediaInputStream != null)

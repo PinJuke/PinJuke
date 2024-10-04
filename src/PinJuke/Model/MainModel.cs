@@ -175,6 +175,24 @@ namespace PinJuke.Model
             }
         }
 
+        private FileNode? mediaPlayingFile = null;
+        /// <summary>
+        /// Saves the selected file played or paused by the media control.
+        /// </summary>
+        public FileNode? MediaPlayingFile
+        {
+            get => mediaPlayingFile;
+            private set
+            {
+                if (value == mediaPlayingFile)
+                {
+                    return;
+                }
+                mediaPlayingFile = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         private bool mediaPlaying = false;
         /// <summary>
         /// Saves whether the selected file is currently playing by the media control.
@@ -483,30 +501,7 @@ namespace PinJuke.Model
         {
             EnterPlayback();
 
-            if (playMediaEventArgs != null || endMediaEventArgs != null)
-            {
-                Debug.WriteLine("Ignoring request to play file!");
-                return;
-            }
-
-            playMediaEventArgs = null;
-            endMediaEventArgs = new((MediaEventArgs mediaEventArgs) => { EndMedia(mediaEventArgs, node, playingStateType, type); });
-            EndMediaEvent?.Invoke(this, endMediaEventArgs);
-            endMediaEventArgs.ContinueIfNotIntercepted();
-        }
-
-        private void EndMedia(MediaEventArgs mediaEventArgs, FileNode? node, StateType? playingStateType, PlayFileType type)
-        {
-            endMediaEventArgs = null;
-            PlayFileNow(node, playingStateType, type);
-        }
-
-        private void PlayFileNow(FileNode? node, StateType? playingStateType = null, PlayFileType type = PlayFileType.Play)
-        {
-            // If a directory is passed, look for a file.
             node = node?.FindThisOrNextPlayable();
-
-            MediaPlaying = false;
 
             if (type == PlayFileType.Resume || type == PlayFileType.Pause)
             {
@@ -522,10 +517,25 @@ namespace PinJuke.Model
             }
 
             ShowPlaybackState(playingStateType);
-
             GetUserPlaylist().TrackFilePath = node?.FullName ?? "";
 
+            if (playMediaEventArgs != null || endMediaEventArgs != null)
+            {
+                return;
+            }
+
+            endMediaEventArgs = new(EndMedia);
+            EndMediaEvent?.Invoke(this, endMediaEventArgs);
+            endMediaEventArgs.ContinueIfNotIntercepted();
+        }
+
+        private void EndMedia(MediaEventArgs mediaEventArgs)
+        {
             endMediaEventArgs = null;
+
+            MediaPlaying = false;
+            MediaPlayingFile = null;
+
             // Playing may be false if no following track is played.
             playMediaEventArgs = new(PlayMedia);
             PlayMediaEvent?.Invoke(this, playMediaEventArgs);
@@ -535,6 +545,8 @@ namespace PinJuke.Model
         private void PlayMedia(MediaEventArgs mediaEventArgs)
         {
             playMediaEventArgs = null;
+
+            MediaPlayingFile = PlayingFile;
             MediaPlaying = Playing;
         }
 
