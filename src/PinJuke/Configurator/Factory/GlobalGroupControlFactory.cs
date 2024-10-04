@@ -13,6 +13,8 @@ namespace PinJuke.Configurator.Factory
 {
     public class GlobalGroupControlFactory : GroupControlFactory
     {
+        public const string MEDIA_PATH_CONTROL = "MediaPath";
+
         public GlobalGroupControlFactory(Parser parser, PinUpPlayerIniReader pinUpReader)
         {
             // Some cases of Key share the same value.
@@ -27,6 +29,7 @@ namespace PinJuke.Configurator.Factory
                         new PathControlFactory()
                         {
                             LabelText = "Media path",
+                            Name = MEDIA_PATH_CONTROL,
                             FileMode = false,
                             RelativeEnabled = true,
                             Converter = new PathConverter(parser, "PinJuke", "MediaPath"),
@@ -172,30 +175,35 @@ namespace PinJuke.Configurator.Factory
                             MessageBox.Show(string.Format(Strings.PathNotFound, "PinUpPlayer.ini"), AppDomain.CurrentDomain.FriendlyName);
                             return;
                         }
-                        ((NumberControl)buttonControl.GetSibling(1)).Value = position.Value.Item1;
-                        ((NumberControl)buttonControl.GetSibling(2)).Value = position.Value.Item2;
-                        ((NumberControl)buttonControl.GetSibling(3)).Value = position.Value.Item3;
-                        ((NumberControl)buttonControl.GetSibling(4)).Value = position.Value.Item4;
+                        var group = buttonControl.GetParentGroup();
+                        ((NumberControl)group.GetChildByName("WindowLeft")).Value = position.Value.Item1;
+                        ((NumberControl)group.GetChildByName("WindowTop")).Value = position.Value.Item2;
+                        ((NumberControl)group.GetChildByName("WindowWidth")).Value = position.Value.Item3;
+                        ((NumberControl)group.GetChildByName("WindowHeight")).Value = position.Value.Item4;
                     },
                 },
                 new NumberControlFactory()
                 {
                     LabelText = "Left",
+                    Name = "WindowLeft",
                     Converter = new IntNumberConverter(parser, sectionName, "WindowLeft"),
                 },
                 new NumberControlFactory()
                 {
                     LabelText = "Top",
+                    Name = "WindowTop",
                     Converter = new IntNumberConverter(parser, sectionName, "WindowTop"),
                 },
                 new NumberControlFactory()
                 {
                     LabelText = "Width",
+                    Name = "WindowWidth",
                     Converter = new IntNumberConverter(parser, sectionName, "WindowWidth"),
                 },
                 new NumberControlFactory()
                 {
                     LabelText = "Height",
+                    Name = "WindowHeight",
                     Converter = new IntNumberConverter(parser, sectionName, "WindowHeight"),
                 },
                 new NumberControlFactory()

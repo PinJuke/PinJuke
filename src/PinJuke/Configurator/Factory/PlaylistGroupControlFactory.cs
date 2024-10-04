@@ -11,7 +11,7 @@ namespace PinJuke.Configurator.Factory
 {
     public class PlaylistGroupControlFactory : GroupControlFactory
     {
-        public PlaylistGroupControlFactory(Parser parser)
+        public PlaylistGroupControlFactory(Parser parser, MediaPathProvider mediaPathProvider)
         {
             LabelText = "Playlist configuration";
             Controls = [
@@ -44,15 +44,15 @@ namespace PinJuke.Configurator.Factory
                         },
                     ]
                 },
-                new ContentGroupControlFactory(parser, "PlayField")
+                new ContentGroupControlFactory(parser, "PlayField", mediaPathProvider)
                 {
                     LabelText = "Play field",
                 },
-                new ContentGroupControlFactory(parser, "BackGlass")
+                new ContentGroupControlFactory(parser, "BackGlass", mediaPathProvider)
                 {
                     LabelText = "Back glass",
                 },
-                new ContentGroupControlFactory(parser, "DMD")
+                new ContentGroupControlFactory(parser, "DMD", mediaPathProvider)
                 {
                     LabelText = "DMD",
                 },
@@ -62,7 +62,7 @@ namespace PinJuke.Configurator.Factory
 
     public class ContentGroupControlFactory : GroupControlFactory
     {
-        public ContentGroupControlFactory(Parser parser, string sectionName)
+        public ContentGroupControlFactory(Parser parser, string sectionName, MediaPathProvider mediaPathProvider)
         {
             Controls = [
                 new SelectControlFactory()
@@ -80,6 +80,7 @@ namespace PinJuke.Configurator.Factory
                     LabelText = "Background image file",
                     FileMode = true,
                     RelativeEnabled = true,
+                    MediaPathProvider = mediaPathProvider,
                     Converter = new PathConverter(parser, sectionName, "BackgroundImageFile"),
                 },
                 new BoolControlFactory()
@@ -102,6 +103,7 @@ namespace PinJuke.Configurator.Factory
                     LabelText = "Theme video start file",
                     FileMode = true,
                     RelativeEnabled = true,
+                    MediaPathProvider = mediaPathProvider,
                     Converter = new PathConverter(parser, sectionName, "ThemeVideoStartFile"),
                 },
                 new PathControlFactory()
@@ -109,6 +111,7 @@ namespace PinJuke.Configurator.Factory
                     LabelText = "Theme video loop file",
                     FileMode = true,
                     RelativeEnabled = true,
+                    MediaPathProvider = mediaPathProvider,
                     Converter = new PathConverter(parser, sectionName, "ThemeVideoLoopFile"),
                 },
                 new PathControlFactory()
@@ -116,6 +119,7 @@ namespace PinJuke.Configurator.Factory
                     LabelText = "Theme video stop file",
                     FileMode = true,
                     RelativeEnabled = true,
+                    MediaPathProvider = mediaPathProvider,
                     Converter = new PathConverter(parser, sectionName, "ThemeVideoStopFile"),
                 },
             ];

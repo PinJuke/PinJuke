@@ -18,7 +18,7 @@ namespace PinJuke.Configurator.View
         public string TemplateFilePath { get; }
 
         protected IniDocument? IniDocument { get; set; } = null;
-        protected GroupControl GroupControl { get; }
+        public GroupControl GroupControl { get; private set; }
 
         public IniDocumentTabItem(GroupControlFactory groupControlFactory, string filePath, string templateFilePath)
         {

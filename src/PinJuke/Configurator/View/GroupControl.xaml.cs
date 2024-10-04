@@ -28,5 +28,38 @@ namespace PinJuke.Configurator.View
         {
             InitializeComponent();
         }
+
+        public ConfiguratorControl? FindChildByName(string name)
+        {
+            foreach (var child in Controls.Children)
+            {
+                if (child is RowControl rowControl && rowControl.Control is ConfiguratorControl configuratorControl)
+                {
+                    if (name == configuratorControl.Name)
+                    {
+                        return configuratorControl;
+                    }
+                }
+                if (child is GroupControl groupControl)
+                {
+                    var groupChild = groupControl.FindChildByName(name);
+                    if (groupChild != null)
+                    {
+                        return groupChild;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public ConfiguratorControl GetChildByName(string name)
+        {
+            var child = FindChildByName(name);
+            if (child == null)
+            {
+                throw new InvalidOperationException($"Cannot return child. Found no control for \"{name}\".");
+            }
+            return child;
+        }
     }
 }

@@ -27,34 +27,19 @@ namespace PinJuke.Configurator.View
             }
         }
 
-        public ConfiguratorControl GetSibling(int n)
+        public GroupControl? FindParentGroup()
         {
-            var rowControl = FindParent<RowControl>();
-            if (rowControl == null)
+            return FindParent<GroupControl>();
+        }
+
+        public GroupControl GetParentGroup()
+        {
+            var parentGroup = FindParentGroup();
+            if (parentGroup == null)
             {
-                throw new InvalidOperationException("Cannot get sibling. Control is not included in a RowControl.");
+                throw new InvalidOperationException("Cannot return parent group. No parent group found.");
             }
-            var groupControl = rowControl.FindParent<GroupControl>();
-            if (groupControl == null)
-            {
-                throw new InvalidOperationException("Cannot get sibling. No parent group found.");
-            }
-            var index = groupControl.Controls.Children.IndexOf(rowControl);
-            if (index == -1)
-            {
-                throw new InvalidOperationException("Cannot get sibling. Did not find the rowControl in the collection.");
-            }
-            var rowSibling = groupControl.Controls.Children[index + n] as RowControl;
-            if (rowSibling == null)
-            {
-                throw new InvalidOperationException("Cannot get sibling. Sibling control is of unexcpected type.");
-            }
-            var sibling = rowSibling.Control as ConfiguratorControl;
-            if (sibling == null)
-            {
-                throw new InvalidOperationException("Cannot get sibling. Sibling row control has no control.");
-            }
-            return sibling;
+            return parentGroup;
         }
     }
 }

@@ -13,6 +13,7 @@ namespace PinJuke.Configurator
     public interface ControlFactory<out T> where T : UIElement
     {
         public string LabelText { get; set; }
+        public string? Name { get; set; }
 
         public T CreateControl();
 
@@ -23,6 +24,7 @@ namespace PinJuke.Configurator
     public abstract class BaseControlFactory<T> : ControlFactory<RowControl> where T : UIElement
     {
         public string LabelText { get; set; } = "";
+        public string? Name { get; set; } = null;
         public Converter<T>? Converter { get; set; } = null;
 
         public RowControl CreateControl()
@@ -54,11 +56,16 @@ namespace PinJuke.Configurator
     public class GroupControlFactory : ControlFactory<GroupControl>
     {
         public string LabelText { get; set; } = "";
+        public string? Name { get; set; } = null;
         public ControlFactory<UIElement>[] Controls { get; set; } = [];
 
         public GroupControl CreateControl()
         {
-            var controlGroup = new GroupControl() { LabelText = LabelText };
+            var controlGroup = new GroupControl()
+            {
+                Name = Name,
+                LabelText = LabelText,
+            };
             foreach (var controlFactory in Controls)
             {
                 var control = controlFactory.CreateControl();
@@ -95,16 +102,19 @@ namespace PinJuke.Configurator
         public bool FileMode { get; set; } = false;
         public string FileExtension { get; set; } = ".ini";
         public string FileFilter { get; set; } = "Ini file|*.ini";
+        public MediaPathProvider? MediaPathProvider { get; set; } = null;
 
         public override PathControl CreateControlForRow()
         {
             return new PathControl()
             {
+                Name = Name,
                 EmptyEnabled = EmptyEnabled,
                 RelativeEnabled = RelativeEnabled,
                 FileMode = FileMode,
                 FileExtension = FileExtension,
                 FileFilter = FileFilter,
+                MediaPathProvider = MediaPathProvider,
             };
         }
     }
@@ -113,7 +123,10 @@ namespace PinJuke.Configurator
     {
         public override BoolControl CreateControlForRow()
         {
-            return new BoolControl();
+            return new BoolControl()
+            {
+                Name = Name,
+            };
         }
     }
 
@@ -121,7 +134,10 @@ namespace PinJuke.Configurator
     {
         public override NumberControl CreateControlForRow()
         {
-            return new NumberControl();
+            return new NumberControl()
+            {
+                Name = Name,
+            };
         }
     }
 
@@ -131,7 +147,11 @@ namespace PinJuke.Configurator
 
         public override SelectControl CreateControlForRow()
         {
-            return new SelectControl() { Items = Items };
+            return new SelectControl()
+            {
+                Name = Name,
+                Items = Items
+            };
         }
     }
 
@@ -142,7 +162,12 @@ namespace PinJuke.Configurator
 
         public override ButtonControl CreateControlForRow()
         {
-            return new ButtonControl() { Text = Text, ClickHandler = ClickHandler, };
+            return new ButtonControl()
+            {
+                Name = Name,
+                Text = Text,
+                ClickHandler = ClickHandler,
+            };
         }
     }
 }

@@ -36,6 +36,15 @@ namespace PinJuke.Configurator.View
         public string FileExtension { get; set; } = "";
         public string FileFilter { get; set; } = "";
 
+        public MediaPathProvider? MediaPathProvider { get; set; } = null;
+
+        private string RelativeRootDir
+        {
+            get
+            {
+                return MediaPathProvider?.GetMediaPath() ?? Directory.GetCurrentDirectory();
+            }
+        }
 
         private string path = "";
         public string Path
@@ -47,6 +56,14 @@ namespace PinJuke.Configurator.View
                 {
                     Relative = !System.IO.Path.IsPathRooted(path);
                 }
+            }
+        }
+
+        public string FullPath
+        {
+            get
+            {
+                return System.IO.Path.GetFullPath(Path, RelativeRootDir);
             }
         }
 
@@ -83,12 +100,12 @@ namespace PinJuke.Configurator.View
         private void SetPath(string path)
         {
             var relative = Relative;
+            var relativeRootDir = RelativeRootDir;
             if (System.IO.Path.IsPathRooted(path))
             {
                 if (relative)
                 {
-                    var workingDir = Directory.GetCurrentDirectory();
-                    var relativePath = System.IO.Path.GetRelativePath(workingDir, path);
+                    var relativePath = System.IO.Path.GetRelativePath(relativeRootDir, path);
                     relative = relativePath != path;
                     path = relativePath;
                 }
@@ -99,7 +116,7 @@ namespace PinJuke.Configurator.View
                 {
                     if (!path.IsNullOrEmpty())
                     {
-                        path = System.IO.Path.GetFullPath(path);
+                        path = System.IO.Path.GetFullPath(path, relativeRootDir);
                     }
                 }
             }

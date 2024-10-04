@@ -13,10 +13,12 @@ using System.Windows.Input;
 
 namespace PinJuke.Configurator
 {
-    public partial class ConfiguratorWindow : Window
+    public partial class ConfiguratorWindow : Window, MediaPathProvider
     {
         protected GlobalGroupControlFactory GlobalGroupControlFactory { get; }
         protected PlaylistGroupControlFactory PlaylistGroupControlFactory { get; }
+
+        private IniDocumentTabItem globalTabItem;
 
         public ConfiguratorWindow()
         {
@@ -26,18 +28,14 @@ namespace PinJuke.Configurator
             var pinUpReader = new PinUpPlayerIniReader(new()
             {
                 Directory.GetCurrentDirectory(),
-                @"C:\vPinball"
+                Path.Join(Path.GetPathRoot(Directory.GetCurrentDirectory()), "vPinball"),
+                Path.Join("C:", "vPinball"),
             });
 
             GlobalGroupControlFactory = new(parser, pinUpReader);
-            PlaylistGroupControlFactory = new(parser);
+            PlaylistGroupControlFactory = new(parser, this);
 
-            AddTabItems();
-        }
-
-        private void AddTabItems()
-        {
-            var globalTabItem = new IniDocumentTabItem(
+            globalTabItem = new IniDocumentTabItem(
                 GlobalGroupControlFactory,
                 Configuration.ConfigPath.CONFIG_GLOBAL_FILE_PATH,
                 Configuration.ConfigPath.TEMPLATE_GLOBAL_FILE_PATH
@@ -55,7 +53,12 @@ namespace PinJuke.Configurator
                 );
                 Tabs.Items.Add(playlistTabItem);
             }
+        }
 
+        public string GetMediaPath()
+        {
+            var mediaPathControl = (PathControl)globalTabItem.GroupControl.GetChildByName(GlobalGroupControlFactory.MEDIA_PATH_CONTROL);
+            return mediaPathControl.FullPath;
         }
 
         private void SaveButton_Clicked(object sender, RoutedEventArgs e)
