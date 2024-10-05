@@ -28,9 +28,9 @@ namespace PinJuke.Configuration
         DMD = 2,
     }
 
-    public record Window(int Left, int Top, int Width, int Height, float ContentScale, int ContentAngle);
+    public record Window(int Left, int Top, int Width, int Height, float ContentScale, int ContentRotation);
 
-    public record Content(BackgroundType BackgroundType, string BackgroundImageFile, bool CoverEnabled, bool StateEnabled, bool BrowserEnabled, string ThemeVideoStartFile, string ThemeVideoLoopFile, string ThemeVideoStopFile);
+    public record Content(BackgroundType BackgroundType, string BackgroundImageFile, bool CoverEnabled, bool StateEnabled, bool BrowserEnabled, string ThemeVideoStartFile, string ThemeVideoLoopFile, string ThemeVideoStopFile, int ThemeVideoRotation);
 
     public enum BackgroundType
     {

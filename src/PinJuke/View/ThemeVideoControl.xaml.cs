@@ -23,6 +23,13 @@ namespace PinJuke.View
         public event EventHandler? LoopMediaEndedEvent;
         public event EventHandler? StopMediaEndedEvent;
 
+        private float contentRotation = 0f;
+        public float ContentRotation
+        {
+            get => contentRotation;
+            set => SetField(ref contentRotation, value);
+        }
+
         public ThemeVideoControl()
         {
             InitializeComponent();

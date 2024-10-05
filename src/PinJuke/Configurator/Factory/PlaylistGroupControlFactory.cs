@@ -130,6 +130,18 @@ namespace PinJuke.Configurator.Factory
                     MediaPathProvider = mediaPathProvider,
                     Converter = new PathConverter(parser, sectionName, "ThemeVideoStopFile"),
                 },
+                new SelectControlFactory()
+                {
+                    LabelText = "Theme video rotation",
+                    Items = new()
+                    {
+                        new("-90 °", -90),
+                        new("0 °", 0),
+                        new("90 °", 90),
+                        new("180 °", 180),
+                    },
+                    Converter = new IntSelectConverter(parser, sectionName, "ThemeVideoRotation"),
+                },
             ];
         }
     }

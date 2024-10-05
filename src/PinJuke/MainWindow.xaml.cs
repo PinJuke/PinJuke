@@ -31,7 +31,7 @@ namespace PinJuke
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public float ContentScale { get; }
-        public float ContentAngle { get; }
+        public float ContentRotation { get; }
 
         private readonly MainModel mainModel;
         private readonly Configuration.Display displayConfig;
@@ -58,7 +58,7 @@ namespace PinJuke
             Width = displayConfig.Window.Width;
             Height = displayConfig.Window.Height;
             ContentScale = displayConfig.Window.ContentScale;
-            ContentAngle = displayConfig.Window.ContentAngle;
+            ContentRotation = displayConfig.Window.ContentRotation;
 
             switch (displayConfig.Content.BackgroundType)
             {

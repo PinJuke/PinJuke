@@ -41,19 +41,12 @@ namespace PinJuke.View.Mediator
             this.mainModel = mainModel;
             this.displayConfig = displayConfig;
 
+            themeVideoControl.ContentRotation = displayConfig.Content.ThemeVideoRotation;
+
             startMediaActionQueue = new(themeVideoControl.StartMediaElement, 0);
             loopMediaActionQueue = new(themeVideoControl.LoopMediaElement, 0);
             stopMediaActionQueue = new(themeVideoControl.StopMediaElement, 0);
-
-            themeVideoControl.StartMediaEndedEvent += ThemeVideoControl_StartMediaEndedEvent;
-            themeVideoControl.LoopMediaEndedEvent += ThemeVideoControl_LoopMediaEndedEvent;
-            themeVideoControl.StopMediaEndedEvent += ThemeVideoControl_StopMediaEndedEvent;
-        }
-
-        protected override void OnLoaded()
-        {
-            base.OnLoaded();
-
+            
             startMediaInputStream = CreateMediaInputStream(displayConfig.Content.ThemeVideoStartFile);
             if (startMediaInputStream != null)
             {
@@ -70,6 +63,14 @@ namespace PinJuke.View.Mediator
                 stopMediaActionQueue.Open(stopMediaInputStream);
             }
 
+            themeVideoControl.StartMediaEndedEvent += ThemeVideoControl_StartMediaEndedEvent;
+            themeVideoControl.LoopMediaEndedEvent += ThemeVideoControl_LoopMediaEndedEvent;
+            themeVideoControl.StopMediaEndedEvent += ThemeVideoControl_StopMediaEndedEvent;
+        }
+
+        protected override void OnLoaded()
+        {
+            base.OnLoaded();
             mainModel.PlayMediaEvent += MainModel_PlayMediaEvent;
             mainModel.EndMediaEvent += MainModel_EndMediaEvent;
         }

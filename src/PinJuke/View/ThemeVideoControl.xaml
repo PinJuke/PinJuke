@@ -8,6 +8,11 @@
     mc:Ignorable="d"
     d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <Grid.LayoutTransform>
+            <TransformGroup>
+                <RotateTransform Angle="{Binding ContentRotation}"/>
+            </TransformGroup>
+        </Grid.LayoutTransform>
         <ffme:MediaElement x:Name="StartMediaElement">
         </ffme:MediaElement>
         <ffme:MediaElement x:Name="LoopMediaElement">

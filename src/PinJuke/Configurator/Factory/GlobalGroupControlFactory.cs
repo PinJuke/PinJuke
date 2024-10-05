@@ -215,7 +215,7 @@ namespace PinJuke.Configurator.Factory
                 },
                 new SelectControlFactory()
                 {
-                    LabelText = "Angle",
+                    LabelText = "Rotation",
                     Items = new()
                     {
                         new("-90 °", -90),
@@ -223,7 +223,7 @@ namespace PinJuke.Configurator.Factory
                         new("90 °", 90),
                         new("180 °", 180),
                     },
-                    Converter = new IntSelectConverter(parser, sectionName, "ContentAngle"),
+                    Converter = new IntSelectConverter(parser, sectionName, "ContentRotation"),
                 },
             ];
         }

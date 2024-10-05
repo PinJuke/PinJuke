@@ -16,7 +16,7 @@
         <Grid.LayoutTransform>
             <TransformGroup>
                 <ScaleTransform ScaleX="{Binding ContentScale}" ScaleY="{Binding ContentScale}"/>
-                <RotateTransform Angle="{Binding ContentAngle}"/>
+                <RotateTransform Angle="{Binding ContentRotation}"/>
             </TransformGroup>
         </Grid.LayoutTransform>
 

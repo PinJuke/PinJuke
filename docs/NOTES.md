@@ -16,5 +16,5 @@
 * https://superuser.com/questions/268985/remove-audio-from-video-file-with-ffmpeg
 
 ```Shell
-./ffmpeg -i "Turntable Start.mp4" -vf "transpose=1" -an -vcodec libx265 -crf 28 "Turntable Start New.mp4"
+./ffmpeg -i "Turntable Start.mp4" -vf "transpose=1" -an -vcodec libx264 -crf 28 "Turntable Start New.mp4"
 ```

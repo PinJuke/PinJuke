@@ -76,7 +76,7 @@ namespace PinJuke.Configuration
                  parser.ParseInt(displaySection["WindowWidth"]) ?? 400,
                  parser.ParseInt(displaySection["WindowHeight"]) ?? 300,
                  parser.ParseFloat(displaySection["ContentScale"]) ?? 1,
-                 GetAngle(displaySection["ContentAngle"]) ?? 0
+                 GetRotation(displaySection["ContentRotation"]) ?? 0
             );
 
             var backgroundImageFile = parser.ParseString(displaySection["BackgroundImageFile"]) ?? "";
@@ -108,7 +108,8 @@ namespace PinJuke.Configuration
                 parser.ParseBool(displaySection["BrowserEnabled"]) ?? true,
                 themeVideoStartFile,
                 themeVideoLoopFile,
-                themeVideoStopFile
+                themeVideoStopFile,
+                GetRotation(displaySection["ThemeVideoRotation"]) ?? 0
             );
 
             return new Display(role, enabled, window, content);
@@ -154,23 +155,23 @@ namespace PinJuke.Configuration
             return Path.GetFullPath(path, mediaPath);
         }
 
-        protected int? GetAngle(string? s)
+        protected int? GetRotation(string? s)
         {
-            var angle = parser.ParseInt(s);
-            if (angle == null)
+            var rotation = parser.ParseInt(s);
+            if (rotation == null)
             {
                 return null;
             }
 
-            angle = (int)Math.Round((double)angle / 90.0) * 90;
+            rotation = (int)Math.Round((double)rotation / 90.0) * 90;
 
-            angle = angle % 360;
-            if (angle < 0)
+            rotation = rotation % 360;
+            if (rotation < 0)
             {
-                angle += 360;
+                rotation += 360;
             }
 
-            return angle;
+            return rotation;
         }
     }
 
