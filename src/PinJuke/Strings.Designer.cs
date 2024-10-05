@@ -142,11 +142,20 @@ namespace PinJuke {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ini file.
+        ///   Looks up a localized string similar to INI file.
         /// </summary>
         internal static string IniFile {
             get {
                 return ResourceManager.GetString("IniFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to JPEG file.
+        /// </summary>
+        internal static string JpegFile {
+            get {
+                return ResourceManager.GetString("JpegFile", resourceCulture);
             }
         }
         
@@ -183,6 +192,15 @@ namespace PinJuke {
         internal static string LabelSaveAll {
             get {
                 return ResourceManager.GetString("LabelSaveAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MP4 file.
+        /// </summary>
+        internal static string Mp4File {
+            get {
+                return ResourceManager.GetString("Mp4File", resourceCulture);
             }
         }
         
@@ -282,6 +300,15 @@ namespace PinJuke {
         internal static string WantToStartConfigurator {
             get {
                 return ResourceManager.GetString("WantToStartConfigurator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XML file.
+        /// </summary>
+        internal static string XmlFile {
+            get {
+                return ResourceManager.GetString("XmlFile", resourceCulture);
             }
         }
     }

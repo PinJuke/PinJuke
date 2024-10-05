@@ -130,6 +130,8 @@ namespace PinJuke.Configurator.Factory
                             LabelText = "Global config file path",
                             FileMode = true,
                             RelativeEnabled = false,
+                            FileExtension = ".xml",
+                            FileFilter = $"{Strings.XmlFile}|*.xml",
                             Converter = new PathConverter(parser, "DOF", "GlobalConfigFilePath"),
                         },
                     ]

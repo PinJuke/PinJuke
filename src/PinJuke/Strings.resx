@@ -181,7 +181,7 @@
     <value>Error writing file "{0}".</value>
   </data>
   <data name="IniFile" xml:space="preserve">
-    <value>Ini file</value>
+    <value>INI file</value>
   </data>
   <data name="LabelSaveAll" xml:space="preserve">
     <value>Save all</value>
@@ -191,5 +191,14 @@
   </data>
   <data name="LabelRunCurrentPlaylist" xml:space="preserve">
     <value>Start with current playlist</value>
+  </data>
+  <data name="JpegFile" xml:space="preserve">
+    <value>JPEG file</value>
+  </data>
+  <data name="Mp4File" xml:space="preserve">
+    <value>MP4 file</value>
+  </data>
+  <data name="XmlFile" xml:space="preserve">
+    <value>XML file</value>
   </data>
 </root>

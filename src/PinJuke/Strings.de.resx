@@ -181,7 +181,7 @@
     <value>Fehler beim Schreiben von Datei "{0}".</value>
   </data>
   <data name="IniFile" xml:space="preserve">
-    <value>Ini-Datei</value>
+    <value>INI-Datei</value>
   </data>
   <data name="LabelSaveAll" xml:space="preserve">
     <value>Alle speichern</value>
@@ -191,5 +191,14 @@
   </data>
   <data name="LabelRunCurrentPlaylist" xml:space="preserve">
     <value>Mit aktueller Playlist starten</value>
+  </data>
+  <data name="JpegFile" xml:space="preserve">
+    <value>JPEG-Datei</value>
+  </data>
+  <data name="Mp4File" xml:space="preserve">
+    <value>MP4-Datei</value>
+  </data>
+  <data name="XmlFile" xml:space="preserve">
+    <value>XML-Datei</value>
   </data>
 </root>

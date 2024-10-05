@@ -99,6 +99,7 @@ namespace PinJuke.Configurator
     {
         public bool EmptyEnabled { get; set; } = false;
         public bool RelativeEnabled { get; set; } = false;
+        public bool RelativeDefault { get; set; } = true;
         public bool FileMode { get; set; } = false;
         public string FileExtension { get; set; } = ".ini";
         public string FileFilter { get; set; } = $"{Strings.IniFile}|*.ini";
@@ -110,6 +111,7 @@ namespace PinJuke.Configurator
             {
                 Name = Name,
                 EmptyEnabled = EmptyEnabled,
+                RelativeDefault = RelativeDefault,
                 RelativeEnabled = RelativeEnabled,
                 FileMode = FileMode,
                 FileExtension = FileExtension,

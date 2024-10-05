@@ -17,7 +17,22 @@ namespace PinJuke.Configurator.View
         public bool RelativeEnabled
         {
             get => relativeEnabled;
-            set => SetField(ref relativeEnabled, value);
+            set
+            {
+                SetField(ref relativeEnabled, value);
+                SetPath(Path);
+            }
+        }
+
+        private bool relativeDefault = true;
+        public bool RelativeDefault
+        {
+            get => relativeDefault;
+            set
+            {
+                SetField(ref relativeDefault, value);
+                SetPath(Path);
+            }
         }
 
         private bool fileMode = false;
@@ -95,13 +110,20 @@ namespace PinJuke.Configurator.View
         public PathControl()
         {
             InitializeComponent();
+
+            // Update relative state.
+            SetPath("");
         }
 
         private void SetPath(string path)
         {
             var relative = Relative;
             var relativeRootDir = RelativeRootDir;
-            if (System.IO.Path.IsPathRooted(path))
+            if (path.IsNullOrEmpty())
+            {
+                relative = relativeEnabled ? relativeDefault : false;
+            }
+            else if (System.IO.Path.IsPathRooted(path))
             {
                 if (relative)
                 {
