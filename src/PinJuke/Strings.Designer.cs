@@ -133,6 +133,60 @@ namespace PinJuke {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error writing file &quot;{0}&quot;..
+        /// </summary>
+        internal static string ErrorWritingFile {
+            get {
+                return ResourceManager.GetString("ErrorWritingFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ini file.
+        /// </summary>
+        internal static string IniFile {
+            get {
+                return ResourceManager.GetString("IniFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add new playlist….
+        /// </summary>
+        internal static string LabelAddNewPlaylist {
+            get {
+                return ResourceManager.GetString("LabelAddNewPlaylist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Further information can be found in the documentation:.
+        /// </summary>
+        internal static string LabelDocumentation {
+            get {
+                return ResourceManager.GetString("LabelDocumentation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start with current playlist.
+        /// </summary>
+        internal static string LabelRunCurrentPlaylist {
+            get {
+                return ResourceManager.GetString("LabelRunCurrentPlaylist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save all.
+        /// </summary>
+        internal static string LabelSaveAll {
+            get {
+                return ResourceManager.GetString("LabelSaveAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No audio device found..
         /// </summary>
         internal static string NoAudioDeviceFound {

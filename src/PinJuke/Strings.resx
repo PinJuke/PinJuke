@@ -174,4 +174,22 @@
   <data name="PathNotFound" xml:space="preserve">
     <value>"{0}" not found.</value>
   </data>
+  <data name="LabelDocumentation" xml:space="preserve">
+    <value>Further information can be found in the documentation:</value>
+  </data>
+  <data name="ErrorWritingFile" xml:space="preserve">
+    <value>Error writing file "{0}".</value>
+  </data>
+  <data name="IniFile" xml:space="preserve">
+    <value>Ini file</value>
+  </data>
+  <data name="LabelSaveAll" xml:space="preserve">
+    <value>Save all</value>
+  </data>
+  <data name="LabelAddNewPlaylist" xml:space="preserve">
+    <value>Add new playlist…</value>
+  </data>
+  <data name="LabelRunCurrentPlaylist" xml:space="preserve">
+    <value>Start with current playlist</value>
+  </data>
 </root>

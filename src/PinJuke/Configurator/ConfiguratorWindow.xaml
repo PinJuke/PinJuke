@@ -10,16 +10,25 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        
-        <TabControl x:Name="Tabs" Grid.ColumnSpan="2">
+
+        <Border Grid.ColumnSpan="3" BorderBrush="#ffc90e" BorderThickness="4" Background="#efe4b0">
+            <TextBlock Margin="5">
+                <Run Text="{Binding DocumentationText, Mode=OneWay}"/> <Hyperlink Click="DocumentationLink_Click"><Run Text="{Binding DocumentationLink, Mode=OneWay}"/></Hyperlink>
+            </TextBlock>
+        </Border>
+
+        <TabControl x:Name="Tabs" Grid.Row="1" Grid.ColumnSpan="3" SelectionChanged="Tabs_SelectionChanged">
         </TabControl>
 
-        <Button x:Name="AddPlaylistButton" Grid.Row="1" Grid.Column="0" Content="Add playlist" Click="AddPlaylistButton_Click"/>
-        <Button x:Name="SaveButton" Grid.Row="1" Grid.Column="1" Content="Save all" Click="SaveButton_Clicked"/>
+        <Button x:Name="AddPlaylistButton" Grid.Row="2" Grid.Column="0" Content="{Binding AddPlaylistLabelText, Mode=OneWay}" Click="AddPlaylistButton_Click"/>
+        <Button x:Name="SaveButton" Grid.Row="2" Grid.Column="1" Content="{Binding SaveAllLabelText, Mode=OneWay}" Click="SaveButton_Clicked"/>
+        <Button x:Name="RunButton" Grid.Row="2" Grid.Column="2" Content="{Binding RunCurrentPlaylistLabelText, Mode=OneWay}" Click="RunButton_Clicked"/>
     </Grid>
 </Window>

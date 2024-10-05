@@ -1,8 +1,10 @@
 ﻿using PinJuke.Configurator.Factory;
 using PinJuke.Configurator.View;
 using PinJuke.Ini;
+using PinJuke.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,13 +17,41 @@ namespace PinJuke.Configurator
 {
     public partial class ConfiguratorWindow : Window, MediaPathProvider
     {
+        public event EventHandler<string> RunPlaylistConfigEvent;
+
         protected GlobalGroupControlFactory GlobalGroupControlFactory { get; }
         protected PlaylistGroupControlFactory PlaylistGroupControlFactory { get; }
 
         private IniDocumentTabItem globalTabItem;
 
+        public string DocumentationText
+        {
+            get => Strings.LabelDocumentation;
+        }
+
+        public string DocumentationLink
+        {
+            get => "https://pinjuke.github.io/PinJuke/";
+        }
+
+        public string AddPlaylistLabelText
+        {
+            get => Strings.LabelAddNewPlaylist;
+        }
+
+        public string SaveAllLabelText
+        {
+            get => Strings.LabelSaveAll;
+        }
+
+        public string RunCurrentPlaylistLabelText
+        {
+            get => Strings.LabelRunCurrentPlaylist;
+        }
+
         public ConfiguratorWindow()
         {
+            DataContext = this;
             InitializeComponent();
 
             var parser = new Configuration.Parser();
@@ -53,6 +83,8 @@ namespace PinJuke.Configurator
                 );
                 Tabs.Items.Add(playlistTabItem);
             }
+
+            UpdateTabsSelection();
         }
 
         public string GetMediaPath()
@@ -66,7 +98,14 @@ namespace PinJuke.Configurator
             foreach (var item in Tabs.Items)
             {
                 var tabItem = (IniDocumentTabItem)item;
-                tabItem.SaveToFile();
+                try
+                {
+                    tabItem.SaveToFile();
+                }
+                catch (IOException)
+                {
+                    MessageBox.Show(string.Format(Strings.ErrorWritingFile, tabItem.FilePath), AppDomain.CurrentDomain.FriendlyName);
+                }
             }
         }
 
@@ -74,7 +113,7 @@ namespace PinJuke.Configurator
         {
             var dialog = new Microsoft.Win32.SaveFileDialog();
             dialog.DefaultExt = ".ini"; // Default file extension
-            dialog.Filter = "Ini file|*.ini"; // Filter files by extension
+            dialog.Filter = $"{Strings.IniFile}|*.ini"; // Filter files by extension
             dialog.InitialDirectory = Path.GetFullPath(Configuration.ConfigPath.CONFIG_PLAYLIST_DIRECTORY_PATH);
             
             bool? result = dialog.ShowDialog();
@@ -104,6 +143,31 @@ namespace PinJuke.Configurator
             );
             Tabs.Items.Add(playlistTabItem);
             Tabs.SelectedItem = playlistTabItem;
+        }
+
+        private void RunButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            var tabItem = (IniDocumentTabItem)Tabs.SelectedItem;
+            RunPlaylistConfigEvent?.Invoke(this, tabItem.FilePath);
+        }
+
+        private void DocumentationLink_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(new ProcessStartInfo
+            {
+                FileName = DocumentationLink,
+                UseShellExecute = true
+            });
+        }
+
+        private void Tabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateTabsSelection();
+        }
+
+        private void UpdateTabsSelection()
+        {
+            RunButton.IsEnabled = Tabs.SelectedIndex >= 1;
         }
     }
 }

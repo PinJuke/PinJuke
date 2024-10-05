@@ -28,15 +28,19 @@ namespace PinJuke
         {
             base.OnStartup(e);
 
+            bool parsingOptions = true;
             string? playlistConfigFilePath = null;
             bool configurator = false;
 
             foreach (var arg in e.Args)
             {
-                if (arg.StartsWith('-'))
+                if (parsingOptions && arg.StartsWith('-'))
                 {
                     switch (arg)
                     {
+                        case "--":
+                            parsingOptions = false;
+                            break;
                         case "--configurator":
                             configurator = true;
                             break;
@@ -52,7 +56,7 @@ namespace PinJuke
                 }
             }
 
-            if (configurator)
+            if (configurator || playlistConfigFilePath == null)
             {
                 RunConfigurator();
                 return;
@@ -64,7 +68,16 @@ namespace PinJuke
         private void RunConfigurator()
         {
             var configuratorWindow = new ConfiguratorWindow();
+            configuratorWindow.RunPlaylistConfigEvent += ConfiguratorWindow_RunPlaylistConfig;
             configuratorWindow.Show();
+        }
+
+        private void ConfiguratorWindow_RunPlaylistConfig(object? sender, string e)
+        {
+            var configuratorWindow = (ConfiguratorWindow)sender!;
+            RunPlayer(e);
+            // Close last
+            configuratorWindow.Close();
         }
 
         private void RunPlayer(string? playlistConfigFilePath)

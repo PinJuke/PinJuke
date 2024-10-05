@@ -101,7 +101,7 @@ namespace PinJuke.Configurator
         public bool RelativeEnabled { get; set; } = false;
         public bool FileMode { get; set; } = false;
         public string FileExtension { get; set; } = ".ini";
-        public string FileFilter { get; set; } = "Ini file|*.ini";
+        public string FileFilter { get; set; } = $"{Strings.IniFile}|*.ini";
         public MediaPathProvider? MediaPathProvider { get; set; } = null;
 
         public override PathControl CreateControlForRow()
