@@ -1,6 +1,16 @@
 ![Jukebox](images/jukebox-header.png)
 
-# Building PinJuke from source
+- [Start](index.md)
+- [Features](FEATURES.md)
+- [Installation](INSTALLATION.md)
+- [Configuration](CONFIGURATION.md)
+- [Theme videos](THEME-VIDEOS.md)
+- [Run a playlist file](RUN.md)
+- [Controls](CONTROLS.md)
+- [Pinup Popper](PINUP-POPPER.md)
+- [FAQ](FAQ.md)
+
+# Building PinJuke music player from source
 
 ## Cloning the project
 
@@ -13,7 +23,7 @@ cd PinJuke
 
 ## Getting FFmpeg
 
-Download the zip archive `ffmpeg-6.0-full_build-shared.zip` from https://github.com/GyanD/codexffmpeg/releases/tag/6.0 and place the dll files and LICENSE.txt from the archive in `src\PinJuke\ffmpeg`.
+Download the zip archive `ffmpeg-7.0.2-full_build-shared.zip` from https://github.com/GyanD/codexffmpeg/releases/tag/7.0.2 and place the dll files and LICENSE.txt from the archive in `src\PinJuke\ffmpeg`.
 
 ## Building projectM
 

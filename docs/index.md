@@ -4,14 +4,17 @@
 - [Features](FEATURES.md)
 - [Installation](INSTALLATION.md)
 - [Configuration](CONFIGURATION.md)
+- [Theme videos](THEME-VIDEOS.md)
+- [Run a playlist file](RUN.md)
+- [Controls](CONTROLS.md)
 - [Pinup Popper](PINUP-POPPER.md)
 - [FAQ](FAQ.md)
 
-# PinJuke
+# PinJuke music player
 
 A music player tailor-made for virtual pinball cabinets.
 
-## What does it look like?
+## See it in action
 
 See the software running live on a virtual pinball cabinet (link to YouTube):
 

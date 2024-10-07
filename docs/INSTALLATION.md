@@ -4,6 +4,9 @@
 - [Features](FEATURES.md)
 - [Installation](INSTALLATION.md)
 - [Configuration](CONFIGURATION.md)
+- [Theme videos](THEME-VIDEOS.md)
+- [Run a playlist file](RUN.md)
+- [Controls](CONTROLS.md)
 - [Pinup Popper](PINUP-POPPER.md)
 - [FAQ](FAQ.md)
 
@@ -13,9 +16,11 @@
 
 Head over to the [releases page](https://github.com/PinJuke/PinJuke/releases) to download the latest *application*.
 
-You may also want to download the [PinJuke Milkdrop assets](https://github.com/PinJuke/PinJuke-Milkdrop/releases).
+You may also want to download the
+- [PinJuke Milkdrop assets](https://github.com/PinJuke/PinJuke-Milkdrop/releases) for the visualizer
+- [PinJuke Media assets](https://github.com/PinJuke/PinJuke-Media/releases) containing some [theme videos](THEME-VIDEOS.md)
 
-## Extract the archive
+## Extract the archives
 
 The zip archives contain a top level `PinJuke` folder so you can extract the files for example to `C:\vPinball` (the default location of the *PinUP Popper Baller Installer*).
 
@@ -29,6 +34,6 @@ To solve this, open the context menu by right clicking `PinJuke.exe`. Click on p
 
 ## Install the .NET runtime
 
-If you run PinJuke for the first time it is likely that you need to install the .NET runtime. A message box may appear leading to the .NET download website from Microsoft:
+If you run PinJuke for the first time it is likely that you need to install the .NET runtime. You may see a message box that takes you to Microsoft's .NET download website:
 
 ![Jukebox](images/installation-dot-net.png)

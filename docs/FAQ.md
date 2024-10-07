@@ -4,12 +4,15 @@
 - [Features](FEATURES.md)
 - [Installation](INSTALLATION.md)
 - [Configuration](CONFIGURATION.md)
+- [Theme videos](THEME-VIDEOS.md)
+- [Run a playlist file](RUN.md)
+- [Controls](CONTROLS.md)
 - [Pinup Popper](PINUP-POPPER.md)
 - [FAQ](FAQ.md)
 
 # FAQ
 
-### What license does PinJuke have?
+### What license does PinJuke music player have?
 
 This software is provided under the GPL-3 license.
 
