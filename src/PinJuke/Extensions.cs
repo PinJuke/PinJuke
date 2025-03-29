@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ namespace PinJuke
 {
     public static class Extensions
     {
-        private static Random rng = new Random();
+        private static readonly Random rng = new Random();
 
         /// <summary>
         /// See https://stackoverflow.com/a/1262619
@@ -24,6 +25,14 @@ namespace PinJuke
                 list[k] = list[n];
                 list[n] = value;
             }
+        }
+
+        /// <summary>
+        /// Redefine IsNullOrEmpty for PinJuke, because DOF ships their own version.
+        /// </summary>
+        public static bool IsNullOrEmpty([NotNullWhen(false)] this string? s)
+        {
+            return string.IsNullOrEmpty(s);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace PinJuke.View.Mediator
                 {
                     backgroundImageControl.BackgroundImageSource = new BitmapImage(new Uri(backgroundImageFile));
                 }
-                catch (IOException ex)
+                catch (IOException)
                 {
                     backgroundImageControl.ErrorMessage = string.Format(Strings.ErrorReadingFile, backgroundImageFile);
                 }

@@ -96,7 +96,7 @@ namespace PinJuke.View.Mediator
                     fileStream.CopyTo(memoryStream);
                 }
             }
-            catch (IOException ex)
+            catch (IOException)
             {
                 Debug.WriteLine($"Error reading \"{filePath}\".");
                 return null;

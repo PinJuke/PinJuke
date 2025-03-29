@@ -55,7 +55,7 @@ namespace PinJuke.Dof
             {
                 pinball.Setup(dof.GlobalConfigFilePath, "", dof.RomName);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Debug.WriteLine("Error initializing DOF.");
                 return;

@@ -17,7 +17,7 @@ namespace PinJuke.Configurator
 {
     public partial class ConfiguratorWindow : Window, MediaPathProvider
     {
-        public event EventHandler<string> RunPlaylistConfigEvent;
+        public event EventHandler<string>? RunPlaylistConfigEvent;
 
         protected GlobalGroupControlFactory GlobalGroupControlFactory { get; }
         protected PlaylistGroupControlFactory PlaylistGroupControlFactory { get; }

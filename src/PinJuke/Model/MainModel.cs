@@ -405,10 +405,14 @@ namespace PinJuke.Model
             }
             if (Configuration.Player.StartupTrackType == StartupTrackType.LastPlayedTrack)
             {
-                var fileNode = scanResult.TryGetPlayableFileNodeOrDefault(GetUserPlaylist().TrackFilePath);
-                if (fileNode != null)
+                var trackFilePath = GetUserPlaylist().TrackFilePath;
+                if (trackFilePath != null)
                 {
-                    index = playlist.IndexOf(fileNode);
+                    var fileNode = scanResult.TryGetPlayableFileNodeOrDefault(trackFilePath);
+                    if (fileNode != null)
+                    {
+                        index = playlist.IndexOf(fileNode);
+                    }
                 }
             }
 

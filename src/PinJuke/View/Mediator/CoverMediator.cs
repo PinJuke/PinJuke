@@ -61,7 +61,7 @@ namespace PinJuke.View.Mediator
                 {
                     file = TagLib.File.Create(path);
                 }
-                catch (IOException ex)
+                catch (IOException)
                 {
                 }
 

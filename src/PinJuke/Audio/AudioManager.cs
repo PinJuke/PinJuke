@@ -113,7 +113,7 @@ namespace PinJuke.Audio
             {
                 device = deviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
             }
-            catch (COMException exception)
+            catch (COMException)
             {
                 Debug.WriteLine("AudioManager: No device.");
                 return;
