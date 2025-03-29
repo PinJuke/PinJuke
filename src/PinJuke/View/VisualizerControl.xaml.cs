@@ -85,27 +85,8 @@ namespace PinJuke.View
             //GL.ClearColor(Color4.Blue);
             //GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            var framebuffer = getFramebuffer();
+            var framebuffer = OpenTkControl.Framebuffer;
             visualizer!.Render(framebuffer);
-        }
-
-        /// <summary>
-        /// TODO: This is temporary...
-        /// </summary>
-        private int getFramebuffer()
-        {
-            var rendererFieldInfo = typeof(GLWpfControl).GetField("_renderer", BindingFlags.NonPublic | BindingFlags.Instance)
-                ?? throw new Exception("Field _renderer not found.");
-            var renderer = rendererFieldInfo.GetValue(OpenTkControl);
-            if (renderer == null)
-            {
-                return 0;
-            }
-            var framebufferFieldInfo = renderer.GetType().GetProperty("GLFramebufferHandle", BindingFlags.Public | BindingFlags.Instance)
-                ?? throw new Exception("Property GLFramebufferHandle not found.");
-            var framebuffer = framebufferFieldInfo.GetValue(renderer)
-                ?? throw new Exception("GLFramebufferHandle expected to be an int.");
-            return (int)framebuffer;
         }
 
         private void OpenTkControl_SizeChanged(object sender, SizeChangedEventArgs e)

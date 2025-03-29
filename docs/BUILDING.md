@@ -32,5 +32,5 @@ Open the `Developer PowerShell for VS 2022`:
 ```PowerShell
 cd deps\projectm
 cmake . -B build -DCMAKE_BUILD_TYPE=Release "-DCMAKE_INSTALL_PREFIX=$PWD/dist" "-DCMAKE_TOOLCHAIN_FILE=$Env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
-cmake --build build --target install --config Release
+cmake --build build --target install --config Release -j $env:NUMBER_OF_PROCESSORS
 ```

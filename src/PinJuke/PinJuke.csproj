@@ -23,12 +23,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotNetProjects.SVGImage" Version="5.2.1" />
+    <PackageReference Include="DotNetProjects.SVGImage" Version="5.2.3" />
     <PackageReference Include="FFME.Windows" Version="7.0.361-beta.1" />
     <PackageReference Include="NaturalSort.Extension" Version="4.3.0" />
     <PackageReference Include="NAudio.Wasapi" Version="2.2.1" />
-    <PackageReference Include="OpenTK.GLWpfControl" Version="4.3.2" />
-    <PackageReference Include="SoftCircuits.OrderedDictionary" Version="3.2.0" />
+    <PackageReference Include="OpenTK.GLWpfControl" Version="4.3.3" />
+    <PackageReference Include="SoftCircuits.OrderedDictionary" Version="3.3.0" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
   </ItemGroup>
 
