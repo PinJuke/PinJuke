@@ -4,6 +4,7 @@ using PinJuke.Controller;
 using PinJuke.Dof;
 using PinJuke.Ini;
 using PinJuke.Model;
+using PinJuke.Service;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -19,10 +20,13 @@ namespace PinJuke
     public partial class App : Application
     {
         private MainModel? mainModel;
-        private AppController? appController;
-        private DisplayController? displayController;
+        private ConfigurationService configurationService = new();
+        private BeaconService beaconService = new();
+        private BeaconController? beaconController = null;
+        private AppController? appController = null;
+        private DisplayController? displayController = null;
         private DofMediator? dofMediator = null;
-        private AudioManager? audioManager;
+        private AudioManager? audioManager = null;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -85,7 +89,7 @@ namespace PinJuke
             Configuration.Configuration configuration;
             try
             {
-                configuration = LoadConfiguration(playlistConfigFilePath);
+                configuration = configurationService.LoadConfiguration(playlistConfigFilePath);
             }
             catch (IniIoException ex)
             {
@@ -103,12 +107,12 @@ namespace PinJuke
             Configuration.UserConfiguration userConfiguration;
             try
             {
-                userConfiguration = LoadUserConfiguration();
+                userConfiguration = configurationService.LoadUserConfiguration();
             }
             catch (IniIoException ex)
             {
                 Debug.WriteLine("Error reading user configuration ini file: " + ex.Message);
-                userConfiguration = new(new IniDocument());
+                userConfiguration = new(new IniDocument(), new Configuration.Parser());
             }
 
             Unosquare.FFME.Library.FFmpegDirectory = @"ffmpeg";
@@ -127,6 +131,8 @@ namespace PinJuke
             var backGlassWindow = CreateWindow(mainModel, configuration.BackGlass, audioManager);
             var dmdWindow = CreateWindow(mainModel, configuration.Dmd, audioManager);
 
+            beaconController = new BeaconController(mainModel, beaconService, configurationService);
+            _ = beaconController.Startup();
             appController = new AppController(mainModel);
             appController.Scan();
             displayController = new DisplayController(mainModel, audioManager);
@@ -152,44 +158,15 @@ namespace PinJuke
         {
             base.OnExit(e);
 
-            SaveUserConfiguration();
+            if (mainModel != null)
+            {
+                configurationService.SaveUserConfiguration(mainModel.UserConfiguration);
+            }
 
             displayController?.Dispose();
             appController?.Dispose();
             audioManager?.Dispose();
             dofMediator?.Dispose();
-        }
-
-        private Configuration.Configuration LoadConfiguration(string? playlistConfigFilePath)
-        {
-            List<string> iniFilePaths = new();
-            iniFilePaths.Add(Configuration.ConfigPath.CONFIG_GLOBAL_FILE_PATH);
-            if (playlistConfigFilePath != null)
-            {
-                iniFilePaths.Add(playlistConfigFilePath);
-            }
-
-            var loader = new Configuration.ConfigurationLoader();
-            return loader.FromIniFilePaths(iniFilePaths, playlistConfigFilePath);
-        }
-
-        private Configuration.UserConfiguration LoadUserConfiguration()
-        {
-            var userConfigDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\PinJuke";
-            var userConfigFile = Path.Combine(userConfigDir, Configuration.ConfigPath.USER_FILE_NAME);
-
-            var loader = new Configuration.UserConfigurationLoader();
-            return loader.FromIniFilePath(userConfigFile);
-        }
-
-        private void SaveUserConfiguration()
-        {
-            var userConfigDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\PinJuke";
-            var userConfigFile = Path.Combine(userConfigDir, Configuration.ConfigPath.USER_FILE_NAME);
-
-            Directory.CreateDirectory(userConfigDir);
-            using var textWriter = new StreamWriter(userConfigFile);
-            mainModel?.UserConfiguration.IniDocument.WriteTo(textWriter);
         }
 
         private MainWindow? CreateWindow(MainModel mainModel, Configuration.Display displayConfig, AudioManager audioManager)

@@ -12,12 +12,77 @@ namespace PinJuke.Configuration
     public class UserConfiguration
     {
         public IniDocument IniDocument { get; }
+        private IniSection userSection;
+        private Parser parser;
+
         private readonly OrderedDictionary<string, UserPlaylist> userPlaylists = new();
         private int nextIndex = 0;
 
-        public UserConfiguration(IniDocument iniDocument)
+        private string? privateId = null;
+        public string? PrivateId
+        {
+            get => privateId;
+            set
+            {
+                privateId = value;
+                userSection["PrivateId"] = parser.FormatString(value);
+            }
+        }
+
+        private string? publicId = null;
+        public string? PublicId
+        {
+            get => publicId;
+            set
+            {
+                publicId = value;
+                userSection["PublicId"] = parser.FormatString(value);
+            }
+        }
+
+        private bool? updateCheckEnabled = null;
+        public bool? UpdateCheckEnabled
+        {
+            get => updateCheckEnabled;
+            set
+            {
+                updateCheckEnabled = value;
+                userSection["UpdateCheckEnabled"] = parser.FormatBool(value);
+            }
+        }
+
+        private bool? beaconEnabled = null;
+        public bool? BeaconEnabled
+        {
+            get => beaconEnabled;
+            set
+            {
+                beaconEnabled = value;
+                userSection["BeaconEnabled"] = parser.FormatBool(value);
+            }
+        }
+
+        private string? lastBeaconSentAt = null;
+        public string? LastBeaconSentAt
+        {
+            get => lastBeaconSentAt;
+            set
+            {
+                lastBeaconSentAt = value;
+                userSection["LastBeaconSentAt"] = value;
+            }
+        }
+
+        public UserConfiguration(IniDocument iniDocument, Parser parser, string? privateId = null, string? publicId = null, bool? updateCheckEnabled = null, bool? beaconEnabled = null, string? lastBeaconSentAt = null)
         {
             IniDocument = iniDocument;
+            userSection = iniDocument.ProvideSection("User");
+            this.parser = parser;
+            PrivateId = privateId;
+            PublicId = publicId;
+            UpdateCheckEnabled = updateCheckEnabled;
+            BeaconEnabled = beaconEnabled;
+            LastBeaconSentAt = lastBeaconSentAt;
         }
 
         public void AddPlaylist(UserPlaylist playlist)
@@ -37,7 +102,7 @@ namespace PinJuke.Configuration
                 var index = nextIndex;
                 var name = "Playlist" + index;
                 var iniSection = IniDocument.ProvideSection(name);
-                playlist = new UserPlaylist(iniSection, index, playlistConfigFilePath);
+                playlist = new UserPlaylist(iniSection, parser, index, playlistConfigFilePath);
                 AddPlaylist(playlist);
             }
             return playlist;
@@ -47,6 +112,7 @@ namespace PinJuke.Configuration
     public class UserPlaylist
     {
         public IniSection IniSection { get; }
+        private Parser parser;
         public int Index { get; }
 
         private string playlistConfigFilePath = "";
@@ -56,27 +122,28 @@ namespace PinJuke.Configuration
             private set
             {
                 playlistConfigFilePath = value;
-                IniSection["PlaylistConfigFilePath"] = value;
+                IniSection["PlaylistConfigFilePath"] = parser.FormatString(value);
             }
         }
 
-        private string trackFilePath = "";
-        public string TrackFilePath
+        private string? trackFilePath = null;
+        public string? TrackFilePath
         {
             get => trackFilePath;
             set
             {
                 trackFilePath = value;
-                IniSection["TrackFilePath"] = value;
+                IniSection["TrackFilePath"] = parser.FormatString(value);
             }
         }
 
-        public UserPlaylist(IniSection iniSection, int index, string playlistConfigFilePath)
+        public UserPlaylist(IniSection iniSection, Parser parser, int index, string playlistConfigFilePath, string? trackFilePath = null)
         {
             IniSection = iniSection;
+            this.parser = parser;
             Index = index;
             PlaylistConfigFilePath = playlistConfigFilePath;
-            TrackFilePath = "";
+            TrackFilePath = trackFilePath;
         }
     }
 }

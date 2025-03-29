@@ -25,7 +25,16 @@ namespace PinJuke.Configuration
 
         public UserConfiguration FromIniDocument(IniDocument iniDocument)
         {
-            var userConfiguration = new UserConfiguration(iniDocument);
+            var userSection = iniDocument["User"];
+            var userConfiguration = new UserConfiguration(
+                iniDocument,
+                parser,
+                parser.ParseString(userSection["PrivateId"]),
+                parser.ParseString(userSection["PublicId"]),
+                parser.ParseBool(userSection["UpdateCheckEnabled"]),
+                parser.ParseBool(userSection["BeaconEnabled"]),
+                parser.ParseString(userSection["LastBeaconSentAt"])
+            );
             foreach (var (name, iniSection) in iniDocument)
             {
                 var match = playlistRegex.Match(name);
@@ -34,8 +43,7 @@ namespace PinJuke.Configuration
                     var index = int.Parse(match.Groups[1].ValueSpan, NumberStyles.Integer, CultureInfo.InvariantCulture);
                     var playlistConfigFilePath = parser.ParseString(iniSection["PlaylistConfigFilePath"]) ?? "";
                     var trackFilePath = parser.ParseString(iniSection["TrackFilePath"]) ?? "";
-                    var userPlaylist = new UserPlaylist(iniSection, index, playlistConfigFilePath);
-                    userPlaylist.TrackFilePath = trackFilePath;
+                    var userPlaylist = new UserPlaylist(iniSection, parser, index, playlistConfigFilePath, trackFilePath);
                     userConfiguration.AddPlaylist(userPlaylist);
                 }
             }
