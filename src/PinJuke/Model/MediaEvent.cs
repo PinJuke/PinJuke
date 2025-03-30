@@ -31,9 +31,12 @@ namespace PinJuke.Model
             get => tokens.Count != 0;
         }
 
-        public MediaEventArgs(Action<MediaEventArgs> continueWith)
+        public PlayFileType Type { get; }
+
+        public MediaEventArgs(Action<MediaEventArgs> continueWith, PlayFileType type)
         {
             this.continueWith = continueWith;
+            this.Type = type;
         }
 
         public MediaEventToken Intercept()
@@ -60,14 +63,14 @@ namespace PinJuke.Model
 
     public class PlayMediaEventArgs : MediaEventArgs
     {
-        public PlayMediaEventArgs(Action<MediaEventArgs> continueWith) : base(continueWith)
+        public PlayMediaEventArgs(Action<MediaEventArgs> continueWith, PlayFileType type) : base(continueWith, type)
         {
         }
     }
 
     public class EndMediaEventArgs : MediaEventArgs
     {
-        public EndMediaEventArgs(Action<MediaEventArgs> continueWith) : base(continueWith)
+        public EndMediaEventArgs(Action<MediaEventArgs> continueWith, PlayFileType type) : base(continueWith, type)
         {
         }
     }

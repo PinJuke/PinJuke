@@ -528,20 +528,24 @@ namespace PinJuke.Model
                 return;
             }
 
-            endMediaEventArgs = new(EndMedia);
+            endMediaEventArgs = new(EndMedia, type);
             EndMediaEvent?.Invoke(this, endMediaEventArgs);
             endMediaEventArgs.ContinueIfNotIntercepted();
         }
 
         private void EndMedia(MediaEventArgs mediaEventArgs)
         {
+            var type = endMediaEventArgs!.Type;
             endMediaEventArgs = null;
 
             MediaPlaying = false;
-            MediaPlayingFile = null;
+            if (type == PlayFileType.Play)
+            {
+                MediaPlayingFile = null;
+            }
 
             // Playing may be false if no following track is played.
-            playMediaEventArgs = new(PlayMedia);
+            playMediaEventArgs = new(PlayMedia, type);
             PlayMediaEvent?.Invoke(this, playMediaEventArgs);
             playMediaEventArgs.ContinueIfNotIntercepted();
         }
