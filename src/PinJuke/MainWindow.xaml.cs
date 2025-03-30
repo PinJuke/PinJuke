@@ -52,7 +52,7 @@ namespace PinJuke
             InitializeComponent();
             DataContext = this;
 
-            Title = displayConfig.Role.ToString();
+            Title = "PinJuke " + displayConfig.Role.ToString();
             Left = displayConfig.Window.Left;
             Top = displayConfig.Window.Top;
             Width = displayConfig.Window.Width;
