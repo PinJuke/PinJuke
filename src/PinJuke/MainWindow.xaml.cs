@@ -74,13 +74,16 @@ namespace PinJuke
                     break;
             }
 
-            if (!displayConfig.Content.ThemeVideoStartFile.IsNullOrEmpty()
-                || !displayConfig.Content.ThemeVideoLoopFile.IsNullOrEmpty()
-                || !displayConfig.Content.ThemeVideoStopFile.IsNullOrEmpty())
+            if (displayConfig.Content.ThemeVideoEnabled)
             {
-                themeVideoControl = new();
-                new ThemeVideoMediator(themeVideoControl, mainModel, displayConfig).Initialize();
-                ThemeVideoContainer.Content = themeVideoControl;
+                if (!displayConfig.Content.ThemeVideoStartFile.IsNullOrEmpty()
+                    || !displayConfig.Content.ThemeVideoLoopFile.IsNullOrEmpty()
+                    || !displayConfig.Content.ThemeVideoStopFile.IsNullOrEmpty())
+                {
+                    themeVideoControl = new();
+                    new ThemeVideoMediator(themeVideoControl, mainModel, displayConfig).Initialize();
+                    ThemeVideoContainer.Content = themeVideoControl;
+                }
             }
 
             if (displayConfig.Role == Configuration.DisplayRole.BackGlass)

@@ -100,6 +100,11 @@ namespace PinJuke.Configurator.Factory
                     LabelText = "Browser enabled",
                     Converter = new BoolConverter(parser, sectionName, "BrowserEnabled"),
                 },
+                new BoolControlFactory()
+                {
+                    LabelText = "Theme video enabled",
+                    Converter = new BoolConverter(parser, sectionName, "ThemeVideoEnabled"),
+                },
                 new PathControlFactory()
                 {
                     LabelText = "Theme video start file",

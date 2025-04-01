@@ -106,6 +106,7 @@ namespace PinJuke.Configuration
                 parser.ParseBool(displaySection["CoverEnabled"]) ?? role == DisplayRole.DMD,
                 parser.ParseBool(displaySection["StateEnabled"]) ?? true,
                 parser.ParseBool(displaySection["BrowserEnabled"]) ?? true,
+                parser.ParseBool(displaySection["ThemeVideoEnabled"]) ?? true,
                 themeVideoStartFile,
                 themeVideoLoopFile,
                 themeVideoStopFile,
