@@ -1,6 +1,8 @@
-﻿using PinJuke.Model;
+﻿using PinJuke.Dof;
+using PinJuke.Model;
 using PinJuke.Service;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -17,17 +19,20 @@ namespace PinJuke.Controller
         private MainModel mainModel;
         private BeaconService beaconService;
         private ConfigurationService configurationService;
+        private DofMediator? dofMediator;
 
-        public BeaconController(MainModel mainModel, BeaconService beaconService, ConfigurationService configurationService)
+        public BeaconController(MainModel mainModel, BeaconService beaconService, ConfigurationService configurationService, DofMediator? dofMediator)
         {
             this.mainModel = mainModel;
             this.beaconService = beaconService;
             this.configurationService = configurationService;
+            this.dofMediator = dofMediator;
         }
 
         public Beacon GetBeacon()
         {
             var assembly = Assembly.GetExecutingAssembly();
+            var controllerNames = dofMediator?.GetControllerNames() ?? [];
             var beacon = new Beacon(
                 assembly.GetCustomAttribute<AssemblyProductAttribute>()?.Product ?? "",
                 assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "",
@@ -35,7 +40,8 @@ namespace PinJuke.Controller
                 CultureInfo.CurrentCulture.Name,
                 TimeZoneInfo.Local.Id,
                 mainModel.Configuration.Dmd.Enabled,
-                mainModel.Configuration.Dof.Enabled
+                mainModel.Configuration.Dof.Enabled,
+                controllerNames
             );
             return beacon;
         }

@@ -66,7 +66,7 @@ namespace PinJuke.Service
         }
     }
 
-    public record Beacon(string AppName, string AppVersion, string AppFileVersion, string Locale, string Timezone, bool DmdAvailable, bool DofEnabled);
+    public record Beacon(string AppName, string AppVersion, string AppFileVersion, string Locale, string Timezone, bool DmdAvailable, bool DofEnabled, string[] ControllerNames);
 
     public class BeaconService
     {
@@ -116,6 +116,7 @@ namespace PinJuke.Service
                 ["timezone"] = new StringValue(beacon.Timezone),
                 ["dmdAvailable"] = new BooleanValue(beacon.DmdAvailable),
                 ["dofEnabled"] = new BooleanValue(beacon.DofEnabled),
+                ["controllerNames"] = new ArrayValue(beacon.ControllerNames.Select(str => new StringValue(str)).ToArray()),
             });
         }
 

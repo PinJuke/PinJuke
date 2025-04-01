@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace PinJuke.Dof
@@ -27,7 +28,7 @@ namespace PinJuke.Dof
         Volume5 = 36,
     }
 
-    class DofMediator : IDisposable
+    public class DofMediator : IDisposable
     {
         private static readonly Dictionary<InputAction, Lamp> inputLamps = new()
         {
@@ -44,6 +45,10 @@ namespace PinJuke.Dof
         private readonly Configuration.Dof dof;
         private readonly Pinball pinball;
         private bool disposed = false;
+        private bool setup = false;
+        private bool initialized = false;
+
+        public bool Initialized { get { return initialized; } }
 
         public DofMediator(MainModel mainModel, Configuration.Dof dof)
         {
@@ -51,21 +56,6 @@ namespace PinJuke.Dof
             this.dof = dof;
 
             pinball = new Pinball();
-            try
-            {
-                pinball.Setup(dof.GlobalConfigFilePath, "", dof.RomName);
-            }
-            catch (Exception)
-            {
-                Debug.WriteLine("Error initializing DOF.");
-                return;
-            }
-            pinball.Init();
-
-            mainModel.InputEvent += MainModel_InputEvent;
-            mainModel.PropertyChanged += MainModel_PropertyChanged;
-
-            Trigger(Lamp.Startup);
         }
 
         public void Dispose()
@@ -75,6 +65,36 @@ namespace PinJuke.Dof
             mainModel.InputEvent -= MainModel_InputEvent;
             mainModel.PropertyChanged -= MainModel_PropertyChanged;
             pinball.Finish();
+        }
+
+        public void Startup()
+        {
+            try
+            {
+                pinball.Setup(dof.GlobalConfigFilePath, "", dof.RomName);
+            }
+            catch (Exception)
+            {
+                Debug.WriteLine("Error setting up DOF.");
+                return;
+            }
+            setup = true;
+
+            try
+            {
+                pinball.Init();
+            }
+            catch (Exception)
+            {
+                Debug.WriteLine("Error initializing DOF.");
+                return;
+            }
+            initialized = true;
+
+            mainModel.InputEvent += MainModel_InputEvent;
+            mainModel.PropertyChanged += MainModel_PropertyChanged;
+
+            Trigger(Lamp.Startup);
         }
 
         private void MainModel_InputEvent(object? sender, InputActionEventArgs e)
@@ -121,5 +141,13 @@ namespace PinJuke.Dof
             pinball.ReceiveData((char)TableElementTypeEnum.Lamp, (int)lamp, 0); // Lamp off
         }
 
+        public string[] GetControllerNames()
+        {
+            return pinball.Cabinet.OutputControllers
+                .Select(controller => Regex.Replace(controller.Name, @"\s\d+$", ""))
+                .Distinct()
+                .OrderBy(str => str, StringComparer.InvariantCulture)
+                .ToArray();
+        }
     }
 }

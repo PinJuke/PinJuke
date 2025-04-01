@@ -124,6 +124,7 @@ namespace PinJuke
             if (configuration.Dof.Enabled)
             {
                 dofMediator = new DofMediator(mainModel, configuration.Dof);
+                dofMediator.Startup();
             }
 
             audioManager = new();
@@ -131,7 +132,7 @@ namespace PinJuke
             var backGlassWindow = CreateWindow(mainModel, configuration.BackGlass, audioManager);
             var dmdWindow = CreateWindow(mainModel, configuration.Dmd, audioManager);
 
-            beaconController = new BeaconController(mainModel, beaconService, configurationService);
+            beaconController = new BeaconController(mainModel, beaconService, configurationService, dofMediator);
             _ = beaconController.Startup();
             appController = new AppController(mainModel);
             appController.Scan();
