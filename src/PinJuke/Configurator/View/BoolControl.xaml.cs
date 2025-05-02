@@ -10,14 +10,14 @@ namespace PinJuke.Configurator.View
         public bool Value
         {
             get => value;
-            set => SetField(ref this.value, value);
+            set => this.SetField(ref this.value, value);
         }
 
         private bool enabled = true;
         public bool Enabled
         {
             get => enabled;
-            set => SetField(ref enabled, value);
+            set => this.SetField(ref enabled, value);
         }
 
 

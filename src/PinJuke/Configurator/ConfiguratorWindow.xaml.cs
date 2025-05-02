@@ -2,6 +2,7 @@
 using PinJuke.Configurator.View;
 using PinJuke.Ini;
 using PinJuke.Model;
+using PinJuke.View;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,42 +12,44 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
+using System.Windows.Media;
+
 
 namespace PinJuke.Configurator
 {
     public partial class ConfiguratorWindow : Window, MediaPathProvider
     {
         public event EventHandler<string>? RunPlaylistConfigEvent;
+        public event EventHandler? RunOnboardingEvent;
 
         protected GlobalGroupControlFactory GlobalGroupControlFactory { get; }
         protected PlaylistGroupControlFactory PlaylistGroupControlFactory { get; }
 
         private IniDocumentTabItem globalTabItem;
 
-        public string DocumentationText
-        {
-            get => Strings.LabelDocumentation;
-        }
-
         public string DocumentationLink
         {
             get => "https://pinjuke.github.io/PinJuke/";
         }
 
-        public string AddPlaylistLabelText
+        public ImageSource AddPlaylistImageSource
         {
-            get => Strings.LabelAddNewPlaylist;
+            get => SvgImageLoader.Instance.GetFromResource(@"icons\add-outline.svg");
         }
 
-        public string SaveAllLabelText
+        public ImageSource SaveAllImageSource
         {
-            get => Strings.LabelSaveAll;
+            get => SvgImageLoader.Instance.GetFromResource(@"icons\save-outline.svg");
         }
 
-        public string RunCurrentPlaylistLabelText
+        public ImageSource RunCurrentPlaylistImageSource
         {
-            get => Strings.LabelRunCurrentPlaylist;
+            get => SvgImageLoader.Instance.GetFromResource(@"icons\play-outline.svg");
+        }
+
+        public ImageSource OnboardingImageSource
+        {
+            get => SvgImageLoader.Instance.GetFromResource(@"icons\rocket-outline.svg");
         }
 
         public ConfiguratorWindow()
@@ -55,12 +58,7 @@ namespace PinJuke.Configurator
             InitializeComponent();
 
             var parser = new Configuration.Parser();
-            var pinUpReader = new PinUpPlayerIniReader(new()
-            {
-                Directory.GetCurrentDirectory(),
-                Path.Join(Path.GetPathRoot(Directory.GetCurrentDirectory()), "vPinball"),
-                Path.Join("C:", "vPinball"),
-            });
+            var pinUpReader = PinUpPlayerIniReader.Create();
 
             GlobalGroupControlFactory = new(parser, pinUpReader);
             PlaylistGroupControlFactory = new(parser, this);
@@ -78,7 +76,7 @@ namespace PinJuke.Configurator
             {
                 var playlistTabItem = new IniDocumentTabItem(
                     PlaylistGroupControlFactory,
-                    Path.Combine(playlistDir, fileInfo.Name),
+                    Path.Join(playlistDir, fileInfo.Name),
                     Configuration.ConfigPath.TEMPLATE_PLAYLIST_FILE_PATH
                 );
                 Tabs.Items.Add(playlistTabItem);
@@ -93,7 +91,7 @@ namespace PinJuke.Configurator
             return mediaPathControl.FullPath;
         }
 
-        private void SaveButton_Clicked(object sender, RoutedEventArgs e)
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             foreach (var item in Tabs.Items)
             {
@@ -111,21 +109,20 @@ namespace PinJuke.Configurator
 
         private void AddPlaylistButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new Microsoft.Win32.SaveFileDialog();
-            dialog.DefaultExt = ".ini"; // Default file extension
-            dialog.Filter = $"{Strings.IniFile}|*.ini"; // Filter files by extension
-            dialog.InitialDirectory = Path.GetFullPath(Configuration.ConfigPath.CONFIG_PLAYLIST_DIRECTORY_PATH);
-            
-            bool? result = dialog.ShowDialog();
-            if (result != true)
-            {
-                return;
-            }
+            ShowAddPlaylist();
+        }
 
-            var path = dialog.FileName;
-            var workingDir = Directory.GetCurrentDirectory();
-            path = System.IO.Path.GetRelativePath(workingDir, path);
+        public void ShowAddPlaylist()
+        {
+            var playlistFileWindow = new PlaylistFileWindow();
+            playlistFileWindow.Owner = this;
+            playlistFileWindow.FinishEvent += AddPlaylist;
+            playlistFileWindow.ShowDialog();
+        }
 
+        private void AddPlaylist(object? sender, PlaylistFileFinishEventData eventData)
+        {
+            var path = $@"{Configuration.ConfigPath.CONFIG_PLAYLIST_DIRECTORY_PATH}\{eventData.FileName}.ini";
             foreach (var item in Tabs.Items)
             {
                 var tabItem = (IniDocumentTabItem)item;
@@ -143,12 +140,20 @@ namespace PinJuke.Configurator
             );
             Tabs.Items.Add(playlistTabItem);
             Tabs.SelectedItem = playlistTabItem;
+
+            // Save the new playlist file to disk.
+            playlistTabItem.SaveToFile();
         }
 
-        private void RunButton_Clicked(object sender, RoutedEventArgs e)
+        private void RunButton_Click(object sender, RoutedEventArgs e)
         {
             var tabItem = (IniDocumentTabItem)Tabs.SelectedItem;
             RunPlaylistConfigEvent?.Invoke(this, tabItem.FilePath);
+        }
+
+        private void RunOnboarding_Click(object sender, RoutedEventArgs e)
+        {
+            RunOnboardingEvent?.Invoke(this, EventArgs.Empty);
         }
 
         private void DocumentationLink_Click(object sender, RoutedEventArgs e)

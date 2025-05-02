@@ -12,7 +12,7 @@ namespace PinJuke.Configurator.View
         public string Text
         {
             get => text;
-            set => SetField(ref text, value);
+            set => this.SetField(ref text, value);
         }
 
         public ButtonControlClickHandler? ClickHandler { get; set; } = null;

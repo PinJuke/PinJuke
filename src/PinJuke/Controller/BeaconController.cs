@@ -41,7 +41,8 @@ namespace PinJuke.Controller
                 TimeZoneInfo.Local.Id,
                 mainModel.Configuration.Dmd.Enabled,
                 mainModel.Configuration.Dof.Enabled,
-                controllerNames
+                controllerNames,
+                mainModel.UserConfiguration.DeveloperName
             );
             return beacon;
         }

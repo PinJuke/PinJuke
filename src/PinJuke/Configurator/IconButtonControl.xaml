@@ -1,0 +1,17 @@
+﻿<Button x:Class="PinJuke.Configurator.IconButtonControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PinJuke.Configurator"
+             mc:Ignorable="d" 
+             d:DesignHeight="35" d:DesignWidth="200">
+    <StackPanel Orientation="Horizontal">
+        <Rectangle Margin="0,0,10,0" Width="20" Height="20" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
+            <Rectangle.OpacityMask>
+                <ImageBrush Stretch="Uniform" ImageSource="{Binding ImageSource}"/>
+            </Rectangle.OpacityMask>
+        </Rectangle>
+        <TextBlock Text="{Binding LabelText, Mode=OneWay}" VerticalAlignment="Center"/>
+    </StackPanel>
+</Button>

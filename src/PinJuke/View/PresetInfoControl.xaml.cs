@@ -25,14 +25,14 @@ namespace PinJuke.View
         public bool ViewVisible
         {
             get => viewVisible;
-            set => SetField(ref viewVisible, value);
+            set => this.SetField(ref viewVisible, value);
         }
 
         private string? stateText = null;
         public string? StateText
         {
             get => stateText;
-            set => SetField(ref stateText, value);
+            set => this.SetField(ref stateText, value);
         }
 
         public PresetInfoControl()

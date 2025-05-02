@@ -13,7 +13,7 @@ namespace PinJuke.Configurator.View
             get => value;
             set
             {
-                if (SetField(ref this.value, value))
+                if (this.SetField(ref this.value, value))
                 {
                     ValueString = value == null ? "" : (Convert.ToString(value) ?? "");
                 }
@@ -26,7 +26,7 @@ namespace PinJuke.Configurator.View
             get => valueString;
             set
             {
-                if (SetField(ref valueString, value))
+                if (this.SetField(ref valueString, value))
                 {
                     Value = value == "" ? null : Convert.ToSingle(value);
                 }
@@ -37,7 +37,7 @@ namespace PinJuke.Configurator.View
         public bool Enabled
         {
             get => enabled;
-            set => SetField(ref enabled, value);
+            set => this.SetField(ref enabled, value);
         }
 
 

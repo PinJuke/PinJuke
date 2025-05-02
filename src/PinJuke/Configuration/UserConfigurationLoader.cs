@@ -29,11 +29,13 @@ namespace PinJuke.Configuration
             var userConfiguration = new UserConfiguration(
                 iniDocument,
                 parser,
+                parser.ParseBool(userSection["SetUp"]) ?? false,
                 parser.ParseString(userSection["PrivateId"]),
                 parser.ParseString(userSection["PublicId"]),
                 parser.ParseBool(userSection["UpdateCheckEnabled"]),
                 parser.ParseBool(userSection["BeaconEnabled"]),
-                parser.ParseString(userSection["LastBeaconSentAt"])
+                parser.ParseString(userSection["LastBeaconSentAt"]),
+                parser.ParseString(userSection["DeveloperName"])
             );
             foreach (var (name, iniSection) in iniDocument)
             {

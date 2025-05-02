@@ -21,7 +21,7 @@ namespace PinJuke.Configurator.View
         public string LabelText
         {
             get => labelText;
-            set => SetField(ref labelText, value);
+            set => this.SetField(ref labelText, value);
         }
 
         public GroupControl()

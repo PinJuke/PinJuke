@@ -183,13 +183,13 @@
   <data name="IniFile" xml:space="preserve">
     <value>INI-Datei</value>
   </data>
-  <data name="LabelSaveAll" xml:space="preserve">
+  <data name="SaveAll" xml:space="preserve">
     <value>Alle speichern</value>
   </data>
-  <data name="LabelAddNewPlaylist" xml:space="preserve">
+  <data name="AddNewPlaylist" xml:space="preserve">
     <value>Neue Playlist hinzufügen…</value>
   </data>
-  <data name="LabelRunCurrentPlaylist" xml:space="preserve">
+  <data name="RunCurrentPlaylist" xml:space="preserve">
     <value>Mit aktueller Playlist starten</value>
   </data>
   <data name="JpegFile" xml:space="preserve">
@@ -200,5 +200,332 @@
   </data>
   <data name="XmlFile" xml:space="preserve">
     <value>XML-Datei</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Weiter</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>Aktivieren</value>
+  </data>
+  <data name="EnableDof" xml:space="preserve">
+    <value>DOF aktivieren</value>
+  </data>
+  <data name="ConsentToDataCollection" xml:space="preserve">
+    <value>Der Datenerhebung zustimmen</value>
+  </data>
+  <data name="RefuseDataCollection" xml:space="preserve">
+    <value>Die Datenerhebung ablehnen</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Nein</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="AcceptLicense" xml:space="preserve">
+    <value>Lizenz akzeptieren</value>
+  </data>
+  <data name="CreatePlaylistAfterCompletion" xml:space="preserve">
+    <value>Nach Abschluss eine Playliste anlegen</value>
+  </data>
+  <data name="Finish" xml:space="preserve">
+    <value>Abschließen</value>
+  </data>
+  <data name="CheckForUpdates" xml:space="preserve">
+    <value>Prüfe auf Anwendungsaktualisierungen (wenn der Configurator ausgeführt wird)</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Erstellen</value>
+  </data>
+  <data name="FindTheProjectPageAt" xml:space="preserve">
+    <value>Die Projektseite finden Sie unter:</value>
+  </data>
+  <data name="WelcomeToPinJuke" xml:space="preserve">
+    <value>Willkommen zu PinJuke!</value>
+  </data>
+  <data name="WillSetUpPinJuke" xml:space="preserve">
+    <value>Auf den folgenden Seiten richten wir PinJuke ein.</value>
+  </data>
+  <data name="ProvidedUnderDisplayedLicense" xml:space="preserve">
+    <value>PinJuke wird unter der angezeigten Lizenz bereitgestellt.</value>
+  </data>
+  <data name="ConfigurationOfDisplays" xml:space="preserve">
+    <value>Konfiguration der Displays</value>
+  </data>
+  <data name="GetDisplayPositionsFromPinup" xml:space="preserve">
+    <value>Display-Positionen von PinUP holen</value>
+  </data>
+  <data name="DisplayPlayField" xml:space="preserve">
+    <value>Play field</value>
+  </data>
+  <data name="DisplayBackGlass" xml:space="preserve">
+    <value>Back glass</value>
+  </data>
+  <data name="DisplayDmd" xml:space="preserve">
+    <value>DMD</value>
+  </data>
+  <data name="NoSeparateDmdMonitorHint" xml:space="preserve">
+    <value>Wenn Sie keinen separaten Monitor für die DMD-Ausgabe haben, können Sie das DMD-Fenster z.B. das Back glass-Fenster überlagern lassen.</value>
+  </data>
+  <data name="ConfigurationOfDof" xml:space="preserve">
+    <value>Konfiguration von DOF</value>
+  </data>
+  <data name="DofDescription" xml:space="preserve">
+    <value>Mit dem Direct Output Framework können an Ihre Hardware angeschlossenen Controller gesteuert werden.</value>
+  </data>
+  <data name="SelectDofConfigFile" xml:space="preserve">
+    <value>Wählen Sie die Datei GlobalConfig_B2SServer.xml aus:</value>
+  </data>
+  <data name="DataOnSoftwareUsage" xml:space="preserve">
+    <value>Daten über die Softwarenutzung</value>
+  </data>
+  <data name="DataOnSoftwareUsageDescription" xml:space="preserve">
+    <value>Bitte erlauben Sie, dass Daten zur Nutzung der Software und Hardware pseudonymisiert erhoben werden. Wir würden gerne erfahren, wie die Software bei den Nutzern ankommt und genutzt wird. Die Daten können der Community (z.B. in Form von Auswertungen) bereitgestellt werden.</value>
+  </data>
+  <data name="SeeWhatDataIsCollected" xml:space="preserve">
+    <value>Sehen Sie ein, welche Daten erhoben werden.</value>
+  </data>
+  <data name="DataOnSoftwareUsageStorage" xml:space="preserve">
+    <value>Die Daten werden in einer Firebase-Datenbank (einem Produkt von Google) gespeichert. Ein Löschen der Daten kann nicht beauftragt werden.</value>
+  </data>
+  <data name="Button" xml:space="preserve">
+    <value>Button</value>
+  </data>
+  <data name="RegularFunction" xml:space="preserve">
+    <value>Normale Funktion</value>
+  </data>
+  <data name="BrowserFunction" xml:space="preserve">
+    <value>Browser wird angezeigt</value>
+  </data>
+  <data name="ButtonFlipperLeftRight" xml:space="preserve">
+    <value>Flipper-Button
+links/rechts</value>
+  </data>
+  <data name="ButtonMagnaSaveLeftRight" xml:space="preserve">
+    <value>Magna save-Button
+links/rechts</value>
+  </data>
+  <data name="ButtonStart" xml:space="preserve">
+    <value>Start-Button</value>
+  </data>
+  <data name="ButtonExit" xml:space="preserve">
+    <value>Exit-Button</value>
+  </data>
+  <data name="ButtonLaunchBall" xml:space="preserve">
+    <value>Launch ball-Button</value>
+  </data>
+  <data name="ButtonFlipperLeftRightRegularFunction" xml:space="preserve">
+    <value>Titel zurück/vor</value>
+  </data>
+  <data name="ButtonFlipperLeftRightBrowserFunction" xml:space="preserve">
+    <value>Navigiere zurück/vor</value>
+  </data>
+  <data name="ButtonMagnaSaveLeftRightRegularFunction" xml:space="preserve">
+    <value>Lautstärke</value>
+  </data>
+  <data name="ButtonMagnaSaveLeftRightBrowserFunction" xml:space="preserve">
+    <value>Visualisierung zurück/vor</value>
+  </data>
+  <data name="ButtonStartRegularFunction" xml:space="preserve">
+    <value>Play/Pause</value>
+  </data>
+  <data name="ButtonStartBrowserFunction" xml:space="preserve">
+    <value>Play/Pause</value>
+  </data>
+  <data name="ButtonExitRegularFunction" xml:space="preserve">
+    <value>App beenden</value>
+  </data>
+  <data name="ButtonExitBrowserFunction" xml:space="preserve">
+    <value>App beenden</value>
+  </data>
+  <data name="ButtonLaunchBallRegularFunction" xml:space="preserve">
+    <value>Titel-Browser öffnen</value>
+  </data>
+  <data name="ButtonLaunchBallBrowserFunction" xml:space="preserve">
+    <value>Ordner: folgen
+Titel: neu starten</value>
+  </data>
+  <data name="RectLeft" xml:space="preserve">
+    <value>Links</value>
+  </data>
+  <data name="RectTop" xml:space="preserve">
+    <value>Oben</value>
+  </data>
+  <data name="RectWidth" xml:space="preserve">
+    <value>Breite</value>
+  </data>
+  <data name="RectHeight" xml:space="preserve">
+    <value>Höhe</value>
+  </data>
+  <data name="BeaconQueryingData" xml:space="preserve">
+    <value>Daten abfragen…</value>
+  </data>
+  <data name="BeaconAppName" xml:space="preserve">
+    <value>App-Name</value>
+  </data>
+  <data name="BeaconAppVersion" xml:space="preserve">
+    <value>App-Version</value>
+  </data>
+  <data name="BeaconAppFileVersion" xml:space="preserve">
+    <value>App-Datei-Version</value>
+  </data>
+  <data name="BeaconLocale" xml:space="preserve">
+    <value>Gebietsschema</value>
+  </data>
+  <data name="BeaconTimezone" xml:space="preserve">
+    <value>Zeitzone</value>
+  </data>
+  <data name="BeaconDmdAvailable" xml:space="preserve">
+    <value>DMD vorhanden</value>
+  </data>
+  <data name="BeaconDofEnabled" xml:space="preserve">
+    <value>DOF aktiviert</value>
+  </data>
+  <data name="BeaconControllerNames" xml:space="preserve">
+    <value>Controller-Namen</value>
+  </data>
+  <data name="BeaconErrorQuerying" xml:space="preserve">
+    <value>Fehler beim Abfragen der Daten ({0})</value>
+  </data>
+  <data name="BeaconWhatIsIncluded" xml:space="preserve">
+    <value>Folgende Daten ermittelt die Software über Ihr System:</value>
+  </data>
+  <data name="YouAreAllSet" xml:space="preserve">
+    <value>Sie sind startklar!</value>
+  </data>
+  <data name="OverviewOfTheButtons" xml:space="preserve">
+    <value>Überblick über die Steuerung</value>
+  </data>
+  <data name="NewPlaylistConfiguration" xml:space="preserve">
+    <value>Neue Playlist-Konfiguration</value>
+  </data>
+  <data name="RerunSetup" xml:space="preserve">
+    <value>Einrichtung erneut ausführen</value>
+  </data>
+  <data name="GlobalConfiguration" xml:space="preserve">
+    <value>Globale Konfiguration</value>
+  </data>
+  <data name="MediaPath" xml:space="preserve">
+    <value>Medienpfad</value>
+  </data>
+  <data name="Keyboard" xml:space="preserve">
+    <value>Tastatur</value>
+  </data>
+  <data name="KeyExit" xml:space="preserve">
+    <value>Beenden</value>
+  </data>
+  <data name="KeyBrowse" xml:space="preserve">
+    <value>Titel durchsuchen</value>
+  </data>
+  <data name="KeyPrevious" xml:space="preserve">
+    <value>Zurück/Vorheriger</value>
+  </data>
+  <data name="KeyNext" xml:space="preserve">
+    <value>Weiter/Nächster</value>
+  </data>
+  <data name="KeyPlayPause" xml:space="preserve">
+    <value>Play/Pause</value>
+  </data>
+  <data name="KeyVolumeDown" xml:space="preserve">
+    <value>Lautstärke runter</value>
+  </data>
+  <data name="KeyVolumeUp" xml:space="preserve">
+    <value>Lautstärke hoch</value>
+  </data>
+  <data name="Milkdrop" xml:space="preserve">
+    <value>Milkdrop</value>
+  </data>
+  <data name="MilkdropPresetsPath" xml:space="preserve">
+    <value>Presets-Pfad</value>
+  </data>
+  <data name="MilkdropTexturesPath" xml:space="preserve">
+    <value>Texturen-Pfad</value>
+  </data>
+  <data name="Dof" xml:space="preserve">
+    <value>DOF</value>
+  </data>
+  <data name="DofGlobalConfigFilePath" xml:space="preserve">
+    <value>GlobalConfig_B2SServer.xml</value>
+  </data>
+  <data name="GetDisplayPositionFromPinup" xml:space="preserve">
+    <value>Display-Position von PinUP holen</value>
+  </data>
+  <data name="Scale" xml:space="preserve">
+    <value>Skalierung</value>
+  </data>
+  <data name="Rotation" xml:space="preserve">
+    <value>Drehung</value>
+  </data>
+  <data name="PlaylistConfiguration" xml:space="preserve">
+    <value>Playlist-Konfiguration</value>
+  </data>
+  <data name="Player" xml:space="preserve">
+    <value>Player</value>
+  </data>
+  <data name="MusicPath" xml:space="preserve">
+    <value>Pfad zum Musikverzeichnis</value>
+  </data>
+  <data name="StartupTrackTypeLastPlayedTrack" xml:space="preserve">
+    <value>Weiter mit zuletzt gespieltem Titel</value>
+  </data>
+  <data name="StartupTrackTypeFirstTrack" xml:space="preserve">
+    <value>Erster Titel aus Verzeichnis</value>
+  </data>
+  <data name="StartupTrackType" xml:space="preserve">
+    <value>Verhalten bei Programmstart</value>
+  </data>
+  <data name="StartupTrackTypeRandomMode" xml:space="preserve">
+    <value>Zufällige Wiedergabereihenfolge</value>
+  </data>
+  <data name="PlayOnStartup" xml:space="preserve">
+    <value>Wiedergabe bei Programmstart</value>
+  </data>
+  <data name="BackgroundType" xml:space="preserve">
+    <value>Hintergrundtyp</value>
+  </data>
+  <data name="BackgroundTypeShowSpecifiedImage" xml:space="preserve">
+    <value>Angegebenes Bild anzeigen</value>
+  </data>
+  <data name="BackgroundTypeShowMilkdropVisualizations" xml:space="preserve">
+    <value>Milkdrop-Visualisierungen anzeigen</value>
+  </data>
+  <data name="BackgroundImageFile" xml:space="preserve">
+    <value>Hintergrundbilddatei</value>
+  </data>
+  <data name="EnableTrackCover" xml:space="preserve">
+    <value>Titelbild aktivieren</value>
+  </data>
+  <data name="EnablePlaybackStatus" xml:space="preserve">
+    <value>Wiedergabestatus anzeigen</value>
+  </data>
+  <data name="EnableTrackBrowser" xml:space="preserve">
+    <value>Titel-Browser aktivieren</value>
+  </data>
+  <data name="EnableThemeVideo" xml:space="preserve">
+    <value>Thematische Video-Skins aktivieren</value>
+  </data>
+  <data name="ThemeVideoLoopFile" xml:space="preserve">
+    <value>Thematische Videodatei für Schleife</value>
+  </data>
+  <data name="ThemeVideoStartFile" xml:space="preserve">
+    <value>Thematische Videodatei für Start</value>
+  </data>
+  <data name="ThemeVideoStopFile" xml:space="preserve">
+    <value>Thematische Videodatei für Stop</value>
+  </data>
+  <data name="ThemeVideoRotation" xml:space="preserve">
+    <value>Thematische Videodatei-Drehung</value>
+  </data>
+  <data name="WillTryToRecognizeControllers" xml:space="preserve">
+    <value>(Wird versuchen, Ihre Controller mit Hilfe von DOF zu erkennen.)</value>
+  </data>
+  <data name="License" xml:space="preserve">
+    <value>Lizenz</value>
   </data>
 </root>

@@ -18,6 +18,17 @@ namespace PinJuke.Configuration
         private readonly OrderedDictionary<string, UserPlaylist> userPlaylists = new();
         private int nextIndex = 0;
 
+        private bool setUp = false;
+        public bool SetUp
+        {
+            get => setUp;
+            set
+            {
+                setUp = value;
+                userSection["SetUp"] = parser.FormatBool(value);
+            }
+        }
+
         private string? privateId = null;
         public string? PrivateId
         {
@@ -73,16 +84,29 @@ namespace PinJuke.Configuration
             }
         }
 
-        public UserConfiguration(IniDocument iniDocument, Parser parser, string? privateId = null, string? publicId = null, bool? updateCheckEnabled = null, bool? beaconEnabled = null, string? lastBeaconSentAt = null)
+        private string? developerName = null;
+        public string? DeveloperName
+        {
+            get => developerName;
+            set
+            {
+                developerName = value;
+                userSection["DeveloperName"] = parser.FormatString(value);
+            }
+        }
+
+        public UserConfiguration(IniDocument iniDocument, Parser parser, bool setUp = false, string? privateId = null, string? publicId = null, bool? updateCheckEnabled = null, bool? beaconEnabled = null, string? lastBeaconSentAt = null, string? developerName = null)
         {
             IniDocument = iniDocument;
-            userSection = iniDocument.ProvideSection("User");
+            userSection = iniDocument["User"];
             this.parser = parser;
+            SetUp = setUp;
             PrivateId = privateId;
             PublicId = publicId;
             UpdateCheckEnabled = updateCheckEnabled;
             BeaconEnabled = beaconEnabled;
             LastBeaconSentAt = lastBeaconSentAt;
+            DeveloperName = developerName;
         }
 
         public void AddPlaylist(UserPlaylist playlist)
@@ -101,7 +125,7 @@ namespace PinJuke.Configuration
             {
                 var index = nextIndex;
                 var name = "Playlist" + index;
-                var iniSection = IniDocument.ProvideSection(name);
+                var iniSection = IniDocument[name];
                 playlist = new UserPlaylist(iniSection, parser, index, playlistConfigFilePath);
                 AddPlaylist(playlist);
             }

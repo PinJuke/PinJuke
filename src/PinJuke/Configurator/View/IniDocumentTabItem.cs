@@ -26,14 +26,17 @@ namespace PinJuke.Configurator.View
             FilePath = filePath;
             TemplateFilePath = templateFilePath;
 
-            Header = Path.GetFileName(filePath);
-            ToolTip = filePath;
+            var header = new TextBlock();
+            header.Text = Path.GetFileName(filePath);
+            header.ToolTip = filePath;
+            Header = header;
 
             var scrollViewer = new ScrollViewer();
             scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
             Content = scrollViewer;
 
             GroupControl = groupControlFactory.CreateControl();
+            GroupControl.Margin = new Thickness(10, 0, 10, 10);
             scrollViewer.Content = GroupControl;
         }
 
@@ -49,24 +52,11 @@ namespace PinJuke.Configurator.View
 
         protected void LoadIniFile()
         {
-            IniDocument = ReadIni(FilePath)
-                ?? ReadIni(TemplateFilePath)
+            IniDocument = IniReader.TryRead(FilePath)
+                ?? IniReader.TryRead(TemplateFilePath)
                 ?? new IniDocument();
             GroupControlFactory.WriteToControl(GroupControl, IniDocument);
 
-        }
-
-        protected IniDocument? ReadIni(string filePath)
-        {
-            var iniReader = new IniReader();
-            try
-            {
-                return iniReader.Read(filePath);
-            }
-            catch (IniIoException)
-            {
-                return null;
-            }
         }
 
         public void SaveToFile()

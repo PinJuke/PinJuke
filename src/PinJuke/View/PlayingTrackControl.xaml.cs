@@ -25,21 +25,21 @@ namespace PinJuke.View
         public bool ViewVisible
         {
             get => viewVisible;
-            set => SetField(ref viewVisible, value);
+            set => this.SetField(ref viewVisible, value);
         }
 
         private DrawingImage? stateImageSource = null;
         public DrawingImage? StateImageSource
         {
             get => stateImageSource;
-            set => SetField(ref stateImageSource, value);
+            set => this.SetField(ref stateImageSource, value);
         }
 
         private string? stateText = null;
         public string? StateText
         {
             get => stateText;
-            set => SetField(ref stateText, value);
+            set => this.SetField(ref stateText, value);
         }
 
         public PlayingTrackControl()

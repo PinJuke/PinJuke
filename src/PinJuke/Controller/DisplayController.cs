@@ -32,7 +32,7 @@ namespace PinJuke.Controller
             inputManager = new(mainModel.Configuration);
 
             var uri = new Uri(@"resources\record-needle-rip-100415-edit.wav", UriKind.Relative);
-            var stream = Application.GetResourceStream(uri).Stream;
+            using var stream = Application.GetResourceStream(uri).Stream;
             tiltSoundPlayer = new SoundPlayer(stream);
             tiltSoundPlayer.Load();
 

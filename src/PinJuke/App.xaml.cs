@@ -4,14 +4,17 @@ using PinJuke.Controller;
 using PinJuke.Dof;
 using PinJuke.Ini;
 using PinJuke.Model;
+using PinJuke.Onboarding;
 using PinJuke.Service;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -31,6 +34,10 @@ namespace PinJuke
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            // For testing:
+            //Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+            //Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
 
             bool parsingOptions = true;
             string? playlistConfigFilePath = null;
@@ -71,25 +78,68 @@ namespace PinJuke
 
         private void RunConfigurator()
         {
+            var userConfiguration = GetUserConfiguration();
+            if (!userConfiguration.SetUp)
+            {
+                RunOnboarding();
+                return;
+            }
+
+            RunConfiguratorNow();
+        }
+
+        private void RunOnboarding()
+        {
+            var onboardingWindow = new OnboardingWindow(beaconService, configurationService);
+            onboardingWindow.FinishEvent += OnboardingWindow_Finish;
+            onboardingWindow.Show();
+        }
+
+        private void OnboardingWindow_Finish(object? sender, FinishEventData e)
+        {
+            var window = (OnboardingWindow)sender!;
+            var configuratorWindow = RunConfiguratorNow();
+            // Close last
+            window.Close();
+
+            if (e.CreatePlaylist)
+            {
+                configuratorWindow.ShowAddPlaylist();
+            }
+        }
+
+        private ConfiguratorWindow RunConfiguratorNow()
+        {
             var configuratorWindow = new ConfiguratorWindow();
             configuratorWindow.RunPlaylistConfigEvent += ConfiguratorWindow_RunPlaylistConfig;
+            configuratorWindow.RunOnboardingEvent += ConfiguratorWindow_RunOnboarding;
             configuratorWindow.Show();
+            return configuratorWindow;
         }
 
         private void ConfiguratorWindow_RunPlaylistConfig(object? sender, string e)
         {
-            var configuratorWindow = (ConfiguratorWindow)sender!;
+            var window = (ConfiguratorWindow)sender!;
             RunPlayer(e);
             // Close last
-            configuratorWindow.Close();
+            window.Close();
+        }
+
+        private void ConfiguratorWindow_RunOnboarding(object? sender, EventArgs eventArgs)
+        {
+            var window = (ConfiguratorWindow)sender!;
+            RunOnboarding();
+            // Close last
+            window.Close();
         }
 
         private void RunPlayer(string? playlistConfigFilePath)
         {
+            var userConfiguration = GetUserConfiguration();
             Configuration.Configuration configuration;
             try
             {
-                configuration = configurationService.LoadConfiguration(playlistConfigFilePath);
+                configuration = GetConfiguration(playlistConfigFilePath);
             }
             catch (IniIoException ex)
             {
@@ -103,23 +153,11 @@ namespace PinJuke
                 }
                 return;
             }
-
-            Configuration.UserConfiguration userConfiguration;
-            try
-            {
-                userConfiguration = configurationService.LoadUserConfiguration();
-            }
-            catch (IniIoException ex)
-            {
-                Debug.WriteLine("Error reading user configuration ini file: " + ex.Message);
-                userConfiguration = new(new IniDocument(), new Configuration.Parser());
-            }
+            mainModel = new MainModel(configuration, userConfiguration);
 
             Unosquare.FFME.Library.FFmpegDirectory = @"ffmpeg";
             var result = Unosquare.FFME.Library.LoadFFmpeg();
             Debug.WriteLine(result ? "FFmpeg loaded." : "FFmpeg NOT loaded.");
-
-            mainModel = new MainModel(configuration, userConfiguration);
 
             if (configuration.Dof.Enabled)
             {
@@ -153,6 +191,26 @@ namespace PinJuke
             playFieldWindow?.Show();
             backGlassWindow?.Show();
             dmdWindow?.Show();
+        }
+
+        private Configuration.UserConfiguration GetUserConfiguration()
+        {
+            Configuration.UserConfiguration userConfiguration;
+            try
+            {
+                userConfiguration = configurationService.LoadUserConfiguration();
+            }
+            catch (IniIoException ex)
+            {
+                Debug.WriteLine("Error reading user configuration ini file: " + ex.Message);
+                userConfiguration = new(new IniDocument(), new Configuration.Parser());
+            }
+            return userConfiguration;
+        }
+
+        private Configuration.Configuration GetConfiguration(string? playlistConfigFilePath)
+        {
+            return configurationService.LoadConfiguration(playlistConfigFilePath);
         }
 
         protected override void OnExit(ExitEventArgs e)

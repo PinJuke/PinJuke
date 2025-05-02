@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using PinJuke.Ini;
+using PinJuke.Onboarding;
 
 namespace PinJuke.Configuration
 {
@@ -25,7 +26,7 @@ namespace PinJuke.Configuration
             return FromIniDocument(iniDocument, playlistConfigFilePath);
         }
 
-        public Configuration FromIniDocument(IniDocument iniDocument, string? playlistConfigFilePath)
+        public Configuration FromIniDocument(IniDocument iniDocument, string? playlistConfigFilePath = null)
         {
             var mediaPath = parser.ParseString(iniDocument["PinJuke"]["MediaPath"]) ?? ".";
             // The media path should be a full path so that it can be used as a base path.
@@ -38,6 +39,46 @@ namespace PinJuke.Configuration
             var milkdrop = CreateMilkdrop(iniDocument["Milkdrop"]);
             var dof = CreateDof(iniDocument["DOF"]);
             return new Configuration(playlistConfigFilePath, mediaPath, player, keyboard, playField, backGlass, dmd, milkdrop, dof);
+        }
+
+        /// <summary>
+        /// At the moment only save what is changed during onboarding.
+        /// Some paths are now absolute, they should not be saved.
+        /// </summary>
+        public void ToGlobalIniDocument(Configuration configuration, IniDocument iniDocument)
+        {
+            //iniDocument["PinJuke"]["MediaPath"] = parser.FormatString(configuration.MediaPath);
+
+            SaveDisplay(iniDocument, "PlayField", configuration.PlayField);
+            SaveDisplay(iniDocument, "BackGlass", configuration.BackGlass);
+            iniDocument["DMD"]["Enabled"] = parser.FormatBool(configuration.Dmd.Enabled);
+            SaveDisplay(iniDocument, "DMD", configuration.Dmd);
+
+            //iniDocument["Keyboard"]["Exit"] = parser.FormatEnum<Key>(configuration.Keyboard.Exit);
+            //iniDocument["Keyboard"]["Browse"] = parser.FormatEnum<Key>(configuration.Keyboard.Browse);
+            //iniDocument["Keyboard"]["Previous"] = parser.FormatEnum<Key>(configuration.Keyboard.Previous);
+            //iniDocument["Keyboard"]["Next"] = parser.FormatEnum<Key>(configuration.Keyboard.Next);
+            //iniDocument["Keyboard"]["PlayPause"] = parser.FormatEnum<Key>(configuration.Keyboard.PlayPause);
+            //iniDocument["Keyboard"]["VolumeDown"] = parser.FormatEnum<Key>(configuration.Keyboard.VolumeDown);
+            //iniDocument["Keyboard"]["VolumeUp"] = parser.FormatEnum<Key>(configuration.Keyboard.VolumeUp);
+            //iniDocument["Keyboard"]["Tilt"] = parser.FormatEnum<Key>(configuration.Keyboard.Tilt);
+
+            //iniDocument["Milkdrop"]["PresetsPath"] = parser.FormatString(configuration.Milkdrop.PresetsPath);
+            //iniDocument["Milkdrop"]["TexturesPath"] = parser.FormatString(configuration.Milkdrop.TexturesPath);
+
+            iniDocument["DOF"]["Enabled"] = parser.FormatBool(configuration.Dof.Enabled);
+            iniDocument["DOF"]["GlobalConfigFilePath"] = parser.FormatString(configuration.Dof.GlobalConfigFilePath);
+            //iniDocument["DOF"]["RomName"] = parser.FormatString(configuration.Dof.RomName);
+        }
+
+        private void SaveDisplay(IniDocument iniDocument, string sectionName, Display display)
+        {
+            iniDocument[sectionName]["WindowLeft"] = parser.FormatInt(display.Window.Left);
+            iniDocument[sectionName]["WindowTop"] = parser.FormatInt(display.Window.Top);
+            iniDocument[sectionName]["WindowWidth"] = parser.FormatInt(display.Window.Width);
+            iniDocument[sectionName]["WindowHeight"] = parser.FormatInt(display.Window.Height);
+            iniDocument[sectionName]["ContentScale"] = parser.FormatFloat(display.Window.ContentScale);
+            iniDocument[sectionName]["ContentRotation"] = parser.FormatInt(display.Window.ContentRotation);
         }
 
         protected Player CreatePlayer(IniSection playerSection)

@@ -33,8 +33,9 @@ namespace PinJuke.View
 
         private DrawingImage LoadFromResource(string uriString)
         {
-            var streamResourceInfo = Application.GetResourceStream(new Uri(uriString, UriKind.Relative));
-            var drawing = svgRender.LoadDrawing(streamResourceInfo.Stream);
+            var uri = new Uri(uriString, UriKind.Relative);
+            using var stream = Application.GetResourceStream(uri).Stream;
+            var drawing = svgRender.LoadDrawing(stream);
             var drawingImage = new DrawingImage(drawing);
             drawingImage.Freeze();
             return drawingImage;

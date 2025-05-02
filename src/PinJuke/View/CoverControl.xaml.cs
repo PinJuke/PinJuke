@@ -26,7 +26,7 @@ namespace PinJuke.View
         public ImageSource? CoverImageSource
         {
             get => coverImageSource;
-            set => SetField(ref coverImageSource, value);
+            set => this.SetField(ref coverImageSource, value);
         }
 
         public ImageSource DefaultCoverImageSource
@@ -58,28 +58,28 @@ namespace PinJuke.View
         public string? TitleText
         {
             get => titleText;
-            set => SetField(ref titleText, value);
+            set => this.SetField(ref titleText, value);
         }
 
         private string? artistText = null;
         public string? ArtistText
         {
             get => artistText;
-            set => SetField(ref artistText, value);
+            set => this.SetField(ref artistText, value);
         }
 
         private string? yearText = null;
         public string? YearText
         {
             get => yearText;
-            set => SetField(ref yearText, value);
+            set => this.SetField(ref yearText, value);
         }
 
         private string? albumText = null;
         public string? AlbumText
         {
             get => albumText;
-            set => SetField(ref albumText, value);
+            set => this.SetField(ref albumText, value);
         }
 
         public CoverControl() : base()

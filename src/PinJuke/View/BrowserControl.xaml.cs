@@ -29,7 +29,7 @@ namespace PinJuke.View
         public bool ViewVisible
         {
             get => viewVisible;
-            set => SetField(ref viewVisible, value);
+            set => this.SetField(ref viewVisible, value);
         }
 
         private FileNode? fileNode = null;
@@ -51,7 +51,7 @@ namespace PinJuke.View
         public string NavigationDisplayPath
         {
             get => navigationDisplayPath;
-            private set => SetField(ref navigationDisplayPath, value);
+            private set => this.SetField(ref navigationDisplayPath, value);
         }
 
         public BrowserControl()

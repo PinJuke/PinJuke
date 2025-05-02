@@ -20,7 +20,7 @@ namespace PinJuke.Configurator.Factory
             // Some cases of Key share the same value.
             var keys = Enum.GetNames<Key>().Select(name => new Item(name, Enum.Parse<Key>(name))).ToList();
 
-            LabelText = "Global configuration";
+            LabelText = Strings.GlobalConfiguration;
             Controls = [
                 new GroupControlFactory()
                 {
@@ -28,7 +28,7 @@ namespace PinJuke.Configurator.Factory
                     Controls = [
                         new PathControlFactory()
                         {
-                            LabelText = "Media path",
+                            LabelText = Strings.MediaPath,
                             Name = MEDIA_PATH_CONTROL,
                             FileMode = false,
                             RelativeEnabled = true,
@@ -36,61 +36,61 @@ namespace PinJuke.Configurator.Factory
                         },
                     ]
                 },
-                new WindowGroupControlFactory(parser, "PlayField", false, pinUpReader, "INFO3")
+                new WindowGroupControlFactory(parser, "PlayField", false, pinUpReader, PinUpPlayerIniReader.PLAY_FIELD_SECTION_NAME)
                 {
-                    LabelText = "Play field",
+                    LabelText = Strings.DisplayPlayField,
                 },
-                new WindowGroupControlFactory(parser, "BackGlass", false, pinUpReader, "INFO2")
+                new WindowGroupControlFactory(parser, "BackGlass", false, pinUpReader, PinUpPlayerIniReader.BACK_GLASS_SECTION_NAME)
                 {
-                    LabelText = "Back glass",
+                    LabelText = Strings.DisplayBackGlass,
                 },
-                new WindowGroupControlFactory(parser, "DMD", true, pinUpReader, "INFO1")
+                new WindowGroupControlFactory(parser, "DMD", true, pinUpReader, PinUpPlayerIniReader.DMD_SECTION_NAME)
                 {
-                    LabelText = "DMD",
+                    LabelText = Strings.DisplayDmd,
                 },
                 new GroupControlFactory()
                 {
-                    LabelText = "Keyboard",
+                    LabelText = Strings.Keyboard,
                     Controls = [
                         new SelectControlFactory()
                         {
-                            LabelText = "Exit",
+                            LabelText = Strings.KeyExit,
                             Items = keys,
                             Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "Exit"),
                         },
                         new SelectControlFactory()
                         {
-                            LabelText = "Browse",
+                            LabelText = Strings.KeyBrowse,
                             Items = keys,
                             Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "Browse"),
                         },
                         new SelectControlFactory()
                         {
-                            LabelText = "Previous",
+                            LabelText = Strings.KeyPrevious,
                             Items = keys,
                             Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "Previous"),
                         },
                         new SelectControlFactory()
                         {
-                            LabelText = "Next",
+                            LabelText = Strings.KeyNext,
                             Items = keys,
                             Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "Next"),
                         },
                         new SelectControlFactory()
                         {
-                            LabelText = "Play/pause",
+                            LabelText = Strings.KeyPlayPause,
                             Items = keys,
                             Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "PlayPause"),
                         },
                         new SelectControlFactory()
                         {
-                            LabelText = "Volume down",
+                            LabelText = Strings.KeyVolumeDown,
                             Items = keys,
                             Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "VolumeDown"),
                         },
                         new SelectControlFactory()
                         {
-                            LabelText = "Volume up",
+                            LabelText = Strings.KeyVolumeUp,
                             Items = keys,
                             Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "VolumeUp"),
                         },
@@ -98,18 +98,18 @@ namespace PinJuke.Configurator.Factory
                 },
                 new GroupControlFactory()
                 {
-                    LabelText = "Milkdrop",
+                    LabelText = Strings.Milkdrop,
                     Controls = [
                         new PathControlFactory()
                         {
-                            LabelText = "Presets path",
+                            LabelText = Strings.MilkdropPresetsPath,
                             FileMode = false,
                             RelativeEnabled = true,
                             Converter = new PathConverter(parser, "Milkdrop", "PresetsPath"),
                         },
                         new PathControlFactory()
                         {
-                            LabelText = "Textures",
+                            LabelText = Strings.MilkdropTexturesPath,
                             FileMode = false,
                             RelativeEnabled = true,
                             Converter = new PathConverter(parser, "Milkdrop", "TexturesPath"),
@@ -118,16 +118,16 @@ namespace PinJuke.Configurator.Factory
                 },
                 new GroupControlFactory()
                 {
-                    LabelText = "DOF",
+                    LabelText = Strings.Dof,
                     Controls = [
                         new BoolControlFactory()
                         {
-                            LabelText = "Enabled",
+                            LabelText = Strings.Enable,
                             Converter = new BoolConverter(parser, "DOF", "Enabled"),
                         },
                         new PathControlFactory()
                         {
-                            LabelText = "Global config file path",
+                            LabelText = Strings.DofGlobalConfigFilePath,
                             FileMode = true,
                             RelativeEnabled = false,
                             FileExtension = ".xml",
@@ -148,7 +148,7 @@ namespace PinJuke.Configurator.Factory
                 ? [
                     new BoolControlFactory()
                     {
-                        LabelText = "Enabled",
+                        LabelText = Strings.Enable,
                         Converter = new BoolConverter(parser, sectionName, "Enabled"),
                     },
                 ]
@@ -159,7 +159,7 @@ namespace PinJuke.Configurator.Factory
                 new ButtonControlFactory()
                 {
                     LabelText = "",
-                    Text = "Get display position from PinUP",
+                    Text = Strings.GetDisplayPositionFromPinup,
                     ClickHandler = (buttonControl) =>
                     {
                         (int, int, int, int)? position;
@@ -174,7 +174,7 @@ namespace PinJuke.Configurator.Factory
                         }
                         if (position == null)
                         {
-                            MessageBox.Show(string.Format(Strings.PathNotFound, "PinUpPlayer.ini"), AppDomain.CurrentDomain.FriendlyName);
+                            MessageBox.Show(string.Format(Strings.PathNotFound, PinUpPlayerIniReader.BALLER_PIN_UP_PLAYER_INI), AppDomain.CurrentDomain.FriendlyName);
                             return;
                         }
                         var group = buttonControl.GetParentGroup();
@@ -186,36 +186,36 @@ namespace PinJuke.Configurator.Factory
                 },
                 new NumberControlFactory()
                 {
-                    LabelText = "Left",
+                    LabelText = Strings.RectLeft,
                     Name = "WindowLeft",
                     Converter = new IntNumberConverter(parser, sectionName, "WindowLeft"),
                 },
                 new NumberControlFactory()
                 {
-                    LabelText = "Top",
+                    LabelText = Strings.RectTop,
                     Name = "WindowTop",
                     Converter = new IntNumberConverter(parser, sectionName, "WindowTop"),
                 },
                 new NumberControlFactory()
                 {
-                    LabelText = "Width",
+                    LabelText = Strings.RectWidth,
                     Name = "WindowWidth",
                     Converter = new IntNumberConverter(parser, sectionName, "WindowWidth"),
                 },
                 new NumberControlFactory()
                 {
-                    LabelText = "Height",
+                    LabelText = Strings.RectHeight,
                     Name = "WindowHeight",
                     Converter = new IntNumberConverter(parser, sectionName, "WindowHeight"),
                 },
                 new NumberControlFactory()
                 {
-                    LabelText = "Scale",
+                    LabelText = Strings.Scale,
                     Converter = new FloatNumberConverter(parser, sectionName, "ContentScale"),
                 },
                 new SelectControlFactory()
                 {
-                    LabelText = "Rotation",
+                    LabelText = Strings.Rotation,
                     Items = new()
                     {
                         new("-90 °", -90),

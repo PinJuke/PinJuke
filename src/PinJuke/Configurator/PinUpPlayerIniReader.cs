@@ -11,6 +11,23 @@ namespace PinJuke.Configurator
 {
     public class PinUpPlayerIniReader
     {
+        private const string BALLER_DIRECTORY_PATH = "vPinball";
+        public const string BALLER_PIN_UP_PLAYER_INI = @"PinUPSystem\PinUpPlayer.ini";
+        public const string PLAY_FIELD_SECTION_NAME = "INFO3";
+        public const string BACK_GLASS_SECTION_NAME = "INFO2";
+        public const string DMD_SECTION_NAME = "INFO1";
+
+        public static PinUpPlayerIniReader Create()
+        {
+            return new PinUpPlayerIniReader(new()
+            {
+                Directory.GetCurrentDirectory(),
+                Path.Join(Path.GetPathRoot(Directory.GetCurrentDirectory()), BALLER_DIRECTORY_PATH),
+                Path.Join("C:", BALLER_DIRECTORY_PATH),
+                Path.Join("D:", BALLER_DIRECTORY_PATH),
+            });
+        }
+
         public IReadOnlyList<string> Paths { get; }
         protected IniReader IniReader { get; } = new();
         protected Parser Parser { get; } = new();
@@ -47,7 +64,7 @@ namespace PinJuke.Configurator
                 var path = eachPath;
                 while (!path.IsNullOrEmpty())
                 {
-                    var check = Path.Combine(path, "PinUPSystem", "PinUpPlayer.ini");
+                    var check = Path.Join(path, BALLER_PIN_UP_PLAYER_INI);
                     if (File.Exists(check))
                     {
                         return check;

@@ -26,21 +26,21 @@ namespace PinJuke.View
         public ImageSource? BackgroundImageSource
         {
             get => backgroundImageSource;
-            set => SetField(ref backgroundImageSource, value);
+            set => this.SetField(ref backgroundImageSource, value);
         }
 
         private ImageSource? errorImageSource = null;
         public ImageSource? ErrorImageSource
         {
             get => errorImageSource;
-            set => SetField(ref errorImageSource, value);
+            set => this.SetField(ref errorImageSource, value);
         }
 
         private string? errorMessage = null;
         public string? ErrorMessage
         {
             get => errorMessage;
-            set => SetField(ref errorMessage, value);
+            set => this.SetField(ref errorMessage, value);
         }
 
         public BackgroundImageControl()

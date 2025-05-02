@@ -51,23 +51,38 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="icons\buttons\exit-button.jpg" />
+    <Resource Include="icons\buttons\flipper-button.jpg" />
+    <Resource Include="icons\buttons\launch-ball-button.jpg" />
+    <Resource Include="icons\buttons\magna-save-button.jpg" />
+    <Resource Include="icons\buttons\start-button.jpg" />
+    <Resource Include="icons\add-outline.svg" />
     <Resource Include="icons\arrow-back-outline.svg" />
     <Resource Include="icons\disc-outline.svg" />
     <Resource Include="icons\folder-outline.svg" />
     <Resource Include="icons\image-outline.svg" />
     <Resource Include="icons\musical-notes-outline.svg" />
     <Resource Include="icons\pause-circle-outline.svg" />
+    <Resource Include="icons\pinball.svg" />
+    <Resource Include="icons\pinjuke.svg" />
     <Resource Include="icons\play-circle-outline.svg" />
+    <Resource Include="icons\play-outline.svg" />
     <Resource Include="icons\play-skip-back-circle-outline.svg" />
+    <Resource Include="icons\rocket-outline.svg" />
     <Resource Include="icons\play-skip-forward-circle-outline.svg" />
+    <Resource Include="icons\save-outline.svg" />
     <Resource Include="icons\stop-circle-outline.svg" />
     <Resource Include="icons\videocam-outline.svg" />
     <Resource Include="icons\volume-high-outline.svg" />
     <Resource Include="icons\volume-low-outline.svg" />
     <Resource Include="icons\volume-medium-outline.svg" />
     <Resource Include="icons\volume-off-outline.svg" />
+    <Resource Include="icons\warning-outline.svg" />
     <Resource Include="resources\intro.mp4" />
     <Resource Include="resources\record-needle-rip-100415-edit.wav" />
+    <Resource Include="..\..\LICENSE">
+      <LogicalName>resources/LICENSE</LogicalName>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
@@ -94,6 +109,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Onboarding\DataSampleWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Strings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -103,7 +121,7 @@
 
   <ItemGroup>
     <EmbeddedResource Update="Strings.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>

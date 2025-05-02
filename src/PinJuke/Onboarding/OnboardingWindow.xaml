@@ -1,0 +1,242 @@
+﻿<Window x:Class="PinJuke.Onboarding.OnboardingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PinJuke.Onboarding"
+        xmlns:pinjuke="clr-namespace:PinJuke"
+        mc:Ignorable="d"
+        Title="PinJuke" Height="660" Width="800" WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <DataTemplate x:Key="WelcomeTemplate">
+            <local:Page>
+                <Grid Margin="40,40,40,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Image Grid.RowSpan="2" Stretch="Uniform" Source="{Binding LogoImageSource, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                    <TextBlock Grid.Column="1" Margin="40,0,40,20" Text="{x:Static pinjuke:Strings.WelcomeToPinJuke}" FontSize="36"/>
+                    <TextBlock Grid.Column="1" Grid.Row="1" Margin="40,0,40,40" Text="{x:Static pinjuke:Strings.WillSetUpPinJuke}" FontSize="18"/>
+                    <TextBlock Grid.Column="1" Grid.Row="2" Margin="40,0,40,20">
+                        <Run Text="{x:Static pinjuke:Strings.FindTheProjectPageAt}"/> <Hyperlink Click="ProjectLink_Click"><Run Text="{Binding ProjectLink, Mode=OneWay, RelativeSource={RelativeSource AncestorType=Window}}"/></Hyperlink>
+                    </TextBlock>
+                </Grid>
+            </local:Page>
+        </DataTemplate>
+
+        <DataTemplate x:Key="LicenseTemplate">
+            <local:Page>
+                <Grid Margin="40,40,40,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Margin="0,0,0,20" Text="{x:Static pinjuke:Strings.License}" FontSize="36"/>
+                    <TextBlock Grid.Row="1" Margin="0,0,0,20" TextWrapping="Wrap" Text="{x:Static pinjuke:Strings.ProvidedUnderDisplayedLicense}"/>
+                    <TextBox Grid.Row="2" Margin="0,0,0,20" VerticalAlignment="Stretch" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding LicenseText, Mode=OneWay, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                    <CheckBox Grid.Row="3" VerticalContentAlignment="Center"
+                              Content="{x:Static pinjuke:Strings.AcceptLicense}"
+                              IsChecked="{Binding Model.LicenseAccepted, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=Window}}"
+                              Click="License_Checked"/>
+                </Grid>
+            </local:Page>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DisplayTemplate">
+            <local:Page>
+                <StackPanel Orientation="Vertical" Margin="40,40,40,0">
+                    <TextBlock Margin="0,0,0,20" Text="{x:Static pinjuke:Strings.ConfigurationOfDisplays}" FontSize="36"/>
+                    <Button HorizontalAlignment="Left" Width="200" Content="{x:Static pinjuke:Strings.GetDisplayPositionsFromPinup}" Margin="0,10" Click="GetFromPinUpButton_Click"/>
+                    <local:DisplayControl
+                                          DisplayLabelText="{x:Static pinjuke:Strings.DisplayPlayField}"
+                                          Display="{Binding Model.PlayFieldDisplay, RelativeSource={RelativeSource AncestorType=Window}}"
+                                          EnabledVisible="False"/>
+                    <local:DisplayControl
+                                          DisplayLabelText="{x:Static pinjuke:Strings.DisplayBackGlass}"
+                                          Display="{Binding Model.BackGlassDisplay, RelativeSource={RelativeSource AncestorType=Window}}"
+                                          EnabledVisible="False"/>
+                    <local:DisplayControl
+                                          DisplayLabelText="{x:Static pinjuke:Strings.DisplayDmd}"
+                                          Display="{Binding Model.DmdDisplay, RelativeSource={RelativeSource AncestorType=Window}}"
+                                          EnabledVisible="True"
+                                          EnabledChecked="{Binding Model.DmdEnabled, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=Window}}"
+                                          />
+                    <TextBlock TextWrapping="Wrap" Text="{x:Static pinjuke:Strings.NoSeparateDmdMonitorHint}"/>
+                </StackPanel>
+            </local:Page>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DofTemplate">
+            <local:Page>
+                <StackPanel Orientation="Vertical" Margin="40,40,40,0">
+                    <TextBlock Margin="0,0,0,20" Text="{x:Static pinjuke:Strings.ConfigurationOfDof}" FontSize="36"/>
+                    <TextBlock Margin="0,0,0,20" TextWrapping="Wrap" Text="{x:Static pinjuke:Strings.DofDescription}"/>
+                    <CheckBox Margin="0,0,0,20" VerticalContentAlignment="Center"
+                              Content="{x:Static pinjuke:Strings.EnableDof}"
+                              IsChecked="{Binding Model.DofEnabled, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                    <TextBlock Margin="0,0,0,10" TextWrapping="Wrap" Text="{x:Static pinjuke:Strings.SelectDofConfigFile}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox VerticalContentAlignment="Center" Width="400" Text="{Binding Model.DofPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        <Rectangle Margin="10,0,0,0" Width="20" Height="20" Fill="#ff7f27" Visibility="{Binding Model.DofPathInvalid, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush Stretch="Uniform" ImageSource="{Binding WarningImageSource, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                        <Button Margin="10,0,0,0" Width="150" Content="{x:Static pinjuke:Strings.ChooseFile}" Click="ChooseDof_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </local:Page>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DataCollectionTemplate">
+            <local:Page>
+                <StackPanel Orientation="Vertical" Margin="40,40,40,0">
+                    <TextBlock Margin="0,0,0,20" Text="{x:Static pinjuke:Strings.DataOnSoftwareUsage}" FontSize="36"/>
+                    <TextBlock Margin="0,0,0,20" TextWrapping="Wrap" Text="{x:Static pinjuke:Strings.DataOnSoftwareUsageDescription}"/>
+                    <TextBlock Margin="0,0,0,20">
+                        <Hyperlink Click="DataSample_Click"><Run Text="{x:Static pinjuke:Strings.SeeWhatDataIsCollected}"/></Hyperlink>
+                        <Run Text="{x:Static pinjuke:Strings.WillTryToRecognizeControllers}"/>
+                    </TextBlock>
+                    <TextBlock Margin="0,0,0,20" TextWrapping="Wrap" Text="{x:Static pinjuke:Strings.DataOnSoftwareUsageStorage}"/>
+                    <RadioButton Margin="0,5"
+                                 GroupName="dataCollection"
+                                 IsChecked="{Binding Model.Consent, Mode=TwoWay, Converter={StaticResource WhenBoolConverter}, ConverterParameter=True, RelativeSource={RelativeSource AncestorType=Window}}"
+                                 Content="{x:Static pinjuke:Strings.ConsentToDataCollection}"
+                                 Checked="DataCollection_Checked"
+                                 />
+                    <RadioButton Margin="0,5"
+                                 GroupName="dataCollection"
+                                 IsChecked="{Binding Model.Consent, Mode=TwoWay, Converter={StaticResource WhenBoolConverter}, ConverterParameter=False, RelativeSource={RelativeSource AncestorType=Window}}"
+                                 Content="{x:Static pinjuke:Strings.RefuseDataCollection}"
+                                 Checked="DataCollection_Checked"
+                                 />
+                </StackPanel>
+            </local:Page>
+        </DataTemplate>
+
+        <DataTemplate x:Key="KeyboardMappingTemplate">
+            <local:Page>
+                <StackPanel Orientation="Vertical" Margin="40,40,40,0">
+                    <TextBlock Margin="0,0,0,20" Text="{x:Static pinjuke:Strings.OverviewOfTheButtons}" FontSize="18"/>
+                    <DataGrid AutoGenerateColumns="False"
+                              HeadersVisibility="Column"
+                              AlternationCount="2"
+                              ItemsSource="{Binding InputEntries, RelativeSource={RelativeSource AncestorType=Window}}"
+                              BorderBrush="Gray" BorderThickness="0" GridLinesVisibility="None"
+                              >
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Padding" Value="5"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>                        
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Background" Value="White"/>
+                                <Setter Property="BorderBrush" Value="{x:Null}" />
+                                <Style.Triggers>
+                                    <Trigger Property="AlternationIndex" Value="1">
+                                        <Setter Property="Background" Value="#f0f0f0"/>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#d0e0ff"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Padding" Value="5"/>
+                                <Setter Property="BorderBrush" Value="{x:Null}" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                            <Border Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                                <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                                  VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="{x:Static pinjuke:Strings.Button}">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Source="{Binding ImagePath}" Width="70" Height="70" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="" Binding="{Binding Button}">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="{x:Static pinjuke:Strings.RegularFunction}" Binding="{Binding FunctionNormal}"/>
+                            <DataGridTextColumn Header="{x:Static pinjuke:Strings.BrowserFunction}" Binding="{Binding FunctionBrowser}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </local:Page>
+        </DataTemplate>
+
+        <DataTemplate x:Key="FinishTemplate">
+            <local:Page>
+                <Grid Margin="40,40,40,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Margin="0,0,0,20" Text="{x:Static pinjuke:Strings.YouAreAllSet}" FontSize="36"/>
+                    <CheckBox Grid.Row="1" Margin="0,0,0,20"
+                              Content="{x:Static pinjuke:Strings.CheckForUpdates}"
+                              IsChecked="{Binding Model.UpdateCheckEnabled, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=Window}}"
+                              />
+                    <CheckBox Grid.Row="2" Margin="0,0,0,20"
+                              Content="{x:Static pinjuke:Strings.CreatePlaylistAfterCompletion}"
+                              IsChecked="{Binding Model.CreatePlaylist, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=Window}}"
+                              />
+                    <Image Grid.RowSpan="4" Grid.Column="1" VerticalAlignment="Bottom" Stretch="Uniform" Source="{Binding FinishImageSource, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                </Grid>
+            </local:Page>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="PageContainer">
+        </Grid>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="30" HorizontalAlignment="Right">
+            <Button x:Name="BackButton" Width="100" Content="{x:Static pinjuke:Strings.Back}" Margin="10" Click="BackButton_Click"/>
+            <Button x:Name="NextButton" Width="100" IsDefault="True" Content="{x:Static pinjuke:Strings.Next}" Margin="10" Click="NextButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

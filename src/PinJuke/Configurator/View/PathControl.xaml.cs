@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using PinJuke.View;
+using System.IO;
 using System.Windows;
+using System.Windows.Media;
 
 
 namespace PinJuke.Configurator.View
@@ -10,7 +12,7 @@ namespace PinJuke.Configurator.View
         public bool EmptyEnabled
         {
             get => emptyEnabled;
-            set => SetField(ref emptyEnabled, value);
+            set => this.SetField(ref emptyEnabled, value);
         }
 
         private bool relativeEnabled = false;
@@ -19,7 +21,7 @@ namespace PinJuke.Configurator.View
             get => relativeEnabled;
             set
             {
-                SetField(ref relativeEnabled, value);
+                this.SetField(ref relativeEnabled, value);
                 SetPath(Path);
             }
         }
@@ -30,7 +32,7 @@ namespace PinJuke.Configurator.View
             get => relativeDefault;
             set
             {
-                SetField(ref relativeDefault, value);
+                this.SetField(ref relativeDefault, value);
                 SetPath(Path);
             }
         }
@@ -41,7 +43,7 @@ namespace PinJuke.Configurator.View
             get => fileMode;
             set
             {
-                if (SetField(ref fileMode, value))
+                if (this.SetField(ref fileMode, value))
                 {
                     NotifyPropertyChanged(nameof(ChooseText));
                 }
@@ -67,9 +69,10 @@ namespace PinJuke.Configurator.View
             get => path;
             set
             {
-                if (SetField(ref path, value))
+                if (this.SetField(ref path, value))
                 {
                     Relative = !System.IO.Path.IsPathRooted(path);
+                    NotifyPropertyChanged(nameof(PathInvalid));
                 }
             }
         }
@@ -88,13 +91,21 @@ namespace PinJuke.Configurator.View
             get => relative;
             set
             {
-                if (SetField(ref relative, value))
+                if (this.SetField(ref relative, value))
                 {
                     SetPath(Path);
                 }
             }
         }
 
+        public bool PathInvalid
+        {
+            get
+            {
+                return !Path.IsNullOrEmpty()
+                    && (FileMode ? !File.Exists(FullPath) : !Directory.Exists(FullPath));
+            }
+        }
 
         public string ChooseText
         {
@@ -106,6 +117,11 @@ namespace PinJuke.Configurator.View
             get => Strings.RelativePath;
         }
 
+        public ImageSource WarningImageSource
+        {
+            get => SvgImageLoader.Instance.GetFromResource(@"icons\warning-outline.svg");
+        }
+
 
         public PathControl()
         {
@@ -113,6 +129,11 @@ namespace PinJuke.Configurator.View
 
             // Update relative state.
             SetPath("");
+        }
+
+        private void ConfiguratorControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            NotifyPropertyChanged(nameof(PathInvalid));
         }
 
         private void SetPath(string path)

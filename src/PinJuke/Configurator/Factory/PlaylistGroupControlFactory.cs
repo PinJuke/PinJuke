@@ -13,48 +13,48 @@ namespace PinJuke.Configurator.Factory
     {
         public PlaylistGroupControlFactory(Parser parser, MediaPathProvider mediaPathProvider)
         {
-            LabelText = "Playlist configuration";
+            LabelText = Strings.PlaylistConfiguration;
             Controls = [
                 new GroupControlFactory()
                 {
-                    LabelText = "Player",
+                    LabelText = Strings.Player,
                     Controls = [
                         new PathControlFactory()
                         {
-                            LabelText = "Music path",
+                            LabelText = Strings.MusicPath,
                             FileMode = false,
                             RelativeEnabled = false,
                             Converter = new PathConverter(parser, "Player", "MusicPath"),
                         },
                         new SelectControlFactory()
                         {
-                            LabelText = "Startup track type",
+                            LabelText = Strings.StartupTrackType,
                             Items = new()
                             {
-                                new("Last played track", 0),
-                                new("First track in root folder", 1),
-                                new("Random mode", 2),
+                                new(Strings.StartupTrackTypeLastPlayedTrack, 0),
+                                new(Strings.StartupTrackTypeFirstTrack, 1),
+                                new(Strings.StartupTrackTypeRandomMode, 2),
                             },
                             Converter = new IntSelectConverter(parser, "Player", "StartupTrackType"),
                         },
                         new BoolControlFactory()
                         {
-                            LabelText = "Play on startup",
+                            LabelText = Strings.PlayOnStartup,
                             Converter = new BoolConverter(parser, "Player", "PlayOnStartup"),
                         },
                     ]
                 },
                 new ContentGroupControlFactory(parser, "PlayField", mediaPathProvider)
                 {
-                    LabelText = "Play field",
+                    LabelText = Strings.DisplayPlayField,
                 },
                 new ContentGroupControlFactory(parser, "BackGlass", mediaPathProvider)
                 {
-                    LabelText = "Back glass",
+                    LabelText = Strings.DisplayBackGlass,
                 },
                 new ContentGroupControlFactory(parser, "DMD", mediaPathProvider)
                 {
-                    LabelText = "DMD",
+                    LabelText = Strings.DisplayDmd,
                 },
             ];
         }
@@ -67,17 +67,17 @@ namespace PinJuke.Configurator.Factory
             Controls = [
                 new SelectControlFactory()
                 {
-                    LabelText = "Background type",
+                    LabelText = Strings.BackgroundType,
                     Items = new()
                     {
-                        new("Show specified image", 0),
-                        new("Show milkdrop visualizations", 1),
+                        new(Strings.BackgroundTypeShowSpecifiedImage, 0),
+                        new(Strings.BackgroundTypeShowMilkdropVisualizations, 1),
                     },
                     Converter = new IntSelectConverter(parser, sectionName, "BackgroundType"),
                 },
                 new PathControlFactory()
                 {
-                    LabelText = "Background image file",
+                    LabelText = Strings.BackgroundImageFile,
                     FileMode = true,
                     RelativeEnabled = true,
                     FileExtension = ".jpg",
@@ -87,27 +87,27 @@ namespace PinJuke.Configurator.Factory
                 },
                 new BoolControlFactory()
                 {
-                    LabelText = "Cover enabled",
+                    LabelText = Strings.EnableTrackCover,
                     Converter = new BoolConverter(parser, sectionName, "CoverEnabled"),
                 },
                 new BoolControlFactory()
                 {
-                    LabelText = "State enabled",
+                    LabelText = Strings.EnablePlaybackStatus,
                     Converter = new BoolConverter(parser, sectionName, "StateEnabled"),
                 },
                 new BoolControlFactory()
                 {
-                    LabelText = "Browser enabled",
+                    LabelText = Strings.EnableTrackBrowser,
                     Converter = new BoolConverter(parser, sectionName, "BrowserEnabled"),
                 },
                 new BoolControlFactory()
                 {
-                    LabelText = "Theme video enabled",
+                    LabelText = Strings.EnableThemeVideo,
                     Converter = new BoolConverter(parser, sectionName, "ThemeVideoEnabled"),
                 },
                 new PathControlFactory()
                 {
-                    LabelText = "Theme video start file",
+                    LabelText = Strings.ThemeVideoStartFile,
                     FileMode = true,
                     RelativeEnabled = true,
                     FileExtension = ".mp4",
@@ -117,7 +117,7 @@ namespace PinJuke.Configurator.Factory
                 },
                 new PathControlFactory()
                 {
-                    LabelText = "Theme video loop file",
+                    LabelText = Strings.ThemeVideoLoopFile,
                     FileMode = true,
                     RelativeEnabled = true,
                     FileExtension = ".mp4",
@@ -127,7 +127,7 @@ namespace PinJuke.Configurator.Factory
                 },
                 new PathControlFactory()
                 {
-                    LabelText = "Theme video stop file",
+                    LabelText = Strings.ThemeVideoStopFile,
                     FileMode = true,
                     RelativeEnabled = true,
                     FileExtension = ".mp4",
@@ -137,7 +137,7 @@ namespace PinJuke.Configurator.Factory
                 },
                 new SelectControlFactory()
                 {
-                    LabelText = "Theme video rotation",
+                    LabelText = Strings.ThemeVideoRotation,
                     Items = new()
                     {
                         new("-90 °", -90),

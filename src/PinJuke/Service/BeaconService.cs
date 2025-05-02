@@ -66,7 +66,7 @@ namespace PinJuke.Service
         }
     }
 
-    public record Beacon(string AppName, string AppVersion, string AppFileVersion, string Locale, string Timezone, bool DmdAvailable, bool DofEnabled, string[] ControllerNames);
+    public record Beacon(string AppName, string AppVersion, string AppFileVersion, string Locale, string Timezone, bool DmdAvailable, bool DofEnabled, string[] ControllerNames, string? DeveloperName);
 
     public class BeaconService
     {
@@ -105,7 +105,7 @@ namespace PinJuke.Service
                 });
             }
 
-            await firestoreService.Insert(new Document("beacons", beaconId)
+            var document = new Document("beacons", beaconId)
             {
                 ["createdAt"] = new ServerTimestampValue(),
                 ["publicInstallId"] = new StringValue(installIdPair.PublicId),
@@ -117,7 +117,12 @@ namespace PinJuke.Service
                 ["dmdAvailable"] = new BooleanValue(beacon.DmdAvailable),
                 ["dofEnabled"] = new BooleanValue(beacon.DofEnabled),
                 ["controllerNames"] = new ArrayValue(beacon.ControllerNames.Select(str => new StringValue(str)).ToArray()),
-            });
+            };
+            if (beacon.DeveloperName != null)
+            {
+                document["developerName"] = new StringValue(beacon.DeveloperName);
+            }
+            await firestoreService.Insert(document);
         }
 
         private async Task<bool> IsRateLimited(InstallIdPair installIdPair)

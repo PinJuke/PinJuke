@@ -56,14 +56,14 @@ namespace PinJuke.View
         public List<BrowserListFile> Files
         {
             get => files;
-            private set => SetField(ref files, value);
+            private set => this.SetField(ref files, value);
         }
 
         private int selectedFileIndex = -1;
         public int SelectedFileIndex
         {
             get => selectedFileIndex;
-            private set => SetField(ref selectedFileIndex, value);
+            private set => this.SetField(ref selectedFileIndex, value);
         }
 
         public BrowserListControl()

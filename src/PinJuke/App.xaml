@@ -6,9 +6,13 @@
              ShutdownMode="OnLastWindowClose"
              >
     <Application.Resources>
+        <valueConverter:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <valueConverter:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
         <valueConverter:LeftTrimmingConverter x:Key="LeftTrimmingConverter" />
         <valueConverter:CoalesceMultiValueConverter x:Key="CoalesceMultiValueConverter" />
+        <valueConverter:IntConverter x:Key="IntConverter" />
+        <valueConverter:WhenBoolConverter x:Key="WhenBoolConverter" />
+        <valueConverter:LabelConverter x:Key="LabelConverter" />
 
         <Style x:Key="ViewVisibleFadeStyle" TargetType="{x:Type FrameworkElement}">
             <Setter Property="Opacity" Value="0" />

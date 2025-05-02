@@ -1,4 +1,6 @@
-﻿using PinJuke.Model;
+﻿using PinJuke.Configuration;
+using PinJuke.Ini;
+using PinJuke.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,10 +29,27 @@ namespace PinJuke.Service
             return loader.FromIniFilePaths(iniFilePaths, playlistConfigFilePath);
         }
 
-        public Configuration.UserConfiguration LoadUserConfiguration()
+        public void SaveGlobalConfiguration(Configuration.Configuration configuration, IniDocument iniDocument)
+        {
+            var loader = new Configuration.ConfigurationLoader();
+            loader.ToGlobalIniDocument(configuration, iniDocument);
+
+            var globalConfigFile = Configuration.ConfigPath.CONFIG_GLOBAL_FILE_PATH;
+            CreateDirectoryForFile(globalConfigFile);
+            using var textWriter = new StreamWriter(globalConfigFile);
+            iniDocument.WriteTo(textWriter);
+        }
+
+        private string GetUserConfigurationFilePath()
         {
             var userConfigDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\PinJuke";
-            var userConfigFile = Path.Combine(userConfigDir, Configuration.ConfigPath.USER_FILE_NAME);
+            var userConfigFile = Path.Join(userConfigDir, Configuration.ConfigPath.USER_FILE_NAME);
+            return userConfigFile;
+        }
+
+        public Configuration.UserConfiguration LoadUserConfiguration()
+        {
+            var userConfigFile = GetUserConfigurationFilePath();
 
             var loader = new Configuration.UserConfigurationLoader();
             return loader.FromIniFilePath(userConfigFile);
@@ -38,12 +57,20 @@ namespace PinJuke.Service
 
         public void SaveUserConfiguration(Configuration.UserConfiguration userConfiguration)
         {
-            var userConfigDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\PinJuke";
-            var userConfigFile = Path.Combine(userConfigDir, Configuration.ConfigPath.USER_FILE_NAME);
+            var userConfigFile = GetUserConfigurationFilePath();
+            CreateDirectoryForFile(userConfigFile);
 
-            Directory.CreateDirectory(userConfigDir);
             using var textWriter = new StreamWriter(userConfigFile);
             userConfiguration.IniDocument.WriteTo(textWriter);
+        }
+
+        private void CreateDirectoryForFile(string filePath)
+        {
+            var directory = Path.GetDirectoryName(filePath);
+            if (directory != null && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
         }
     }
 }

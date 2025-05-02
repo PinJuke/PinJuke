@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PinJuke.Configurator"
+        xmlns:pinjuke="clr-namespace:PinJuke"
         mc:Ignorable="d"
-        Title="PinJuke Configurator" Height="800" Width="700" WindowStartupLocation="CenterScreen">
+        Title="PinJuke Configurator" Height="800" Width="770" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -15,20 +16,40 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
 
         <Border Grid.ColumnSpan="3" BorderBrush="#ffc90e" BorderThickness="4" Background="#efe4b0">
             <TextBlock Margin="5">
-                <Run Text="{Binding DocumentationText, Mode=OneWay}"/> <Hyperlink Click="DocumentationLink_Click"><Run Text="{Binding DocumentationLink, Mode=OneWay}"/></Hyperlink>
+                <Run Text="{x:Static pinjuke:Strings.LabelDocumentation}"/> <Hyperlink Click="DocumentationLink_Click"><Run Text="{Binding DocumentationLink, Mode=OneWay}"/></Hyperlink>
             </TextBlock>
         </Border>
 
         <TabControl x:Name="Tabs" Grid.Row="1" Grid.ColumnSpan="3" SelectionChanged="Tabs_SelectionChanged">
         </TabControl>
 
-        <Button x:Name="AddPlaylistButton" Grid.Row="2" Grid.Column="0" Content="{Binding AddPlaylistLabelText, Mode=OneWay}" Click="AddPlaylistButton_Click"/>
-        <Button x:Name="SaveButton" Grid.Row="2" Grid.Column="1" Content="{Binding SaveAllLabelText, Mode=OneWay}" Click="SaveButton_Clicked"/>
-        <Button x:Name="RunButton" Grid.Row="2" Grid.Column="2" Content="{Binding RunCurrentPlaylistLabelText, Mode=OneWay}" Click="RunButton_Clicked"/>
+        <Button Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Right" VerticalAlignment="Top"
+                Background="Transparent" BorderThickness="0"
+                ToolTip="{x:Static pinjuke:Strings.RerunSetup}"
+                Click="RunOnboarding_Click">
+            <Rectangle Width="18" Height="18" Margin="1" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
+                <Rectangle.OpacityMask>
+                    <ImageBrush Stretch="Uniform" ImageSource="{Binding OnboardingImageSource}"/>
+                </Rectangle.OpacityMask>
+            </Rectangle>
+        </Button>
+
+        <local:IconButtonControl
+            x:Name="AddPlaylistButton"
+            Grid.Row="2" Grid.Column="0" Click="AddPlaylistButton_Click"
+            LabelText="{x:Static pinjuke:Strings.AddNewPlaylist}" ImageSource="{Binding AddPlaylistImageSource, RelativeSource={RelativeSource AncestorType=Window}}" />
+        <local:IconButtonControl
+            x:Name="SaveButton"
+            Grid.Row="2" Grid.Column="1" Click="SaveButton_Click"
+            LabelText="{x:Static pinjuke:Strings.SaveAll}" ImageSource="{Binding SaveAllImageSource, RelativeSource={RelativeSource AncestorType=Window}}" />
+        <local:IconButtonControl
+            x:Name="RunButton"
+            Grid.Row="2" Grid.Column="2" Click="RunButton_Click"
+            LabelText="{x:Static pinjuke:Strings.RunCurrentPlaylist}" ImageSource="{Binding RunCurrentPlaylistImageSource, RelativeSource={RelativeSource AncestorType=Window}}" />
     </Grid>
 </Window>

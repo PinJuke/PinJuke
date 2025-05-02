@@ -22,7 +22,7 @@ namespace PinJuke {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Strings {
+    public class Strings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace PinJuke {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PinJuke.Strings", typeof(Strings).Assembly);
@@ -51,7 +51,7 @@ namespace PinJuke {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,18 +61,345 @@ namespace PinJuke {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Accept license.
+        /// </summary>
+        public static string AcceptLicense {
+            get {
+                return ResourceManager.GetString("AcceptLicense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add new playlist….
+        /// </summary>
+        public static string AddNewPlaylist {
+            get {
+                return ResourceManager.GetString("AddNewPlaylist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Back.
+        /// </summary>
+        public static string Back {
+            get {
+                return ResourceManager.GetString("Back", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Background image file.
+        /// </summary>
+        public static string BackgroundImageFile {
+            get {
+                return ResourceManager.GetString("BackgroundImageFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Background type.
+        /// </summary>
+        public static string BackgroundType {
+            get {
+                return ResourceManager.GetString("BackgroundType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show milkdrop visualizations.
+        /// </summary>
+        public static string BackgroundTypeShowMilkdropVisualizations {
+            get {
+                return ResourceManager.GetString("BackgroundTypeShowMilkdropVisualizations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show specified image.
+        /// </summary>
+        public static string BackgroundTypeShowSpecifiedImage {
+            get {
+                return ResourceManager.GetString("BackgroundTypeShowSpecifiedImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App file version.
+        /// </summary>
+        public static string BeaconAppFileVersion {
+            get {
+                return ResourceManager.GetString("BeaconAppFileVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App name.
+        /// </summary>
+        public static string BeaconAppName {
+            get {
+                return ResourceManager.GetString("BeaconAppName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App version.
+        /// </summary>
+        public static string BeaconAppVersion {
+            get {
+                return ResourceManager.GetString("BeaconAppVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controller names.
+        /// </summary>
+        public static string BeaconControllerNames {
+            get {
+                return ResourceManager.GetString("BeaconControllerNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DMD available.
+        /// </summary>
+        public static string BeaconDmdAvailable {
+            get {
+                return ResourceManager.GetString("BeaconDmdAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DOF enabled.
+        /// </summary>
+        public static string BeaconDofEnabled {
+            get {
+                return ResourceManager.GetString("BeaconDofEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error querying the data ({0}).
+        /// </summary>
+        public static string BeaconErrorQuerying {
+            get {
+                return ResourceManager.GetString("BeaconErrorQuerying", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Locale.
+        /// </summary>
+        public static string BeaconLocale {
+            get {
+                return ResourceManager.GetString("BeaconLocale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Querying data….
+        /// </summary>
+        public static string BeaconQueryingData {
+            get {
+                return ResourceManager.GetString("BeaconQueryingData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Timezone.
+        /// </summary>
+        public static string BeaconTimezone {
+            get {
+                return ResourceManager.GetString("BeaconTimezone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The software determines the following data about your system:.
+        /// </summary>
+        public static string BeaconWhatIsIncluded {
+            get {
+                return ResourceManager.GetString("BeaconWhatIsIncluded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browser is visible.
+        /// </summary>
+        public static string BrowserFunction {
+            get {
+                return ResourceManager.GetString("BrowserFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to (Up).
         /// </summary>
-        internal static string BrowserUp {
+        public static string BrowserUp {
             get {
                 return ResourceManager.GetString("BrowserUp", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Button.
+        /// </summary>
+        public static string Button {
+            get {
+                return ResourceManager.GetString("Button", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exit button.
+        /// </summary>
+        public static string ButtonExit {
+            get {
+                return ResourceManager.GetString("ButtonExit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exit app.
+        /// </summary>
+        public static string ButtonExitBrowserFunction {
+            get {
+                return ResourceManager.GetString("ButtonExitBrowserFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exit app.
+        /// </summary>
+        public static string ButtonExitRegularFunction {
+            get {
+                return ResourceManager.GetString("ButtonExitRegularFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flipper button
+        ///left/right.
+        /// </summary>
+        public static string ButtonFlipperLeftRight {
+            get {
+                return ResourceManager.GetString("ButtonFlipperLeftRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigate back/forward.
+        /// </summary>
+        public static string ButtonFlipperLeftRightBrowserFunction {
+            get {
+                return ResourceManager.GetString("ButtonFlipperLeftRightBrowserFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Track back/forward.
+        /// </summary>
+        public static string ButtonFlipperLeftRightRegularFunction {
+            get {
+                return ResourceManager.GetString("ButtonFlipperLeftRightRegularFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Launch ball button.
+        /// </summary>
+        public static string ButtonLaunchBall {
+            get {
+                return ResourceManager.GetString("ButtonLaunchBall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Folder: follow
+        ///Track: restart.
+        /// </summary>
+        public static string ButtonLaunchBallBrowserFunction {
+            get {
+                return ResourceManager.GetString("ButtonLaunchBallBrowserFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open track browser.
+        /// </summary>
+        public static string ButtonLaunchBallRegularFunction {
+            get {
+                return ResourceManager.GetString("ButtonLaunchBallRegularFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Magna save button
+        ///left/right.
+        /// </summary>
+        public static string ButtonMagnaSaveLeftRight {
+            get {
+                return ResourceManager.GetString("ButtonMagnaSaveLeftRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visualization back/forward.
+        /// </summary>
+        public static string ButtonMagnaSaveLeftRightBrowserFunction {
+            get {
+                return ResourceManager.GetString("ButtonMagnaSaveLeftRightBrowserFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume.
+        /// </summary>
+        public static string ButtonMagnaSaveLeftRightRegularFunction {
+            get {
+                return ResourceManager.GetString("ButtonMagnaSaveLeftRightRegularFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start button.
+        /// </summary>
+        public static string ButtonStart {
+            get {
+                return ResourceManager.GetString("ButtonStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Play/pause.
+        /// </summary>
+        public static string ButtonStartBrowserFunction {
+            get {
+                return ResourceManager.GetString("ButtonStartBrowserFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Play/pause.
+        /// </summary>
+        public static string ButtonStartRegularFunction {
+            get {
+                return ResourceManager.GetString("ButtonStartRegularFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check for application updates (when the Configurator is run).
+        /// </summary>
+        public static string CheckForUpdates {
+            get {
+                return ResourceManager.GetString("CheckForUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose directory….
         /// </summary>
-        internal static string ChooseDirectory {
+        public static string ChooseDirectory {
             get {
                 return ResourceManager.GetString("ChooseDirectory", resourceCulture);
             }
@@ -81,16 +408,43 @@ namespace PinJuke {
         /// <summary>
         ///   Looks up a localized string similar to Choose file….
         /// </summary>
-        internal static string ChooseFile {
+        public static string ChooseFile {
             get {
                 return ResourceManager.GetString("ChooseFile", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Configuration of the displays.
+        /// </summary>
+        public static string ConfigurationOfDisplays {
+            get {
+                return ResourceManager.GetString("ConfigurationOfDisplays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configuration of DOF.
+        /// </summary>
+        public static string ConfigurationOfDof {
+            get {
+                return ResourceManager.GetString("ConfigurationOfDof", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Consent to the data collection.
+        /// </summary>
+        public static string ConsentToDataCollection {
+            get {
+                return ResourceManager.GetString("ConsentToDataCollection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Album.
         /// </summary>
-        internal static string CoverAlbum {
+        public static string CoverAlbum {
             get {
                 return ResourceManager.GetString("CoverAlbum", resourceCulture);
             }
@@ -99,7 +453,7 @@ namespace PinJuke {
         /// <summary>
         ///   Looks up a localized string similar to Artist.
         /// </summary>
-        internal static string CoverArtist {
+        public static string CoverArtist {
             get {
                 return ResourceManager.GetString("CoverArtist", resourceCulture);
             }
@@ -108,7 +462,7 @@ namespace PinJuke {
         /// <summary>
         ///   Looks up a localized string similar to Title.
         /// </summary>
-        internal static string CoverTitle {
+        public static string CoverTitle {
             get {
                 return ResourceManager.GetString("CoverTitle", resourceCulture);
             }
@@ -117,16 +471,169 @@ namespace PinJuke {
         /// <summary>
         ///   Looks up a localized string similar to Year.
         /// </summary>
-        internal static string CoverYear {
+        public static string CoverYear {
             get {
                 return ResourceManager.GetString("CoverYear", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create.
+        /// </summary>
+        public static string Create {
+            get {
+                return ResourceManager.GetString("Create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a playlist after completion.
+        /// </summary>
+        public static string CreatePlaylistAfterCompletion {
+            get {
+                return ResourceManager.GetString("CreatePlaylistAfterCompletion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data on software usage.
+        /// </summary>
+        public static string DataOnSoftwareUsage {
+            get {
+                return ResourceManager.GetString("DataOnSoftwareUsage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please allow data on the use of the software and hardware to be collected pseudonymously. We would like to know how the software is received and used by users. The data can be made available to the community (e.g. in the form of evaluations)..
+        /// </summary>
+        public static string DataOnSoftwareUsageDescription {
+            get {
+                return ResourceManager.GetString("DataOnSoftwareUsageDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The data is stored in a Firebase database (a Google product). Deletion of the data cannot be requested..
+        /// </summary>
+        public static string DataOnSoftwareUsageStorage {
+            get {
+                return ResourceManager.GetString("DataOnSoftwareUsageStorage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Back glass.
+        /// </summary>
+        public static string DisplayBackGlass {
+            get {
+                return ResourceManager.GetString("DisplayBackGlass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DMD.
+        /// </summary>
+        public static string DisplayDmd {
+            get {
+                return ResourceManager.GetString("DisplayDmd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Play field.
+        /// </summary>
+        public static string DisplayPlayField {
+            get {
+                return ResourceManager.GetString("DisplayPlayField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DOF.
+        /// </summary>
+        public static string Dof {
+            get {
+                return ResourceManager.GetString("Dof", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Direct Output Framework can be used to control the controllers connected to your hardware..
+        /// </summary>
+        public static string DofDescription {
+            get {
+                return ResourceManager.GetString("DofDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GlobalConfig_B2SServer.xml.
+        /// </summary>
+        public static string DofGlobalConfigFilePath {
+            get {
+                return ResourceManager.GetString("DofGlobalConfigFilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable.
+        /// </summary>
+        public static string Enable {
+            get {
+                return ResourceManager.GetString("Enable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable DOF.
+        /// </summary>
+        public static string EnableDof {
+            get {
+                return ResourceManager.GetString("EnableDof", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable playback status.
+        /// </summary>
+        public static string EnablePlaybackStatus {
+            get {
+                return ResourceManager.GetString("EnablePlaybackStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable themed video skins.
+        /// </summary>
+        public static string EnableThemeVideo {
+            get {
+                return ResourceManager.GetString("EnableThemeVideo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable track browser.
+        /// </summary>
+        public static string EnableTrackBrowser {
+            get {
+                return ResourceManager.GetString("EnableTrackBrowser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable track cover.
+        /// </summary>
+        public static string EnableTrackCover {
+            get {
+                return ResourceManager.GetString("EnableTrackCover", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error reading file &quot;{0}&quot;..
         /// </summary>
-        internal static string ErrorReadingFile {
+        public static string ErrorReadingFile {
             get {
                 return ResourceManager.GetString("ErrorReadingFile", resourceCulture);
             }
@@ -135,16 +642,61 @@ namespace PinJuke {
         /// <summary>
         ///   Looks up a localized string similar to Error writing file &quot;{0}&quot;..
         /// </summary>
-        internal static string ErrorWritingFile {
+        public static string ErrorWritingFile {
             get {
                 return ResourceManager.GetString("ErrorWritingFile", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You can find the project page at:.
+        /// </summary>
+        public static string FindTheProjectPageAt {
+            get {
+                return ResourceManager.GetString("FindTheProjectPageAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finish.
+        /// </summary>
+        public static string Finish {
+            get {
+                return ResourceManager.GetString("Finish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get display position from PinUP.
+        /// </summary>
+        public static string GetDisplayPositionFromPinup {
+            get {
+                return ResourceManager.GetString("GetDisplayPositionFromPinup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get display positions from PinUP.
+        /// </summary>
+        public static string GetDisplayPositionsFromPinup {
+            get {
+                return ResourceManager.GetString("GetDisplayPositionsFromPinup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Global configuration.
+        /// </summary>
+        public static string GlobalConfiguration {
+            get {
+                return ResourceManager.GetString("GlobalConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to INI file.
         /// </summary>
-        internal static string IniFile {
+        public static string IniFile {
             get {
                 return ResourceManager.GetString("IniFile", resourceCulture);
             }
@@ -153,88 +705,430 @@ namespace PinJuke {
         /// <summary>
         ///   Looks up a localized string similar to JPEG file.
         /// </summary>
-        internal static string JpegFile {
+        public static string JpegFile {
             get {
                 return ResourceManager.GetString("JpegFile", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add new playlist….
+        ///   Looks up a localized string similar to Keyboard.
         /// </summary>
-        internal static string LabelAddNewPlaylist {
+        public static string Keyboard {
             get {
-                return ResourceManager.GetString("LabelAddNewPlaylist", resourceCulture);
+                return ResourceManager.GetString("Keyboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse.
+        /// </summary>
+        public static string KeyBrowse {
+            get {
+                return ResourceManager.GetString("KeyBrowse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exit.
+        /// </summary>
+        public static string KeyExit {
+            get {
+                return ResourceManager.GetString("KeyExit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next/forward.
+        /// </summary>
+        public static string KeyNext {
+            get {
+                return ResourceManager.GetString("KeyNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Play/pause.
+        /// </summary>
+        public static string KeyPlayPause {
+            get {
+                return ResourceManager.GetString("KeyPlayPause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Back/previous.
+        /// </summary>
+        public static string KeyPrevious {
+            get {
+                return ResourceManager.GetString("KeyPrevious", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume down.
+        /// </summary>
+        public static string KeyVolumeDown {
+            get {
+                return ResourceManager.GetString("KeyVolumeDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume up.
+        /// </summary>
+        public static string KeyVolumeUp {
+            get {
+                return ResourceManager.GetString("KeyVolumeUp", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Further information can be found in the documentation:.
         /// </summary>
-        internal static string LabelDocumentation {
+        public static string LabelDocumentation {
             get {
                 return ResourceManager.GetString("LabelDocumentation", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start with current playlist.
+        ///   Looks up a localized string similar to License.
         /// </summary>
-        internal static string LabelRunCurrentPlaylist {
+        public static string License {
             get {
-                return ResourceManager.GetString("LabelRunCurrentPlaylist", resourceCulture);
+                return ResourceManager.GetString("License", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save all.
+        ///   Looks up a localized string similar to Media path.
         /// </summary>
-        internal static string LabelSaveAll {
+        public static string MediaPath {
             get {
-                return ResourceManager.GetString("LabelSaveAll", resourceCulture);
+                return ResourceManager.GetString("MediaPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Milkdrop.
+        /// </summary>
+        public static string Milkdrop {
+            get {
+                return ResourceManager.GetString("Milkdrop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Presets path.
+        /// </summary>
+        public static string MilkdropPresetsPath {
+            get {
+                return ResourceManager.GetString("MilkdropPresetsPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Textures path.
+        /// </summary>
+        public static string MilkdropTexturesPath {
+            get {
+                return ResourceManager.GetString("MilkdropTexturesPath", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to MP4 file.
         /// </summary>
-        internal static string Mp4File {
+        public static string Mp4File {
             get {
                 return ResourceManager.GetString("Mp4File", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No audio device found..
+        ///   Looks up a localized string similar to Path to music directory.
         /// </summary>
-        internal static string NoAudioDeviceFound {
+        public static string MusicPath {
             get {
-                return ResourceManager.GetString("NoAudioDeviceFound", resourceCulture);
+                return ResourceManager.GetString("MusicPath", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;{0}&quot; not found..
+        ///   Looks up a localized string similar to New playlist configuration.
         /// </summary>
-        internal static string PathNotFound {
+        public static string NewPlaylistConfiguration {
             get {
-                return ResourceManager.GetString("PathNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Relative path.
-        /// </summary>
-        internal static string RelativePath {
-            get {
-                return ResourceManager.GetString("RelativePath", resourceCulture);
+                return ResourceManager.GetString("NewPlaylistConfiguration", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Next.
         /// </summary>
-        internal static string StateNext {
+        public static string Next {
+            get {
+                return ResourceManager.GetString("Next", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string No {
+            get {
+                return ResourceManager.GetString("No", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No audio device found..
+        /// </summary>
+        public static string NoAudioDeviceFound {
+            get {
+                return ResourceManager.GetString("NoAudioDeviceFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you do not have a separate monitor for the DMD output, you can have the DMD window overlay the back glass window, for example..
+        /// </summary>
+        public static string NoSeparateDmdMonitorHint {
+            get {
+                return ResourceManager.GetString("NoSeparateDmdMonitorHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string Ok {
+            get {
+                return ResourceManager.GetString("Ok", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Overview of the hardware controls.
+        /// </summary>
+        public static string OverviewOfTheButtons {
+            get {
+                return ResourceManager.GetString("OverviewOfTheButtons", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;{0}&quot; not found..
+        /// </summary>
+        public static string PathNotFound {
+            get {
+                return ResourceManager.GetString("PathNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Player.
+        /// </summary>
+        public static string Player {
+            get {
+                return ResourceManager.GetString("Player", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Playlist configuration.
+        /// </summary>
+        public static string PlaylistConfiguration {
+            get {
+                return ResourceManager.GetString("PlaylistConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Playback at program start.
+        /// </summary>
+        public static string PlayOnStartup {
+            get {
+                return ResourceManager.GetString("PlayOnStartup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PinJuke is provided under the displayed license..
+        /// </summary>
+        public static string ProvidedUnderDisplayedLicense {
+            get {
+                return ResourceManager.GetString("ProvidedUnderDisplayedLicense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Height.
+        /// </summary>
+        public static string RectHeight {
+            get {
+                return ResourceManager.GetString("RectHeight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Left.
+        /// </summary>
+        public static string RectLeft {
+            get {
+                return ResourceManager.GetString("RectLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Top.
+        /// </summary>
+        public static string RectTop {
+            get {
+                return ResourceManager.GetString("RectTop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Width.
+        /// </summary>
+        public static string RectWidth {
+            get {
+                return ResourceManager.GetString("RectWidth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refuse the collection of data.
+        /// </summary>
+        public static string RefuseDataCollection {
+            get {
+                return ResourceManager.GetString("RefuseDataCollection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regular function.
+        /// </summary>
+        public static string RegularFunction {
+            get {
+                return ResourceManager.GetString("RegularFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Relative path.
+        /// </summary>
+        public static string RelativePath {
+            get {
+                return ResourceManager.GetString("RelativePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Re-run setup.
+        /// </summary>
+        public static string RerunSetup {
+            get {
+                return ResourceManager.GetString("RerunSetup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rotation.
+        /// </summary>
+        public static string Rotation {
+            get {
+                return ResourceManager.GetString("Rotation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start with current playlist.
+        /// </summary>
+        public static string RunCurrentPlaylist {
+            get {
+                return ResourceManager.GetString("RunCurrentPlaylist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save all.
+        /// </summary>
+        public static string SaveAll {
+            get {
+                return ResourceManager.GetString("SaveAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scale.
+        /// </summary>
+        public static string Scale {
+            get {
+                return ResourceManager.GetString("Scale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to See what data is collected..
+        /// </summary>
+        public static string SeeWhatDataIsCollected {
+            get {
+                return ResourceManager.GetString("SeeWhatDataIsCollected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the GlobalConfig_B2SServer.xml file:.
+        /// </summary>
+        public static string SelectDofConfigFile {
+            get {
+                return ResourceManager.GetString("SelectDofConfigFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Behavior on program start.
+        /// </summary>
+        public static string StartupTrackType {
+            get {
+                return ResourceManager.GetString("StartupTrackType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First track from directory.
+        /// </summary>
+        public static string StartupTrackTypeFirstTrack {
+            get {
+                return ResourceManager.GetString("StartupTrackTypeFirstTrack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Continue with the last track played.
+        /// </summary>
+        public static string StartupTrackTypeLastPlayedTrack {
+            get {
+                return ResourceManager.GetString("StartupTrackTypeLastPlayedTrack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random playback sequence.
+        /// </summary>
+        public static string StartupTrackTypeRandomMode {
+            get {
+                return ResourceManager.GetString("StartupTrackTypeRandomMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        public static string StateNext {
             get {
                 return ResourceManager.GetString("StateNext", resourceCulture);
             }
@@ -243,7 +1137,7 @@ namespace PinJuke {
         /// <summary>
         ///   Looks up a localized string similar to Pause.
         /// </summary>
-        internal static string StatePause {
+        public static string StatePause {
             get {
                 return ResourceManager.GetString("StatePause", resourceCulture);
             }
@@ -252,7 +1146,7 @@ namespace PinJuke {
         /// <summary>
         ///   Looks up a localized string similar to Play.
         /// </summary>
-        internal static string StatePlay {
+        public static string StatePlay {
             get {
                 return ResourceManager.GetString("StatePlay", resourceCulture);
             }
@@ -261,7 +1155,7 @@ namespace PinJuke {
         /// <summary>
         ///   Looks up a localized string similar to Previous.
         /// </summary>
-        internal static string StatePrevious {
+        public static string StatePrevious {
             get {
                 return ResourceManager.GetString("StatePrevious", resourceCulture);
             }
@@ -270,7 +1164,7 @@ namespace PinJuke {
         /// <summary>
         ///   Looks up a localized string similar to Stop.
         /// </summary>
-        internal static string StateStop {
+        public static string StateStop {
             get {
                 return ResourceManager.GetString("StateStop", resourceCulture);
             }
@@ -279,7 +1173,7 @@ namespace PinJuke {
         /// <summary>
         ///   Looks up a localized string similar to Tilt!.
         /// </summary>
-        internal static string StateTilt {
+        public static string StateTilt {
             get {
                 return ResourceManager.GetString("StateTilt", resourceCulture);
             }
@@ -288,27 +1182,108 @@ namespace PinJuke {
         /// <summary>
         ///   Looks up a localized string similar to Volume {0:00}%.
         /// </summary>
-        internal static string StateVolumeXPercent {
+        public static string StateVolumeXPercent {
             get {
                 return ResourceManager.GetString("StateVolumeXPercent", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Theme video loop file.
+        /// </summary>
+        public static string ThemeVideoLoopFile {
+            get {
+                return ResourceManager.GetString("ThemeVideoLoopFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Theme video rotation.
+        /// </summary>
+        public static string ThemeVideoRotation {
+            get {
+                return ResourceManager.GetString("ThemeVideoRotation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Theme video start file.
+        /// </summary>
+        public static string ThemeVideoStartFile {
+            get {
+                return ResourceManager.GetString("ThemeVideoStartFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Theme video stop file.
+        /// </summary>
+        public static string ThemeVideoStopFile {
+            get {
+                return ResourceManager.GetString("ThemeVideoStopFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to start the configurator?.
         /// </summary>
-        internal static string WantToStartConfigurator {
+        public static string WantToStartConfigurator {
             get {
                 return ResourceManager.GetString("WantToStartConfigurator", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Welcome to PinJuke!.
+        /// </summary>
+        public static string WelcomeToPinJuke {
+            get {
+                return ResourceManager.GetString("WelcomeToPinJuke", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We will set up PinJuke on the following pages..
+        /// </summary>
+        public static string WillSetUpPinJuke {
+            get {
+                return ResourceManager.GetString("WillSetUpPinJuke", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Will try to recognize your controllers with the help of DOF.).
+        /// </summary>
+        public static string WillTryToRecognizeControllers {
+            get {
+                return ResourceManager.GetString("WillTryToRecognizeControllers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to XML file.
         /// </summary>
-        internal static string XmlFile {
+        public static string XmlFile {
             get {
                 return ResourceManager.GetString("XmlFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string Yes {
+            get {
+                return ResourceManager.GetString("Yes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are all set!.
+        /// </summary>
+        public static string YouAreAllSet {
+            get {
+                return ResourceManager.GetString("YouAreAllSet", resourceCulture);
             }
         }
     }

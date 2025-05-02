@@ -297,7 +297,7 @@ namespace PinJuke.Model
 
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged.Raise(this, propertyName);
         }
 
         public void Shutdown()

@@ -27,7 +27,7 @@ namespace PinJuke.View
         public float ContentRotation
         {
             get => contentRotation;
-            set => SetField(ref contentRotation, value);
+            set => this.SetField(ref contentRotation, value);
         }
 
         public ThemeVideoControl()

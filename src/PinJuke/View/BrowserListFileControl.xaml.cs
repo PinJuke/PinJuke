@@ -19,7 +19,7 @@ using System.Windows.Shapes;
 
 namespace PinJuke.View
 {
-    public class BrowserListFile : INotifyPropertyChanged
+    public class BrowserListFile : IChangingProperties
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -36,9 +36,9 @@ namespace PinJuke.View
             FontStyle = fontStyle;
         }
 
-        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+        public void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged.Raise(this, propertyName);
         }
     }
 

@@ -32,7 +32,7 @@ namespace PinJuke.Configurator.View
             get => items;
             set
             {
-                if (!SetField(ref items, value))
+                if (!this.SetField(ref items, value))
                 {
                     return;
                 }
@@ -49,7 +49,7 @@ namespace PinJuke.Configurator.View
             set
             {
                 selectedByIndex = false;
-                if (!SetField(ref selectedValue, value))
+                if (!this.SetField(ref selectedValue, value))
                 {
                     return;
                 }
@@ -64,7 +64,7 @@ namespace PinJuke.Configurator.View
             set
             {
                 selectedByIndex = true;
-                if (!SetField(ref selectedIndex, value))
+                if (!this.SetField(ref selectedIndex, value))
                 {
                     return;
                 }
@@ -76,7 +76,7 @@ namespace PinJuke.Configurator.View
         public bool Enabled
         {
             get => enabled;
-            set => SetField(ref enabled, value);
+            set => this.SetField(ref enabled, value);
         }
 
         public SelectControl()

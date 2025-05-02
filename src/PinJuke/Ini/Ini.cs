@@ -20,19 +20,28 @@ namespace PinJuke.Ini
         {
             get
             {
-                return ProvideSection(name); // maybe rethink this
+                return ProvideSection(name, false);
             }
         }
 
-        public IniSection ProvideSection(string name)
+        public IniSection ProvideSection(string name, bool persistent)
         {
             var iniSection = sectionByName.GetValueOrDefault(name);
             if (iniSection == null)
             {
-                iniSection = new(name);
+                iniSection = new(this, name);
                 sectionByName[name] = iniSection;
             }
+            if (persistent)
+            {
+                iniSection.SetPersistent();
+            }
             return iniSection;
+        }
+
+        public void RemoveSection(IniSection section)
+        {
+            sectionByName.Remove(section.Name);
         }
 
         public void AddFooterComments(ICollection<IniComment> comments)
@@ -52,18 +61,24 @@ namespace PinJuke.Ini
 
         public void MergeFrom(IniDocument otherDocument)
         {
-            foreach (var (name, otherSection) in otherDocument)
+            foreach (var otherSection in otherDocument.sectionByName.Values)
             {
-                this[name].MergeFrom(otherSection);
+                if (otherSection.Persistent)
+                {
+                    ProvideSection(otherSection.Name, true).MergeFrom(otherSection);
+                }
             }
             footerComments.AddRange(otherDocument.footerComments);
         }
 
         public void WriteTo(TextWriter textWriter)
         {
-            foreach (var (name, section) in sectionByName)
+            foreach (var section in sectionByName.Values)
             {
-                section.WriteTo(textWriter);
+                if (section.Persistent)
+                {
+                    section.WriteTo(textWriter);
+                }
             }
             foreach (var comment in footerComments)
             {
@@ -77,41 +92,63 @@ namespace PinJuke.Ini
         private readonly OrderedDictionary<string, IniEntry> iniEntryByName = new();
         private readonly List<IniComment> comments = new();
 
+        public IniDocument Document { get; }
         public string Name { get; }
+        public bool Persistent { get; private set; } = false;
 
-        public IniSection(string name)
+        public IniSection(IniDocument document, string name)
         {
+            Document = document;
             Name = name;
+        }
+
+        public void SetPersistent()
+        {
+            Persistent = true;
+        }
+
+        public void Remove()
+        {
+            Document.RemoveSection(this);
         }
 
         public string? this[string name]
         {
             get
             {
-                return iniEntryByName.GetValueOrDefault(name)?.Value;
+                return ProvideEntry(name, false).Value;
             }
             set
             {
                 if (value == null)
                 {
-                    iniEntryByName.Remove(name);
+                    ProvideEntry(name, true).Remove();
                 }
                 else
                 {
-                    ProvideEntry(name).Value = value;
+                    ProvideEntry(name, true).Value = value;
                 }
             }
         }
 
-        public IniEntry ProvideEntry(string name)
+        public IniEntry ProvideEntry(string name, bool persistent)
         {
             var iniEntry = iniEntryByName.GetValueOrDefault(name);
             if (iniEntry == null)
             {
-                iniEntry = new(name);
+                iniEntry = new(this, name);
                 iniEntryByName[name] = iniEntry;
             }
+            if (persistent)
+            {
+                iniEntry.SetPersistent();
+            }
             return iniEntry;
+        }
+
+        public void RemoveEntry(IniEntry entry)
+        {
+            iniEntryByName.Remove(entry.Name);
         }
 
         public void AddComments(ICollection<IniComment> comments)
@@ -133,10 +170,17 @@ namespace PinJuke.Ini
 
         public void MergeFrom(IniSection otherSection)
         {
-            comments.AddRange(otherSection.comments);
-            foreach (var (name, otherEntry) in otherSection.iniEntryByName)
+            if (otherSection.Persistent)
             {
-                ProvideEntry(name).MergeFrom(otherEntry);
+                SetPersistent();
+            }
+            comments.AddRange(otherSection.comments);
+            foreach (var otherEntry in otherSection.iniEntryByName.Values)
+            {
+                if (otherEntry.Persistent)
+                {
+                    ProvideEntry(otherEntry.Name, true).MergeFrom(otherEntry);
+                }
             }
         }
 
@@ -155,23 +199,40 @@ namespace PinJuke.Ini
                 textWriter.WriteLine();
             }
 
-            foreach (var (name, iniEntry) in iniEntryByName)
+            foreach (var entry in iniEntryByName.Values)
             {
-                iniEntry.WriteTo(textWriter);
+                if (entry.Persistent)
+                {
+                    entry.WriteTo(textWriter);
+                }
             }
         }
     }
 
     public class IniEntry
     {
+        public IniSection Section { get; }
         public string Name { get; }
         public string Value { get; set; } = "";
+        public bool Persistent { get; private set; } = false;
 
         private readonly List<IniComment> comments = new();
 
-        public IniEntry(string name)
+        public IniEntry(IniSection section, string name)
         {
+            Section = section;
             Name = name;
+        }
+
+        public void SetPersistent()
+        {
+            Section.SetPersistent();
+            Persistent = true;
+        }
+
+        public void Remove()
+        {
+            Section.RemoveEntry(this);
         }
 
         public void AddComments(ICollection<IniComment> comments)
@@ -225,6 +286,19 @@ namespace PinJuke.Ini
 
     public class IniReader
     {
+        public static IniDocument? TryRead(string filePath)
+        {
+            var iniReader = new IniReader();
+            try
+            {
+                return iniReader.Read(filePath);
+            }
+            catch (IniIoException)
+            {
+                return null;
+            }
+        }
+
         public IniDocument Read(string filePath)
         {
             try
@@ -241,7 +315,7 @@ namespace PinJuke.Ini
         public IniDocument Read(TextReader textReader)
         {
             var document = new IniDocument();
-            var section = document.ProvideSection("");
+            var section = document.ProvideSection("", true);
             var comments = new List<IniComment>();
             for (; ; )
             {
@@ -261,7 +335,7 @@ namespace PinJuke.Ini
                 {
                     // Line is a section
                     var sectionName = line[1..^1];
-                    section = document.ProvideSection(sectionName);
+                    section = document.ProvideSection(sectionName, true);
                     section.AddComments(comments);
                     comments.Clear();
                     continue;
@@ -275,7 +349,7 @@ namespace PinJuke.Ini
                 }
                 var name = pair[0].Trim();
                 var value = pair[1].Trim();
-                var entry = section.ProvideEntry(name);
+                var entry = section.ProvideEntry(name, true);
                 entry.Value = value;
                 entry.AddComments(comments);
                 comments.Clear();
