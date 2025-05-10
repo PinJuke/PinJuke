@@ -289,6 +289,8 @@ namespace PinJuke.Model
             }
         }
 
+        public bool ShuttingDown { get; private set; } = false;
+
         public MainModel(Configuration.Configuration configuration, Configuration.UserConfiguration userConfiguration)
         {
             Configuration = configuration;
@@ -302,7 +304,14 @@ namespace PinJuke.Model
 
         public void Shutdown()
         {
+            if (ShuttingDown)
+            {
+                Debug.WriteLine("Already shutting down.");
+                return;
+            }
+
             Debug.WriteLine("Triggering shutdown event.");
+            ShuttingDown = true;
             ShutdownEvent?.Invoke(this, EventArgs.Empty);
         }
 

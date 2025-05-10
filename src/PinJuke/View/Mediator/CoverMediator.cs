@@ -26,6 +26,7 @@ namespace PinJuke.View.Mediator
         {
             base.OnLoaded();
             UpdateView();
+            UpdateVisibility();
             mainModel.PropertyChanged += MainModel_PropertyChanged;
         }
 
@@ -39,10 +40,18 @@ namespace PinJuke.View.Mediator
         {
             switch (e.PropertyName)
             {
+                case nameof(MainModel.SceneType):
+                    UpdateVisibility();
+                    break;
                 case nameof(MainModel.PlayingFile):
                     UpdateView();
                     break;
             }
+        }
+
+        private void UpdateVisibility()
+        {
+            coverControl.Visibility = mainModel.SceneType == SceneType.Playback ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
         }
 
         private void UpdateView()

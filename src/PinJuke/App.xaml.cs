@@ -63,7 +63,7 @@ namespace PinJuke
                 }
                 else
                 {
-                    playlistConfigFilePath = Path.GetFullPath(arg);
+                    playlistConfigFilePath = arg;
                 }
             }
 
@@ -135,6 +135,11 @@ namespace PinJuke
 
         private void RunPlayer(string? playlistConfigFilePath)
         {
+            if (playlistConfigFilePath != null)
+            {
+                playlistConfigFilePath = Path.GetFullPath(playlistConfigFilePath);
+            }
+
             var userConfiguration = GetUserConfiguration();
             Configuration.Configuration configuration;
             try
@@ -190,6 +195,10 @@ namespace PinJuke
 
             playFieldWindow?.Show();
             backGlassWindow?.Show();
+            if (dmdWindow != null && backGlassWindow != null)
+            {
+                dmdWindow.Owner = backGlassWindow;
+            }
             dmdWindow?.Show();
         }
 

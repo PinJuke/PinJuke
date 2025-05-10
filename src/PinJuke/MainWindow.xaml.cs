@@ -30,11 +30,14 @@ namespace PinJuke
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        public event EventHandler? ShutdownRequestedEvent;
+
         public float ContentScale { get; }
         public float ContentRotation { get; }
 
+        private bool closing = false;
         private readonly MainModel mainModel;
-        private readonly Configuration.Display displayConfig;
+        public Configuration.Display DisplayConfig { get; }
 
         private readonly BackgroundImageControl? backgroundImageControl = null;
         private readonly VisualizerControl? visualizerControl = null;
@@ -47,7 +50,7 @@ namespace PinJuke
         public MainWindow(MainModel mainModel, Configuration.Display displayConfig, AudioManager audioManager)
         {
             this.mainModel = mainModel;
-            this.displayConfig = displayConfig;
+            DisplayConfig = displayConfig;
 
             InitializeComponent();
             DataContext = this;
@@ -59,6 +62,7 @@ namespace PinJuke
             Height = displayConfig.Window.Height;
             ContentScale = displayConfig.Window.ContentScale;
             ContentRotation = displayConfig.Window.ContentRotation;
+            Cursor = mainModel.Configuration.CursorVisible ? Cursors.Arrow : Cursors.None;
 
             switch (displayConfig.Content.BackgroundType)
             {
@@ -115,6 +119,7 @@ namespace PinJuke
             }
 
             Loaded += MainWindow_Loaded;
+            Closing += MainWindow_Closing;
             Closed += MainWindow_Closed;
         }
 
@@ -124,15 +129,25 @@ namespace PinJuke
             mainModel.ShutdownEvent += MainModel_ShutdownEvent;
         }
 
+        private void MainWindow_Closing(object? sender, CancelEventArgs e)
+        {
+            closing = true;
+        }
+
         private void MainWindow_Closed(object? sender, EventArgs e)
         {
             Debug.WriteLine(Title + " closed.");
             mainModel.ShutdownEvent -= MainModel_ShutdownEvent;
+            ShutdownRequestedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         private void MainModel_ShutdownEvent(object? sender, EventArgs e)
         {
-            Debug.WriteLine(Title + " received shotdown event.");
+            if (closing)
+            {
+                return;
+            }
+            Debug.WriteLine(Title + " received shutdown event.");
             Close();
         }
 

@@ -52,15 +52,16 @@ namespace PinJuke.Controller
             tiltSoundPlayer.Dispose();
         }
 
-        public void ObserveWindow(Window window)
+        public void ObserveWindow(MainWindow window)
         {
-            window.Closed += Window_Closed;
+            window.ShutdownRequestedEvent += Window_ShutdownRequested;
             window.KeyDown += Window_KeyDown;
         }
 
-        private void Window_Closed(object? sender, EventArgs e)
+        private void Window_ShutdownRequested(object? sender, EventArgs e)
         {
-            Debug.WriteLine("A window closed. Shutting down...");
+            var window = (Window)sender!;
+            Debug.WriteLine($@"{window.Title} requested shutdown.");
             mainModel.Shutdown();
         }
 

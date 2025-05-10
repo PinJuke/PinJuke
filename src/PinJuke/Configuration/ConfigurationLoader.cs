@@ -38,7 +38,8 @@ namespace PinJuke.Configuration
             var dmd = CreateDisplay(DisplayRole.DMD, iniDocument["DMD"], mediaPath);
             var milkdrop = CreateMilkdrop(iniDocument["Milkdrop"]);
             var dof = CreateDof(iniDocument["DOF"]);
-            return new Configuration(playlistConfigFilePath, mediaPath, player, keyboard, playField, backGlass, dmd, milkdrop, dof);
+            var cursorVisible = parser.ParseBool(iniDocument["PinJuke"]["CursorVisible"]) ?? false;
+            return new Configuration(playlistConfigFilePath, mediaPath, player, keyboard, playField, backGlass, dmd, milkdrop, dof, cursorVisible);
         }
 
         /// <summary>
