@@ -73,6 +73,12 @@ namespace PinJuke.View.Mediator
                 catch (IOException)
                 {
                 }
+                catch (TagLib.UnsupportedFormatException)
+                {
+                }
+                catch (TagLib.CorruptFileException)
+                {
+                }
 
                 if (file != null)
                 {

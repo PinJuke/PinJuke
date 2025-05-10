@@ -59,6 +59,7 @@
     <Resource Include="icons\add-outline.svg" />
     <Resource Include="icons\arrow-back-outline.svg" />
     <Resource Include="icons\disc-outline.svg" />
+    <Resource Include="icons\download-outline.svg" />
     <Resource Include="icons\folder-outline.svg" />
     <Resource Include="icons\image-outline.svg" />
     <Resource Include="icons\musical-notes-outline.svg" />

@@ -13,6 +13,7 @@ namespace PinJuke.Playlist
         DirectoryUp,
         Music,
         Video,
+        Stream,
         M3u,
     }
 
@@ -29,7 +30,7 @@ namespace PinJuke.Playlist
         public FileType Type { get; }
         public int ChildCount { get; private set; } = 0;
 
-        public bool Playable => Type == FileType.Music || Type == FileType.Video;
+        public bool Playable => Type == FileType.Music || Type == FileType.Video || Type == FileType.Stream;
 
         public string DisplayBasePath
         {

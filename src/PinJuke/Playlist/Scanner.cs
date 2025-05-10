@@ -101,24 +101,31 @@ namespace PinJuke.Playlist
 
         protected string GetDisplayName(string fullPath)
         {
-            return fullPath.Substring(fullPath.LastIndexOf('\\') + 1);
+            return fullPath.Substring(Math.Max(fullPath.LastIndexOf('\\'), fullPath.LastIndexOf('/')) + 1);
         }
 
-        protected void AppendFileIfSupportedType(FileNode parent, FileInfo fileInfo, bool excludeM3u = false)
+        protected void AppendFileIfSupportedType(FileNode parent, string fullName, bool isAbsoluteUri, bool excludeM3u = false)
         {
-            var extension = fileInfo.Extension;
-            if (extension.IsNullOrEmpty())
+            var fileName = GetDisplayName(fullName);
+            if (isAbsoluteUri)
             {
+                // Assume it's a stream.
+                parent.AppendChild(new FileNode(fullName, fileName, FileType.Stream));
                 return;
             }
-            extension = extension[1..].ToLowerInvariant();
-            if (fileTypes.TryGetValue(extension, out var fileType))
+
+            var i = fileName.LastIndexOf('.');
+            var extension = i < 0 ? null : fileName[(i + 1)..].ToLowerInvariant();
+            if (extension != null)
             {
-                if (excludeM3u && fileType == FileType.M3u)
+                if (fileTypes.TryGetValue(extension, out var fileType))
                 {
-                    return;
+                    if (excludeM3u && fileType == FileType.M3u)
+                    {
+                        return;
+                    }
+                    parent.AppendChild(new FileNode(fullName, fileName, fileType));
                 }
-                parent.AppendChild(new FileNode(fileInfo.FullName, GetDisplayName(fileInfo.FullName), fileType));
             }
         }
 
@@ -152,7 +159,7 @@ namespace PinJuke.Playlist
             var orderedFiles = files.OrderBy(x => x.Name, new NaturalSortComparer(StringComparison.CurrentCultureIgnoreCase));
             foreach (var fileInfo in orderedFiles)
             {
-                AppendFileIfSupportedType(fileNode, fileInfo);
+                AppendFileIfSupportedType(fileNode, fileInfo.FullName, false);
             }
 
             if (fileNode.ChildCount == 0)
@@ -190,8 +197,9 @@ namespace PinJuke.Playlist
                         continue;
                     }
 
-                    var fullPath = Path.GetFullPath(line, basePath);
-                    AppendFileIfSupportedType(m3uFileNode, new FileInfo(fullPath), true);
+                    var isAbsoluteUri = Uri.IsWellFormedUriString(line, UriKind.Absolute);
+                    var fullPath = isAbsoluteUri ? line : Path.GetFullPath(line, basePath);
+                    AppendFileIfSupportedType(m3uFileNode, fullPath, isAbsoluteUri, true);
 
                     // avoid duplicates
                     if (scanResult.TryGetPlayableFileNode(fullPath, out var replacedFileNode))

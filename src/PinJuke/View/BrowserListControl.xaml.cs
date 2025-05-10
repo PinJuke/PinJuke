@@ -32,6 +32,7 @@ namespace PinJuke.View
             {FileType.M3u, @"icons\folder-outline.svg"},
             {FileType.Music, @"icons\musical-notes-outline.svg"},
             {FileType.Video, @"icons\videocam-outline.svg"},
+            {FileType.Stream, @"icons\download-outline.svg"},
         };
 
         public event EventHandler? RemovalRequestedEvent;
