@@ -1,4 +1,4 @@
-![Jukebox](docs/images/jukebox-header.png)
+![Jukebox](docs/images/jukebox-header.webp)
 
 # PinJuke music player
 
@@ -9,24 +9,25 @@ A music player tailor-made for virtual pinball cabinets.
 ## Features
 
 This open source software adds a media player to your virtual pinball cabinet, featuring:
-- An animated, GPU-accelerated (WPF) user interface that supports scaling and rotation according to your displays (Playfield, Backglass, DMD)
-- Playback of media thanks to the FFmpeg library
-  - Plays file types: music (mp3), videos (mp4), playlists (m3u)
-- Milkdrop visualizations thanks to [projectM - The most advanced open-source music visualizer](https://github.com/projectM-visualizer/projectm)
-- "Theme videos" play according to track changes
-- User-friendly file browser
-- Rich configuration options
-  - The configuration splits into one global configuration ini file and one or more playlist configuration ini files
-  - The PinJuke Configurator provides an UI, so no fiddling via text editor is necessary
-- Utilizes DOF (DirectOutputFramework)
-- Localized in English and German
+- An animated, GPU-accelerated (WPF) user interface that supports scaling and rotation according to your displays (Play field, Back glass, DMD).
+- Playback of media thanks to the FFmpeg library.
+  - Plays your offline files. File types: music (mp3), videos (mp4), playlists (m3u).
+  - Plays music streams listed in playlists (m3u).
+- Milkdrop visualizations thanks to [projectM - The most advanced open-source music visualizer](https://github.com/projectM-visualizer/projectm).
+- "Themed video clips" automatically play when the track starts, loops, or ends.
+- User-friendly file browser while your track is playing.
+- Extensive configuration options available:
+  - Configuration is divided into a global setup and one or more playlist-specific configurations.
+  - The PinJuke Configurator and Setup Wizard offer a sleek, user-friendly interface — no need to tweak settings via a text editor.
+- Utilizes DOF (DirectOutput Framework).
+- Multi-language support (EN, DE).
 
 ## See it in action
 
-See the software running live on a virtual pinball cabinet (link to YouTube):
+Watch the software running live on a virtual pinball cabinet (link to YouTube):
 
 [![PinJuke music player live on a virtual pinball cabinet](docs/images/youtube-hSddV_v1ZbQ.jpg)](https://www.youtube.com/watch?v=hSddV_v1ZbQ)
 
-See a screen recording of the three displays Playfield, Backglass and DMD (link to YouTube):
+Watch a screen recording of the three displays Play field, Back glass and DMD (link to YouTube):
 
 [![Screen recording of the PinJuke music player](docs/images/youtube-VRU3bM-_DRk.jpg)](https://www.youtube.com/watch?v=VRU3bM-_DRk)

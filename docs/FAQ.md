@@ -1,14 +1,16 @@
-![Jukebox](images/jukebox-header.png)
+![Jukebox](images/jukebox-header.webp)
 
 - [Start](index.md)
 - [Features](FEATURES.md)
 - [Installation](INSTALLATION.md)
+- [Setup Wizard](ONBOARDING.md)
 - [Configuration](CONFIGURATION.md)
-- [Theme videos](THEME-VIDEOS.md)
-- [Run a playlist file](RUN.md)
+- [Theme Video Clips](THEME-VIDEOS.md)
 - [Controls](CONTROLS.md)
+- [Run a Playlist File](RUN.md)
 - [Pinup Popper](PINUP-POPPER.md)
 - [FAQ](FAQ.md)
+
 
 # FAQ
 
