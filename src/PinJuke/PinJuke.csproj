@@ -110,9 +110,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Onboarding\DataSampleWindow.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Strings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

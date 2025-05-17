@@ -25,6 +25,7 @@ namespace PinJuke
         private MainModel? mainModel;
         private ConfigurationService configurationService = new();
         private BeaconService beaconService = new();
+        private UpdateCheckService updateCheckService = new();
         private BeaconController? beaconController = null;
         private AppController? appController = null;
         private DisplayController? displayController = null;
@@ -110,10 +111,15 @@ namespace PinJuke
 
         private ConfiguratorWindow RunConfiguratorNow()
         {
-            var configuratorWindow = new ConfiguratorWindow();
+            var userConfiguration = GetUserConfiguration();
+            var configuratorWindow = new ConfiguratorWindow(updateCheckService);
             configuratorWindow.RunPlaylistConfigEvent += ConfiguratorWindow_RunPlaylistConfig;
             configuratorWindow.RunOnboardingEvent += ConfiguratorWindow_RunOnboarding;
             configuratorWindow.Show();
+            if (userConfiguration.UpdateCheckEnabled == true)
+            {
+                configuratorWindow.CheckForUpdates();
+            }
             return configuratorWindow;
         }
 

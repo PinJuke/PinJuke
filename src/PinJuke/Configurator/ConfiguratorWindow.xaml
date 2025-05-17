@@ -7,6 +7,15 @@
         xmlns:pinjuke="clr-namespace:PinJuke"
         mc:Ignorable="d"
         Title="PinJuke Configurator" Height="800" Width="770" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Storyboard x:Key="FlashUpdateCheckBorderStoryboard" RepeatBehavior="2x">
+            <DoubleAnimation
+            Storyboard.TargetName="UpdateCheckBorder"
+            Storyboard.TargetProperty="Opacity"
+            From="1" To="0" Duration="0:0:0.25" AutoReverse="True"/>
+        </Storyboard>
+    </Window.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -19,11 +28,18 @@
             <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.ColumnSpan="3" BorderBrush="#ffc90e" BorderThickness="4" Background="#efe4b0">
-            <TextBlock Margin="5">
-                <Run Text="{x:Static pinjuke:Strings.LabelDocumentation}"/> <Hyperlink Click="DocumentationLink_Click"><Run Text="{Binding DocumentationLink, Mode=OneWay}"/></Hyperlink>
-            </TextBlock>
-        </Border>
+        <StackPanel Grid.ColumnSpan="3" Orientation="Vertical">
+            <Border BorderBrush="#ffc90e" BorderThickness="4" Background="#efe4b0">
+                <TextBlock Margin="5">
+                    <Run Text="{x:Static pinjuke:Strings.LabelDocumentation}"/> <Hyperlink NavigateUri="{Binding DocumentationLink}" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="{Binding DocumentationLink, Mode=OneWay}"/></Hyperlink>
+                </TextBlock>
+            </Border>
+            <Border BorderBrush="#ffc90e" BorderThickness="4" Background="#efe4b0" x:Name="UpdateCheckBorder"
+                    Visibility="{Binding UpdateHintVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                <TextBlock Margin="5" x:Name="UpdateCheckTextBlock">
+                </TextBlock>
+            </Border>
+        </StackPanel>
 
         <TabControl x:Name="Tabs" Grid.Row="1" Grid.ColumnSpan="3" SelectionChanged="Tabs_SelectionChanged">
         </TabControl>

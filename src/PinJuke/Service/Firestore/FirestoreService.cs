@@ -79,7 +79,8 @@ namespace PinJuke.Service.Firestore
             var httpResponseMessage = await httpClient.PostAsync(uri, requestContent);
             httpResponseMessage.EnsureSuccessStatusCode();
             EnsureJsonContentType(httpResponseMessage);
-            var responseNode = await JsonNode.ParseAsync(await httpResponseMessage.Content.ReadAsStreamAsync());
+            using var stream = await httpResponseMessage.Content.ReadAsStreamAsync();
+            var responseNode = await JsonNode.ParseAsync(stream);
             new CommitResponseHandler(deserializer, document, responseNode).UpdateDocument();
         }
 

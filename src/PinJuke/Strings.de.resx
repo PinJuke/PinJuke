@@ -528,4 +528,10 @@ Titel: neu starten</value>
   <data name="License" xml:space="preserve">
     <value>Lizenz</value>
   </data>
+  <data name="UpdateChecking" xml:space="preserve">
+    <value>Prüfe auf Aktualisierungen…</value>
+  </data>
+  <data name="UpdateNewVersionAvailable" xml:space="preserve">
+    <value>Eine neue Version ist verfügbar:</value>
+  </data>
 </root>

@@ -528,4 +528,10 @@ Track: restart</value>
   <data name="License" xml:space="preserve">
     <value>License</value>
   </data>
+  <data name="UpdateChecking" xml:space="preserve">
+    <value>Checking for updates…</value>
+  </data>
+  <data name="UpdateNewVersionAvailable" xml:space="preserve">
+    <value>A new version is available:</value>
+  </data>
 </root>

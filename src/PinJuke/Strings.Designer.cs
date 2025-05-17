@@ -1225,6 +1225,24 @@ namespace PinJuke {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Checking for updates….
+        /// </summary>
+        public static string UpdateChecking {
+            get {
+                return ResourceManager.GetString("UpdateChecking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A new version is available:.
+        /// </summary>
+        public static string UpdateNewVersionAvailable {
+            get {
+                return ResourceManager.GetString("UpdateNewVersionAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to start the configurator?.
         /// </summary>
         public static string WantToStartConfigurator {

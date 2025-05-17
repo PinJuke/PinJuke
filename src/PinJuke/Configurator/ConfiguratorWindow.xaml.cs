@@ -2,25 +2,34 @@
 using PinJuke.Configurator.View;
 using PinJuke.Ini;
 using PinJuke.Model;
+using PinJuke.Service;
 using PinJuke.View;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Navigation;
 
 
 namespace PinJuke.Configurator
 {
-    public partial class ConfiguratorWindow : Window, MediaPathProvider
+    public partial class ConfiguratorWindow : Window, MediaPathProvider, IChangingProperties
     {
+        public event PropertyChangedEventHandler? PropertyChanged;
         public event EventHandler<string>? RunPlaylistConfigEvent;
         public event EventHandler? RunOnboardingEvent;
+
+        private readonly UpdateCheckService updateCheckService;
 
         protected GlobalGroupControlFactory GlobalGroupControlFactory { get; }
         protected PlaylistGroupControlFactory PlaylistGroupControlFactory { get; }
@@ -30,6 +39,11 @@ namespace PinJuke.Configurator
         public string DocumentationLink
         {
             get => "https://pinjuke.github.io/PinJuke/";
+        }
+
+        public string ReleasesLink
+        {
+            get => "https://github.com/PinJuke/PinJuke/releases";
         }
 
         public ImageSource AddPlaylistImageSource
@@ -52,8 +66,20 @@ namespace PinJuke.Configurator
             get => SvgImageLoader.Instance.GetFromResource(@"icons\rocket-outline.svg");
         }
 
-        public ConfiguratorWindow()
+        private bool updateHintVisible = false;
+        public bool UpdateHintVisible
         {
+            get => updateHintVisible;
+            set
+            {
+                this.SetField(ref updateHintVisible, value);
+            }
+        }
+
+        public ConfiguratorWindow(UpdateCheckService updateCheckService)
+        {
+            this.updateCheckService = updateCheckService;
+
             DataContext = this;
             InitializeComponent();
 
@@ -85,10 +111,54 @@ namespace PinJuke.Configurator
             UpdateTabsSelection();
         }
 
+        public void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged.Raise(this, propertyName);
+        }
+
         public string GetMediaPath()
         {
             var mediaPathControl = (PathControl)globalTabItem.GroupControl.GetChildByName(GlobalGroupControlFactory.MEDIA_PATH_CONTROL);
             return mediaPathControl.FullPath;
+        }
+
+        public async void CheckForUpdates()
+        {
+            UpdateCheckTextBlock.Inlines.Clear();
+            UpdateCheckTextBlock.Inlines.Add(new Run(Strings.UpdateChecking));
+            // UpdateHintVisible = true;
+
+            List<Release> releases;
+            try
+            {
+                releases = await updateCheckService.GetLatestReleases();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Error checking for updates: " + e.Message);
+                UpdateHintVisible = false;
+                return;
+            }
+
+            UpdateHintVisible = releases.Count > 0;
+            if (!UpdateHintVisible)
+            {
+                Debug.WriteLine("No updates available.");
+                return;
+            }
+
+            UpdateCheckTextBlock.Inlines.Clear();
+            UpdateCheckTextBlock.Inlines.Add(new Run(Strings.UpdateNewVersionAvailable));
+            UpdateCheckTextBlock.Inlines.Add(" ");
+            var link = new Hyperlink(new Run(string.Join(", ", releases.Select(it => it.Version))))
+            {
+                NavigateUri = new Uri(ReleasesLink),
+            };
+            link.RequestNavigate += Hyperlink_RequestNavigate;
+            UpdateCheckTextBlock.Inlines.Add(link);
+
+            var storyboard = (Storyboard)FindResource("FlashUpdateCheckBorderStoryboard");
+            storyboard.Begin();
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -156,13 +226,10 @@ namespace PinJuke.Configurator
             RunOnboardingEvent?.Invoke(this, EventArgs.Empty);
         }
 
-        private void DocumentationLink_Click(object sender, RoutedEventArgs e)
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            System.Diagnostics.Process.Start(new ProcessStartInfo
-            {
-                FileName = DocumentationLink,
-                UseShellExecute = true
-            });
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+            e.Handled = true;
         }
 
         private void Tabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
