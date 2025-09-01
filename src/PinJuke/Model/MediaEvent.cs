@@ -23,7 +23,7 @@ namespace PinJuke.Model
 
     public abstract class MediaEventArgs
     {
-        private readonly Action<MediaEventArgs> continueWith;
+        private readonly Action<PlayFileType> continueWith;
         private readonly HashSet<MediaEventToken> tokens = new();
 
         public bool Intercepted
@@ -33,7 +33,7 @@ namespace PinJuke.Model
 
         public PlayFileType Type { get; }
 
-        public MediaEventArgs(Action<MediaEventArgs> continueWith, PlayFileType type)
+        public MediaEventArgs(Action<PlayFileType> continueWith, PlayFileType type)
         {
             this.continueWith = continueWith;
             this.Type = type;
@@ -56,21 +56,21 @@ namespace PinJuke.Model
         {
             if (!Intercepted)
             {
-                continueWith(this);
+                continueWith(Type);
             }
         }
     }
 
     public class PlayMediaEventArgs : MediaEventArgs
     {
-        public PlayMediaEventArgs(Action<MediaEventArgs> continueWith, PlayFileType type) : base(continueWith, type)
+        public PlayMediaEventArgs(Action<PlayFileType> continueWith, PlayFileType type) : base(continueWith, type)
         {
         }
     }
 
     public class EndMediaEventArgs : MediaEventArgs
     {
-        public EndMediaEventArgs(Action<MediaEventArgs> continueWith, PlayFileType type) : base(continueWith, type)
+        public EndMediaEventArgs(Action<PlayFileType> continueWith, PlayFileType type) : base(continueWith, type)
         {
         }
     }

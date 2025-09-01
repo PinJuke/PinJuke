@@ -38,6 +38,12 @@ namespace PinJuke.Model
         Pause,
     }
 
+    public enum TriggerType
+    {
+        Manual,
+        Automatic,
+    }
+
     public record State(StateType Type, object? Data = null);
 
     public class MainModel : INotifyPropertyChanged
@@ -473,7 +479,7 @@ namespace PinJuke.Model
                     IntroEnded();
                     break;
                 case SceneType.Playback:
-                    PlayNext();
+                    PlayNext(TriggerType.Automatic);
                     break;
             }
         }
@@ -496,21 +502,21 @@ namespace PinJuke.Model
                 if (PlayingFile != null)
                 {
                     // Play paused file.
-                    PlayFile(PlayingFile);
+                    PlayFile(PlayingFile, PlayFileType.Play, TriggerType.Automatic);
                 }
                 else
                 {
-                    PlayNext();
+                    PlayNext(TriggerType.Automatic);
                 }
             }
         }
 
-        public void TogglePlayPause()
+        public void TogglePlayPause(TriggerType triggerType)
         {
-            PlayFile(PlayingFile, null, Playing ? PlayFileType.Pause : PlayFileType.Resume);
+            PlayFile(PlayingFile, Playing ? PlayFileType.Pause : PlayFileType.Resume, triggerType);
         }
 
-        public void PlayFile(FileNode? node, StateType? playingStateType = null, PlayFileType type = PlayFileType.Play)
+        public void PlayFile(FileNode? node, PlayFileType type, TriggerType triggerType, StateType? playingStateType = null)
         {
             EnterPlayback();
 
@@ -537,14 +543,34 @@ namespace PinJuke.Model
                 return;
             }
 
-            endMediaEventArgs = new(EndMedia, type);
+            if (triggerType == TriggerType.Manual)
+            {
+                if (Playing)
+                {
+                    if (MediaPlaying)
+                    {
+                        PlayMediaFinished(type);
+                    }
+                    else
+                    {
+                        BeginPlayMedia(type);
+                    }
+                    return;
+                }
+            }
+
+            BeginEndMedia(type);
+        }
+
+        private void BeginEndMedia(PlayFileType type)
+        {
+            endMediaEventArgs = new(EndMediaFinished, type);
             EndMediaEvent?.Invoke(this, endMediaEventArgs);
             endMediaEventArgs.ContinueIfNotIntercepted();
         }
 
-        private void EndMedia(MediaEventArgs mediaEventArgs)
+        private void EndMediaFinished(PlayFileType type)
         {
-            var type = endMediaEventArgs!.Type;
             endMediaEventArgs = null;
 
             MediaPlaying = false;
@@ -553,13 +579,18 @@ namespace PinJuke.Model
                 MediaPlayingFile = null;
             }
 
+            BeginPlayMedia(type);
+        }
+
+        private void BeginPlayMedia(PlayFileType type)
+        {
             // Playing may be false if no following track is played.
-            playMediaEventArgs = new(PlayMedia, type);
+            playMediaEventArgs = new (PlayMediaFinished, type);
             PlayMediaEvent?.Invoke(this, playMediaEventArgs);
             playMediaEventArgs.ContinueIfNotIntercepted();
         }
 
-        private void PlayMedia(MediaEventArgs mediaEventArgs)
+        private void PlayMediaFinished(PlayFileType type)
         {
             playMediaEventArgs = null;
 
@@ -567,23 +598,23 @@ namespace PinJuke.Model
             MediaPlaying = Playing;
         }
 
-        public void PlayNext()
+        public void PlayNext(TriggerType triggerType)
         {
             // The next file can become null when the end is reached.
             var nextIndex = PlayingFile == null ? 0 : PlayingFileIndex + 1;
             var nextFile = Playlist.ElementAtOrDefault(nextIndex);
-            PlayFile(nextFile, StateType.Next);
+            PlayFile(nextFile, PlayFileType.Play, triggerType, StateType.Next);
         }
 
-        public void PlayPrevious()
+        public void PlayPrevious(TriggerType triggerType)
         {
             // The previous file can become null when the beginning is reached.
             var previousIndex = PlayingFile == null ? Playlist.Count - 1 : PlayingFileIndex - 1;
             var previousFile = Playlist.ElementAtOrDefault(previousIndex);
-            PlayFile(previousFile, StateType.Previous);
+            PlayFile(previousFile, PlayFileType.Play, triggerType, StateType.Previous);
         }
 
-        public void PlayOrFollowDirectory()
+        public void PlayOrFollowDirectory(TriggerType triggerType)
         {
             if (NavigationNode == null)
             {
@@ -592,7 +623,7 @@ namespace PinJuke.Model
 
             if (NavigationNode.Playable)
             {
-                PlayFile(NavigationNode);
+                PlayFile(NavigationNode, PlayFileType.Play, triggerType);
                 return;
             }
 
