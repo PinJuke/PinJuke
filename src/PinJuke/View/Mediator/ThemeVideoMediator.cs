@@ -102,7 +102,7 @@ namespace PinJuke.View.Mediator
                 return null;
             }
             memoryStream.Seek(0, SeekOrigin.Begin);
-            return new(memoryStream, new Uri(displayConfig.Content.ThemeVideoLoopFile), true);
+            return new(memoryStream, new Uri(filePath), true);
         }
 
         private void MainModel_PlayMediaEvent(object? sender, PlayMediaEventArgs e)
