@@ -89,6 +89,15 @@ namespace PinJuke.Configurator
             GlobalGroupControlFactory = new(parser, pinUpReader);
             PlaylistGroupControlFactory = new(parser, this);
 
+            try
+            {
+                Directory.CreateDirectory(Configuration.ConfigPath.CONFIG_PLAYLIST_DIRECTORY_PATH);
+            }
+            catch (IOException ex)
+            {
+                Debug.WriteLine("Error creating config playlist directory: " + ex.Message);
+            }
+
             globalTabItem = new IniDocumentTabItem(
                 GlobalGroupControlFactory,
                 Configuration.ConfigPath.CONFIG_GLOBAL_FILE_PATH,
@@ -98,14 +107,26 @@ namespace PinJuke.Configurator
 
             var playlistDir = Configuration.ConfigPath.CONFIG_PLAYLIST_DIRECTORY_PATH;
             var directoryInfo = new DirectoryInfo(playlistDir);
-            foreach (var fileInfo in directoryInfo.GetFiles("*.ini"))
+            FileInfo[]? fileInfos = null;
+            try
             {
-                var playlistTabItem = new IniDocumentTabItem(
-                    PlaylistGroupControlFactory,
-                    Path.Join(playlistDir, fileInfo.Name),
-                    Configuration.ConfigPath.TEMPLATE_PLAYLIST_FILE_PATH
-                );
-                Tabs.Items.Add(playlistTabItem);
+                fileInfos = directoryInfo.GetFiles("*.ini");
+            }
+            catch (IOException ex)
+            {
+                Debug.WriteLine("Error reading config playlist directory: " + ex.Message);
+            }
+            if (fileInfos != null)
+            {
+                foreach (var fileInfo in fileInfos)
+                {
+                    var playlistTabItem = new IniDocumentTabItem(
+                        PlaylistGroupControlFactory,
+                        Path.Join(playlistDir, fileInfo.Name),
+                        Configuration.ConfigPath.TEMPLATE_PLAYLIST_FILE_PATH
+                    );
+                    Tabs.Items.Add(playlistTabItem);
+                }
             }
 
             UpdateTabsSelection();
