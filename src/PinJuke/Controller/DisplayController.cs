@@ -84,7 +84,7 @@ namespace PinJuke.Controller
         {
             if (mainModel.BrowserVisible)
             {
-                mainModel.PlayOrFollowDirectory(TriggerType.Manual);
+                mainModel.PlayOrFollowDirectory(TriggerType.Browser);
             }
             else
             {
@@ -101,7 +101,7 @@ namespace PinJuke.Controller
             }
             else
             {
-                mainModel.PlayPrevious(TriggerType.Manual);
+                mainModel.PlayPrevious(TriggerType.Playback);
             }
         }
 
@@ -113,7 +113,7 @@ namespace PinJuke.Controller
             }
             else
             {
-                mainModel.PlayNext(TriggerType.Manual);
+                mainModel.PlayNext(TriggerType.Playback);
             }
         }
 
@@ -123,11 +123,11 @@ namespace PinJuke.Controller
             {
                 if (mainModel.NavigationNode == mainModel.PlayingFile)
                 {
-                    mainModel.TogglePlayPause(TriggerType.Manual);
+                    mainModel.TogglePlayPause(TriggerType.Browser);
                 }
                 else
                 {
-                    mainModel.PlayFile(mainModel.NavigationNode, PlayFileType.Play, TriggerType.Manual);
+                    mainModel.PlayFile(mainModel.NavigationNode, PlayFileType.Play, TriggerType.Browser);
                     // Select the actual track.
                     mainModel.NavigateTo(mainModel.PlayingFile ?? mainModel.NavigationNode);
                 }
@@ -136,11 +136,11 @@ namespace PinJuke.Controller
             {
                 if (mainModel.PlayingFile == null)
                 {
-                    mainModel.PlayNext(TriggerType.Manual);
+                    mainModel.PlayNext(TriggerType.Playback);
                 }
                 else
                 {
-                    mainModel.TogglePlayPause(TriggerType.Manual);
+                    mainModel.TogglePlayPause(TriggerType.Playback);
                 }
             }
         }

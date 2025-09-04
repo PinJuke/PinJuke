@@ -40,7 +40,8 @@ namespace PinJuke.Model
 
     public enum TriggerType
     {
-        Manual,
+        Playback,
+        Browser,
         Automatic,
     }
 
@@ -543,7 +544,8 @@ namespace PinJuke.Model
                 return;
             }
 
-            if (triggerType == TriggerType.Manual)
+            // Optional: Don't show "end media" followed by "play media" if a flipper button is used.
+            if (triggerType == TriggerType.Playback)
             {
                 if (Playing)
                 {
