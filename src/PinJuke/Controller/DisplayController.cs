@@ -181,7 +181,7 @@ namespace PinJuke.Controller
             mainModel.ShowState(new State(StateType.Tilt));
 
             var now = Environment.TickCount;
-            if (now - tiltLastPlayed >= 2_000)
+            if (now - tiltLastPlayed >= 5_000)
             {
                 tiltLastPlayed = now;
                 tiltSoundPlayer.Play();

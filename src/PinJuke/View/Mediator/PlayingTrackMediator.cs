@@ -81,24 +81,30 @@ namespace PinJuke.View.Mediator
             var state = mainModel.LastState;
             string? iconPath = null;
             string? text = null;
+            var stateVisible = mainModel.StateVisible;
 
             iconPaths.TryGetValue(state.Type, out iconPath);
             texts.TryGetValue(state.Type, out text);
 
-            if (state.Type == StateType.Volume)
+            switch (state.Type)
             {
-                var volumeLevel = (float?)state.Data;
-                text = volumeLevel == null ? Strings.NoAudioDeviceFound : string.Format(Strings.StateVolumeXPercent, volumeLevel * 100);
-                if (volumeLevel != null)
-                {
-                    int i = Math.Max(0, Math.Min(volumeIconPaths.Length - 1, (int)(volumeLevel * volumeIconPaths.Length)));
-                    iconPath = volumeIconPaths[i];
-                }
+                case StateType.Volume:
+                    var volumeLevel = (float?)state.Data;
+                    text = volumeLevel == null ? Strings.NoAudioDeviceFound : string.Format(Strings.StateVolumeXPercent, volumeLevel * 100);
+                    if (volumeLevel != null)
+                    {
+                        int i = Math.Max(0, Math.Min(volumeIconPaths.Length - 1, (int)(volumeLevel * volumeIconPaths.Length)));
+                        iconPath = volumeIconPaths[i];
+                    }
+                    break;
+                case StateType.Tilt:
+                    stateVisible = false; // Hide display for now.
+                    break;
             }
 
             playingTrackControl.StateImageSource = iconPath == null ? null : SvgImageLoader.Instance.GetFromResource(iconPath);
             playingTrackControl.StateText = text;
-            playingTrackControl.ViewVisible = mainModel.StateVisible;
+            playingTrackControl.ViewVisible = stateVisible;
         }
     }
 }
