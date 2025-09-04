@@ -313,17 +313,16 @@ namespace PinJuke.Onboarding
         private Configuration.Configuration GetConfiguration()
         {
             var configuration = this.configuration;
-            var playField = configuration.PlayField with { Enabled = true, Window = GetWindow(Model.PlayFieldDisplay) };
+            var playField = configuration.PlayField with { Enabled = true, Window = GetWindow(Model.PlayFieldDisplay, true) };
             var backGlass = configuration.BackGlass with { Enabled = true, Window = GetWindow(Model.BackGlassDisplay) };
             var dmd = configuration.Dmd with { Enabled = Model.DmdEnabled, Window = GetWindow(Model.DmdDisplay) };
             var dof = configuration.Dof with { Enabled = Model.DofEnabled, GlobalConfigFilePath = Model.DofPath };
             return configuration with { PlayField = playField, BackGlass = backGlass, Dmd = dmd, Dof = dof };
         }
 
-        private Configuration.Window GetWindow(Display display)
+        private Configuration.Window GetWindow(Display display, bool isVertical = false)
         {
             var is4k = display.Width >= 3840 || display.Height >= 3840;
-            var isVertical = display.Height > display.Width;
             return new Configuration.Window(
                 display.Left,
                 display.Top,
