@@ -66,6 +66,11 @@ namespace PinJuke.Configurator
             get => SvgImageLoader.Instance.GetFromResource(@"icons\rocket-outline.svg");
         }
 
+        public ImageSource HelpImageSource
+        {
+            get => SvgImageLoader.Instance.GetFromResource(@"icons\help-circle-outline.svg");
+        }
+
         private bool updateHintVisible = false;
         public bool UpdateHintVisible
         {
@@ -100,6 +105,8 @@ namespace PinJuke.Configurator
 
             globalTabItem = new IniDocumentTabItem(
                 GlobalGroupControlFactory,
+                Strings.TabGlobalConfiguration,
+                "",
                 Configuration.ConfigPath.CONFIG_GLOBAL_FILE_PATH,
                 Configuration.ConfigPath.TEMPLATE_GLOBAL_FILE_PATH
             );
@@ -122,6 +129,8 @@ namespace PinJuke.Configurator
                 {
                     var playlistTabItem = new IniDocumentTabItem(
                         PlaylistGroupControlFactory,
+                        Strings.TabPlaylistConfiguration,
+                        fileInfo.Name,
                         Path.Join(playlistDir, fileInfo.Name),
                         Configuration.ConfigPath.TEMPLATE_PLAYLIST_FILE_PATH
                     );
@@ -213,7 +222,8 @@ namespace PinJuke.Configurator
 
         private void AddPlaylist(object? sender, PlaylistFileFinishEventData eventData)
         {
-            var path = $@"{Configuration.ConfigPath.CONFIG_PLAYLIST_DIRECTORY_PATH}\{eventData.FileName}.ini";
+            var fileName = $@"{eventData.FileName}.ini";
+            var path = $@"{Configuration.ConfigPath.CONFIG_PLAYLIST_DIRECTORY_PATH}\{fileName}";
             foreach (var item in Tabs.Items)
             {
                 var tabItem = (IniDocumentTabItem)item;
@@ -226,6 +236,8 @@ namespace PinJuke.Configurator
 
             var playlistTabItem = new IniDocumentTabItem(
                 PlaylistGroupControlFactory,
+                Strings.TabPlaylistConfiguration,
+                fileName,
                 path,
                 Configuration.ConfigPath.TEMPLATE_PLAYLIST_FILE_PATH
             );
@@ -247,10 +259,20 @@ namespace PinJuke.Configurator
             RunOnboardingEvent?.Invoke(this, EventArgs.Empty);
         }
 
+        private void Help_Click(object sender, RoutedEventArgs e)
+        {
+            StartLink(DocumentationLink);
+        }
+
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+            StartLink(e.Uri.AbsoluteUri);
             e.Handled = true;
+        }
+
+        private void StartLink(string absoluteUri)
+        {
+            Process.Start(new ProcessStartInfo(absoluteUri) { UseShellExecute = true });
         }
 
         private void Tabs_SelectionChanged(object sender, SelectionChangedEventArgs e)

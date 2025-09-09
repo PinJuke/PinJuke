@@ -29,11 +29,6 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.ColumnSpan="3" Orientation="Vertical">
-            <Border BorderBrush="#ffc90e" BorderThickness="4" Background="#efe4b0">
-                <TextBlock Margin="5">
-                    <Run Text="{x:Static pinjuke:Strings.LabelDocumentation}"/> <Hyperlink NavigateUri="{Binding DocumentationLink}" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="{Binding DocumentationLink, Mode=OneWay}"/></Hyperlink>
-                </TextBlock>
-            </Border>
             <Border BorderBrush="#ffc90e" BorderThickness="4" Background="#efe4b0" x:Name="UpdateCheckBorder"
                     Visibility="{Binding UpdateHintVisible, Converter={StaticResource BoolToVisibilityConverter}}">
                 <TextBlock Margin="5" x:Name="UpdateCheckTextBlock">
@@ -44,16 +39,26 @@
         <TabControl x:Name="Tabs" Grid.Row="1" Grid.ColumnSpan="3" SelectionChanged="Tabs_SelectionChanged">
         </TabControl>
 
-        <Button Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Right" VerticalAlignment="Top"
-                Background="Transparent" BorderThickness="0"
-                ToolTip="{x:Static pinjuke:Strings.RerunSetup}"
-                Click="RunOnboarding_Click">
-            <Rectangle Width="18" Height="18" Margin="1" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
-                <Rectangle.OpacityMask>
-                    <ImageBrush Stretch="Uniform" ImageSource="{Binding OnboardingImageSource}"/>
-                </Rectangle.OpacityMask>
-            </Rectangle>
-        </Button>
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Right" VerticalAlignment="Top">
+            <Button Background="Transparent" BorderThickness="0" Margin="3,0,3,0"
+                    ToolTip="{x:Static pinjuke:Strings.RerunSetup}"
+                    Click="RunOnboarding_Click">
+                <Rectangle Width="18" Height="18" Margin="1" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
+                    <Rectangle.OpacityMask>
+                        <ImageBrush Stretch="Uniform" ImageSource="{Binding OnboardingImageSource}"/>
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+            <Button Background="Transparent" BorderThickness="0" Margin="3,0,3,0"
+                    ToolTip="{x:Static pinjuke:Strings.ToolTipDocumentation}"
+                    Click="Help_Click">
+                <Rectangle Width="18" Height="18" Margin="1" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
+                    <Rectangle.OpacityMask>
+                        <ImageBrush Stretch="Uniform" ImageSource="{Binding HelpImageSource}"/>
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+        </StackPanel>
 
         <local:IconButtonControl
             x:Name="AddPlaylistButton"

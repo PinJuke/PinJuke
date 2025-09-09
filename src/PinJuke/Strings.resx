@@ -174,8 +174,8 @@
   <data name="PathNotFound" xml:space="preserve">
     <value>"{0}" not found.</value>
   </data>
-  <data name="LabelDocumentation" xml:space="preserve">
-    <value>Further information can be found in the documentation:</value>
+  <data name="ToolTipDocumentation" xml:space="preserve">
+    <value>Further information can be found in the documentation</value>
   </data>
   <data name="ErrorWritingFile" xml:space="preserve">
     <value>Error writing file "{0}".</value>
@@ -533,5 +533,11 @@ Track: restart</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>A new version is available:</value>
+  </data>
+  <data name="TabGlobalConfiguration" xml:space="preserve">
+    <value>Global Configuration</value>
+  </data>
+  <data name="TabPlaylistConfiguration" xml:space="preserve">
+    <value>Playlist:</value>
   </data>
 </root>

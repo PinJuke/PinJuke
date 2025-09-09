@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 
 namespace PinJuke.Configurator.View
 {
@@ -20,14 +21,16 @@ namespace PinJuke.Configurator.View
         protected IniDocument? IniDocument { get; set; } = null;
         public GroupControl GroupControl { get; private set; }
 
-        public IniDocumentTabItem(GroupControlFactory groupControlFactory, string filePath, string templateFilePath)
+        public IniDocumentTabItem(GroupControlFactory groupControlFactory, string title, string subTitle, string filePath, string templateFilePath)
         {
             GroupControlFactory = groupControlFactory;
             FilePath = filePath;
             TemplateFilePath = templateFilePath;
 
             var header = new TextBlock();
-            header.Text = Path.GetFileName(filePath);
+            header.Inlines.Add(new Bold(new Run(title)));
+            header.Inlines.Add(" ");
+            header.Inlines.Add(subTitle);
             header.ToolTip = filePath;
             Header = header;
 

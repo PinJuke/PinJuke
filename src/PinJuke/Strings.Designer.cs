@@ -784,15 +784,6 @@ namespace PinJuke {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Further information can be found in the documentation:.
-        /// </summary>
-        public static string LabelDocumentation {
-            get {
-                return ResourceManager.GetString("LabelDocumentation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to License.
         /// </summary>
         public static string License {
@@ -1189,6 +1180,24 @@ namespace PinJuke {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Global Configuration.
+        /// </summary>
+        public static string TabGlobalConfiguration {
+            get {
+                return ResourceManager.GetString("TabGlobalConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Playlist:.
+        /// </summary>
+        public static string TabPlaylistConfiguration {
+            get {
+                return ResourceManager.GetString("TabPlaylistConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Theme video loop file.
         /// </summary>
         public static string ThemeVideoLoopFile {
@@ -1221,6 +1230,15 @@ namespace PinJuke {
         public static string ThemeVideoStopFile {
             get {
                 return ResourceManager.GetString("ThemeVideoStopFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Further information can be found in the documentation.
+        /// </summary>
+        public static string ToolTipDocumentation {
+            get {
+                return ResourceManager.GetString("ToolTipDocumentation", resourceCulture);
             }
         }
         
