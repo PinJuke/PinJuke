@@ -174,6 +174,7 @@ namespace PinJuke.Configurator.View
                 var dialog = new Microsoft.Win32.OpenFileDialog();
                 dialog.DefaultExt = FileExtension; // Default file extension
                 dialog.Filter = FileFilter; // Filter files by extension
+                dialog.InitialDirectory = System.IO.Path.GetDirectoryName(FullPath) ?? "";
                 bool? result = dialog.ShowDialog();
                 if (result != true)
                 {
@@ -185,6 +186,7 @@ namespace PinJuke.Configurator.View
             {
                 var dialog = new Microsoft.Win32.OpenFolderDialog();
                 dialog.Multiselect = false;
+                dialog.InitialDirectory = FullPath;
                 bool? result = dialog.ShowDialog();
                 if (result != true)
                 {

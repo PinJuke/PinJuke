@@ -22,7 +22,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PinJuke.Onboarding
 {
@@ -293,6 +292,7 @@ namespace PinJuke.Onboarding
             var dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.DefaultExt = ".xml"; // Default file extension
             dialog.Filter = $"{Strings.XmlFile}|*.xml"; // Filter files by extension
+            dialog.InitialDirectory = Path.GetDirectoryName(Model.DofPath) ?? "";
             bool? result = dialog.ShowDialog();
             if (result != true)
             {
