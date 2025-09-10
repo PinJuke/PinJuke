@@ -595,7 +595,7 @@ namespace PinJuke {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable playback status.
+        ///   Looks up a localized string similar to Show playback status.
         /// </summary>
         public static string EnablePlaybackStatus {
             get {
@@ -604,7 +604,7 @@ namespace PinJuke {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable themed video skins.
+        ///   Looks up a localized string similar to Play themed video skins.
         /// </summary>
         public static string EnableThemeVideo {
             get {
@@ -613,7 +613,7 @@ namespace PinJuke {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable track browser.
+        ///   Looks up a localized string similar to Show track browser.
         /// </summary>
         public static string EnableTrackBrowser {
             get {
@@ -622,7 +622,7 @@ namespace PinJuke {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable track cover.
+        ///   Looks up a localized string similar to Show track cover.
         /// </summary>
         public static string EnableTrackCover {
             get {

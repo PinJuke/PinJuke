@@ -499,16 +499,16 @@ Titel: neu starten</value>
     <value>Hintergrundbilddatei</value>
   </data>
   <data name="EnableTrackCover" xml:space="preserve">
-    <value>Titelbild aktivieren</value>
+    <value>Titelbild anzeigen</value>
   </data>
   <data name="EnablePlaybackStatus" xml:space="preserve">
     <value>Wiedergabestatus anzeigen</value>
   </data>
   <data name="EnableTrackBrowser" xml:space="preserve">
-    <value>Titel-Browser aktivieren</value>
+    <value>Titel-Browser anzeigen</value>
   </data>
   <data name="EnableThemeVideo" xml:space="preserve">
-    <value>Thematische Video-Skins aktivieren</value>
+    <value>Thematische Video-Skins abspielen</value>
   </data>
   <data name="ThemeVideoLoopFile" xml:space="preserve">
     <value>Thematische Videodatei für Schleife</value>

@@ -108,6 +108,7 @@ namespace PinJuke.Configurator.View
                 this.selectedIndex = selectedIndex;
                 NotifyPropertyChanged(nameof(SelectedIndex));
             }
+            OnChanged();
         }
 
         private void ComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)

@@ -499,16 +499,16 @@ Track: restart</value>
     <value>Background image file</value>
   </data>
   <data name="EnableTrackCover" xml:space="preserve">
-    <value>Enable track cover</value>
+    <value>Show track cover</value>
   </data>
   <data name="EnablePlaybackStatus" xml:space="preserve">
-    <value>Enable playback status</value>
+    <value>Show playback status</value>
   </data>
   <data name="EnableTrackBrowser" xml:space="preserve">
-    <value>Enable track browser</value>
+    <value>Show track browser</value>
   </data>
   <data name="EnableThemeVideo" xml:space="preserve">
-    <value>Enable themed video skins</value>
+    <value>Play themed video skins</value>
   </data>
   <data name="ThemeVideoStartFile" xml:space="preserve">
     <value>Theme video start file</value>

@@ -62,6 +62,11 @@ namespace PinJuke.Configurator.Factory
 
     public class ContentGroupControlFactory : GroupControlFactory
     {
+        public const string BACKGROUND_IMAGE_FILE_CONTROL = "BackgroundImageFile";
+        public const string THEME_VIDEO_START_FILE_CONTROL = "ThemeVideoStartFile";
+        public const string THEME_VIDEO_LOOP_FILE_CONTROL = "ThemeVideoLoopFile";
+        public const string THEME_VIDEO_STOP_FILE_CONTROL = "ThemeVideoStopFile";
+
         public ContentGroupControlFactory(Parser parser, string sectionName, MediaPathProvider mediaPathProvider)
         {
             Controls = [
@@ -74,9 +79,17 @@ namespace PinJuke.Configurator.Factory
                         new(Strings.BackgroundTypeShowMilkdropVisualizations, 1),
                     },
                     Converter = new IntSelectConverter(parser, sectionName, "BackgroundType"),
+                    ChangedHandler = (ConfiguratorControl control) =>
+                    {
+                        var value = ((SelectControl)control).SelectedValue;
+                        var enabled = value is int intValue && intValue == 0;
+                        var group = control.GetParentGroup();
+                        ((PathControl)group.GetChildByName(BACKGROUND_IMAGE_FILE_CONTROL)).Enabled = enabled;
+                    },
                 },
                 new PathControlFactory()
                 {
+                    Name = BACKGROUND_IMAGE_FILE_CONTROL,
                     LabelText = Strings.BackgroundImageFile,
                     FileMode = true,
                     RelativeEnabled = true,
@@ -104,9 +117,18 @@ namespace PinJuke.Configurator.Factory
                 {
                     LabelText = Strings.EnableThemeVideo,
                     Converter = new BoolConverter(parser, sectionName, "ThemeVideoEnabled"),
+                    ChangedHandler = (ConfiguratorControl control) =>
+                    {
+                        var enabled = ((BoolControl)control).Value;
+                        var group = control.GetParentGroup();
+                        ((PathControl)group.GetChildByName(THEME_VIDEO_START_FILE_CONTROL)).Enabled = enabled;
+                        ((PathControl)group.GetChildByName(THEME_VIDEO_LOOP_FILE_CONTROL)).Enabled = enabled;
+                        ((PathControl)group.GetChildByName(THEME_VIDEO_STOP_FILE_CONTROL)).Enabled = enabled;
+                    },
                 },
                 new PathControlFactory()
                 {
+                    Name = THEME_VIDEO_START_FILE_CONTROL,
                     LabelText = Strings.ThemeVideoStartFile,
                     FileMode = true,
                     RelativeEnabled = true,
@@ -117,6 +139,7 @@ namespace PinJuke.Configurator.Factory
                 },
                 new PathControlFactory()
                 {
+                    Name = THEME_VIDEO_LOOP_FILE_CONTROL,
                     LabelText = Strings.ThemeVideoLoopFile,
                     FileMode = true,
                     RelativeEnabled = true,
@@ -127,6 +150,7 @@ namespace PinJuke.Configurator.Factory
                 },
                 new PathControlFactory()
                 {
+                    Name = THEME_VIDEO_STOP_FILE_CONTROL,
                     LabelText = Strings.ThemeVideoStopFile,
                     FileMode = true,
                     RelativeEnabled = true,

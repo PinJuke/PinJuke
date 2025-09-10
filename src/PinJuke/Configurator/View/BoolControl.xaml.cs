@@ -6,11 +6,17 @@ namespace PinJuke.Configurator.View
 {
     public partial class BoolControl : ConfiguratorControl
     {
-        private bool value = false;
+        private bool value = true;
         public bool Value
         {
             get => value;
-            set => this.SetField(ref this.value, value);
+            set
+            {
+                if (this.SetField(ref this.value, value))
+                {
+                    OnChanged();
+                }
+            }
         }
 
         private bool enabled = true;

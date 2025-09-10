@@ -21,16 +21,21 @@ namespace PinJuke.Configurator
         public void WriteToControl(UIElement control, IniDocument iniDocument);
     }
 
-    public abstract class BaseControlFactory<T> : ControlFactory<RowControl> where T : UIElement
+    public abstract class BaseControlFactory<T> : ControlFactory<RowControl> where T : ConfiguratorControl
     {
         public string LabelText { get; set; } = "";
         public string? Name { get; set; } = null;
         public Converter<T>? Converter { get; set; } = null;
+        public ConfiguratorControl.ChangedHandler? ChangedHandler { get; set; } = null;
 
         public RowControl CreateControl()
         {
             var rowControl = new RowControl();
             var control = CreateControlForRow();
+            if (ChangedHandler != null)
+            {
+                control.ChangedEvent += ChangedHandler;
+            }
             rowControl.Control = control;
             rowControl.LabelText = LabelText;
             return rowControl;

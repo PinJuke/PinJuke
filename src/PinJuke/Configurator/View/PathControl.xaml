@@ -11,7 +11,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="150"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -24,15 +24,15 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBox VerticalContentAlignment="Center" Text="{Binding Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox VerticalContentAlignment="Center" Text="{Binding Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Enabled}"/>
             <Rectangle Grid.Column="1" Margin="10,0,10,0" Width="20" Height="20" Fill="#ff7f27" Visibility="{Binding PathInvalid, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Rectangle.OpacityMask>
                     <ImageBrush Stretch="Uniform" ImageSource="{Binding WarningImageSource}"/>
                 </Rectangle.OpacityMask>
             </Rectangle>
         </Grid>
-        <Button Grid.Column="1" Margin="5,0,0,0" Content="{Binding ChooseText}" Click="Choose_Click"/>
+        <Button Grid.Column="1" Margin="5,0,0,0" Content="{Binding ChooseText}" Click="Choose_Click" IsEnabled="{Binding Enabled}"/>
         <CheckBox Grid.Column="2" Margin="5,0,0,0" VerticalAlignment="Center" Content="{Binding RelativePathText}"
-                  IsChecked="{Binding Relative, Mode=TwoWay}" IsEnabled="{Binding RelativeEnabled}"/>
+                  IsChecked="{Binding Relative, Mode=TwoWay}" IsEnabled="{Binding RelativeCheckBoxEnabled}"/>
     </Grid>
 </local:ConfiguratorControl>

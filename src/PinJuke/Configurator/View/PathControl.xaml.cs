@@ -8,6 +8,19 @@ namespace PinJuke.Configurator.View
 {
     public partial class PathControl : ConfiguratorControl
     {
+        private bool enabled = true;
+        public bool Enabled
+        {
+            get => enabled;
+            set
+            {
+                if (this.SetField(ref enabled, value))
+                {
+                    NotifyPropertyChanged(nameof(RelativeCheckBoxEnabled));
+                }
+            }
+        }
+
         private bool emptyEnabled = false;
         public bool EmptyEnabled
         {
@@ -15,15 +28,24 @@ namespace PinJuke.Configurator.View
             set => this.SetField(ref emptyEnabled, value);
         }
 
-        private bool relativeEnabled = false;
+        private bool relativeEnabled = true;
         public bool RelativeEnabled
         {
             get => relativeEnabled;
             set
             {
-                this.SetField(ref relativeEnabled, value);
+                var changed = this.SetField(ref relativeEnabled, value);
                 SetPath(Path);
+                if (changed)
+                {
+                    NotifyPropertyChanged(nameof(RelativeCheckBoxEnabled));
+                }
             }
+        }
+
+        public bool RelativeCheckBoxEnabled
+        {
+            get => Enabled && RelativeEnabled;
         }
 
         private bool relativeDefault = true;

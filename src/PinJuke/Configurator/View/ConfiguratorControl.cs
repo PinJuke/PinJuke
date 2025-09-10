@@ -10,6 +10,10 @@ namespace PinJuke.Configurator.View
 {
     public class ConfiguratorControl : BaseControl
     {
+        public delegate void ChangedHandler(ConfiguratorControl control);
+
+        public event ChangedHandler? ChangedEvent;
+
         public ConfiguratorControl()
         {
         }
@@ -40,6 +44,13 @@ namespace PinJuke.Configurator.View
                 throw new InvalidOperationException("Cannot return parent group. No parent group found.");
             }
             return parentGroup;
+        }
+
+        protected void OnChanged()
+        {
+            ChangedEvent?.Invoke(this);
+            var parentGroup = FindParentGroup();
+            parentGroup?.OnChanged();
         }
     }
 }
