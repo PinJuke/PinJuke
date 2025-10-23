@@ -234,7 +234,14 @@ namespace PinJuke
 
             if (mainModel != null)
             {
-                configurationService.SaveUserConfiguration(mainModel.UserConfiguration);
+                try
+                {
+                    configurationService.SaveUserConfiguration(mainModel.UserConfiguration);
+                }
+                catch (IOException ex)
+                {
+                    Debug.WriteLine("Error writing user configuration ini file: " + ex.Message);
+                }
             }
 
             displayController?.Dispose();

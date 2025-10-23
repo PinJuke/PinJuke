@@ -97,15 +97,6 @@ namespace PinJuke.Configurator
             GlobalGroupControlFactory = new(parser, pinUpReader);
             PlaylistGroupControlFactory = new(parser, this);
 
-            try
-            {
-                Directory.CreateDirectory(Configuration.ConfigPath.CONFIG_PLAYLIST_DIRECTORY_PATH);
-            }
-            catch (IOException ex)
-            {
-                Debug.WriteLine("Error creating config playlist directory: " + ex.Message);
-            }
-
             globalTabItem = new IniDocumentTabItem(
                 GlobalGroupControlFactory,
                 Strings.TabGlobalConfiguration,
@@ -199,14 +190,19 @@ namespace PinJuke.Configurator
             foreach (var item in Tabs.Items)
             {
                 var tabItem = (IniDocumentTabItem)item;
-                try
-                {
-                    tabItem.SaveToFile();
-                }
-                catch (IOException)
-                {
-                    MessageBox.Show(string.Format(Strings.ErrorWritingFile, tabItem.FilePath), AppDomain.CurrentDomain.FriendlyName);
-                }
+                SaveTabItem(tabItem);
+            }
+        }
+
+        private void SaveTabItem(IniDocumentTabItem tabItem)
+        {
+            try
+            {
+                tabItem.SaveToFile();
+            }
+            catch (IOException)
+            {
+                MessageBox.Show(string.Format(Strings.ErrorWritingFile, tabItem.FilePath), AppDomain.CurrentDomain.FriendlyName);
             }
         }
 
@@ -248,7 +244,7 @@ namespace PinJuke.Configurator
             Tabs.SelectedItem = playlistTabItem;
 
             // Save the new playlist file to disk.
-            playlistTabItem.SaveToFile();
+            SaveTabItem(playlistTabItem);
         }
 
         private void RunButton_Click(object sender, RoutedEventArgs e)

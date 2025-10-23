@@ -1,6 +1,7 @@
 ﻿using PinJuke.Configuration;
 using PinJuke.Ini;
 using PinJuke.Model;
+using PinJuke.Utility;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -72,11 +73,7 @@ namespace PinJuke.Service
 
         private void CreateDirectoryForFile(string filePath)
         {
-            var directory = Path.GetDirectoryName(filePath);
-            if (directory != null && !Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
+            FileUtil.CreateDirectoryForFile(filePath);
         }
     }
 }

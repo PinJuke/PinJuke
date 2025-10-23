@@ -1,5 +1,6 @@
 ﻿using PinJuke.Configurator.Factory;
 using PinJuke.Ini;
+using PinJuke.Utility;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -69,6 +70,7 @@ namespace PinJuke.Configurator.View
                 return;
             }
             GroupControlFactory.ReadFromControl(GroupControl, IniDocument);
+            FileUtil.CreateDirectoryForFile(FilePath);
             using var textWriter = new StreamWriter(FilePath);
             IniDocument.WriteTo(textWriter);
         }

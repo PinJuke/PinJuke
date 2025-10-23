@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -92,7 +93,14 @@ namespace PinJuke.Controller
                 userConfiguration.LastBeaconSentAt = now.ToString("yyyy-MM-ddTHH:mm:sszzz");
             }
 
-            this.configurationService.SaveUserConfiguration(userConfiguration);
+            try
+            {
+                configurationService.SaveUserConfiguration(userConfiguration);
+            }
+            catch (IOException exception)
+            {
+                Debug.WriteLine("Error saving user configuration: " + exception.Message);
+            }
         }
 
         private async Task<bool> SendBeacon(InstallIdPair installIdPair)

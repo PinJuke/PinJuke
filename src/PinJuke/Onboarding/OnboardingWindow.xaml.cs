@@ -22,6 +22,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace PinJuke.Onboarding
 {
@@ -228,8 +229,24 @@ namespace PinJuke.Onboarding
         {
             var configuration = GetConfiguration();
             var userConfiguration = GetUserConfiguration();
-            configurationService.SaveGlobalConfiguration(configuration, iniDocument);
-            configurationService.SaveUserConfiguration(userConfiguration);
+            try
+            {
+                configurationService.SaveGlobalConfiguration(configuration, iniDocument);
+            }
+            catch (IOException)
+            {
+                MessageBox.Show(string.Format(Strings.ErrorWritingFile, Configuration.ConfigPath.CONFIG_GLOBAL_FILE_PATH), AppDomain.CurrentDomain.FriendlyName);
+                return;
+            }
+            try
+            {
+                configurationService.SaveUserConfiguration(userConfiguration);
+            }
+            catch (IOException)
+            {
+                MessageBox.Show(string.Format(Strings.ErrorWritingFile, Configuration.ConfigPath.USER_FILE_NAME), AppDomain.CurrentDomain.FriendlyName);
+                return;
+            }
             FinishEvent?.Invoke(this, new FinishEventData(Model.CreatePlaylist));
         }
 
