@@ -244,7 +244,7 @@
     <value>Create</value>
   </data>
   <data name="FindTheProjectPageAt" xml:space="preserve">
-    <value>You can find the project page at:</value>
+    <value>The project page (including source code) can be found at:</value>
   </data>
   <data name="WelcomeToPinJuke" xml:space="preserve">
     <value>Welcome to PinJuke!</value>
@@ -539,5 +539,8 @@ Track: restart</value>
   </data>
   <data name="TabPlaylistConfiguration" xml:space="preserve">
     <value>Playlist:</value>
+  </data>
+  <data name="FindTheDownloadPageAt" xml:space="preserve">
+    <value>New versions of PinJuke can be found at:</value>
   </data>
 </root>

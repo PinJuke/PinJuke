@@ -64,6 +64,12 @@ namespace PinJuke.Service
             userConfiguration.IniDocument.WriteTo(textWriter);
         }
 
+        public Configuration.DistributionInfo LoadDistributionInfo()
+        {
+            var loader = new Configuration.DistributionInfoLoader();
+            return loader.FromIniFile();
+        }
+
         private void CreateDirectoryForFile(string filePath)
         {
             var directory = Path.GetDirectoryName(filePath);

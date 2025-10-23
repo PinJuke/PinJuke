@@ -112,7 +112,7 @@ namespace PinJuke
         private ConfiguratorWindow RunConfiguratorNow()
         {
             var userConfiguration = GetUserConfiguration();
-            var configuratorWindow = new ConfiguratorWindow(updateCheckService);
+            var configuratorWindow = new ConfiguratorWindow(updateCheckService, configurationService);
             configuratorWindow.RunPlaylistConfigEvent += ConfiguratorWindow_RunPlaylistConfig;
             configuratorWindow.RunOnboardingEvent += ConfiguratorWindow_RunOnboarding;
             configuratorWindow.Show();

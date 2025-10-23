@@ -649,7 +649,16 @@ namespace PinJuke {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can find the project page at:.
+        ///   Looks up a localized string similar to New versions of PinJuke can be found at:.
+        /// </summary>
+        public static string FindTheDownloadPageAt {
+            get {
+                return ResourceManager.GetString("FindTheDownloadPageAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The project page (including source code) can be found at:.
         /// </summary>
         public static string FindTheProjectPageAt {
             get {

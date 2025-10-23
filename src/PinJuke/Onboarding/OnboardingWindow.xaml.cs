@@ -39,7 +39,7 @@ namespace PinJuke.Onboarding
 
         private Page page = new();
         private int pageIndex = 0;
-        private TemplateInfo[] templates;
+        private readonly TemplateInfo[] templates;
 
         public ImageSource LogoImageSource
         {
@@ -54,6 +54,11 @@ namespace PinJuke.Onboarding
         public ImageSource WarningImageSource
         {
             get => SvgImageLoader.Instance.GetFromResource(@"icons\warning-outline.svg");
+        }
+
+        public string DownloadLink
+        {
+            get => distributionInfo.DownloadLink;
         }
 
         public string ProjectLink
@@ -87,11 +92,12 @@ namespace PinJuke.Onboarding
 
         public Model Model { get; } = new();
 
-        private BeaconService beaconService;
-        private ConfigurationService configurationService;
-        private IniDocument iniDocument;
-        private Configuration.Configuration configuration;
-        private Configuration.UserConfiguration userConfiguration;
+        private readonly BeaconService beaconService;
+        private readonly ConfigurationService configurationService;
+        private readonly IniDocument iniDocument;
+        private readonly Configuration.Configuration configuration;
+        private readonly Configuration.UserConfiguration userConfiguration;
+        private readonly Configuration.DistributionInfo distributionInfo;
 
         public OnboardingWindow(BeaconService beaconService, ConfigurationService configurationService)
         {
@@ -126,6 +132,7 @@ namespace PinJuke.Onboarding
                 Debug.WriteLine("Error reading user configuration ini file: " + ex.Message);
                 userConfiguration = new(new IniDocument(), new Configuration.Parser());
             }
+            distributionInfo = configurationService.LoadDistributionInfo();
 
             PopulateModel();
             Model.PropertyChanged += Model_PropertyChanged;

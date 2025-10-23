@@ -30,6 +30,7 @@ namespace PinJuke.Configurator
         public event EventHandler? RunOnboardingEvent;
 
         private readonly UpdateCheckService updateCheckService;
+        private readonly Configuration.DistributionInfo distributionInfo;
 
         protected GlobalGroupControlFactory GlobalGroupControlFactory { get; }
         protected PlaylistGroupControlFactory PlaylistGroupControlFactory { get; }
@@ -43,7 +44,7 @@ namespace PinJuke.Configurator
 
         public string ReleasesLink
         {
-            get => "https://github.com/PinJuke/PinJuke/releases";
+            get => distributionInfo.DownloadLink;
         }
 
         public ImageSource AddPlaylistImageSource
@@ -81,12 +82,14 @@ namespace PinJuke.Configurator
             }
         }
 
-        public ConfiguratorWindow(UpdateCheckService updateCheckService)
+        public ConfiguratorWindow(UpdateCheckService updateCheckService, ConfigurationService configurationService)
         {
             this.updateCheckService = updateCheckService;
 
             DataContext = this;
             InitializeComponent();
+
+            distributionInfo = configurationService.LoadDistributionInfo();
 
             var parser = new Configuration.Parser();
             var pinUpReader = PinUpPlayerIniReader.Create();

@@ -20,11 +20,15 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Image Grid.RowSpan="2" Stretch="Uniform" Source="{Binding LogoImageSource, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     <TextBlock Grid.Column="1" Margin="40,0,40,20" Text="{x:Static pinjuke:Strings.WelcomeToPinJuke}" FontSize="36"/>
                     <TextBlock Grid.Column="1" Grid.Row="1" Margin="40,0,40,40" Text="{x:Static pinjuke:Strings.WillSetUpPinJuke}" FontSize="18"/>
-                    <TextBlock Grid.Column="1" Grid.Row="2" Margin="40,0,40,20">
+                    <TextBlock Grid.Column="1" Grid.Row="2" Margin="40,0,40,20" TextWrapping="Wrap">
+                        <Run Text="{x:Static pinjuke:Strings.FindTheDownloadPageAt}"/> <Hyperlink NavigateUri="{Binding DownloadLink, RelativeSource={RelativeSource AncestorType=Window}}" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="{Binding DownloadLink, Mode=OneWay, RelativeSource={RelativeSource AncestorType=Window}}"/></Hyperlink>
+                    </TextBlock>
+                    <TextBlock Grid.Column="1" Grid.Row="3" Margin="40,0,40,20" TextWrapping="Wrap">
                         <Run Text="{x:Static pinjuke:Strings.FindTheProjectPageAt}"/> <Hyperlink NavigateUri="{Binding ProjectLink, RelativeSource={RelativeSource AncestorType=Window}}" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="{Binding ProjectLink, Mode=OneWay, RelativeSource={RelativeSource AncestorType=Window}}"/></Hyperlink>
                     </TextBlock>
                 </Grid>

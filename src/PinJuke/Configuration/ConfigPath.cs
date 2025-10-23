@@ -15,5 +15,7 @@ namespace PinJuke.Configuration
         public const string CONFIG_PLAYLIST_DIRECTORY_PATH = @"Configs\Playlists";
 
         public const string USER_FILE_NAME = @"PinJuke.user.ini";
+
+        public const string DISTRIBUTION_INFO_FILE_NAME = @"DistributionInfo.ini";
     }
 }
