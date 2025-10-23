@@ -66,6 +66,7 @@ namespace PinJuke.Configurator.Factory
         public const string THEME_VIDEO_START_FILE_CONTROL = "ThemeVideoStartFile";
         public const string THEME_VIDEO_LOOP_FILE_CONTROL = "ThemeVideoLoopFile";
         public const string THEME_VIDEO_STOP_FILE_CONTROL = "ThemeVideoStopFile";
+        public const string THEME_VIDEO_ROTATION_CONTROL = "ThemeVideoRotation";
 
         public ContentGroupControlFactory(Parser parser, string sectionName, MediaPathProvider mediaPathProvider)
         {
@@ -124,6 +125,7 @@ namespace PinJuke.Configurator.Factory
                         ((PathControl)group.GetChildByName(THEME_VIDEO_START_FILE_CONTROL)).Enabled = enabled;
                         ((PathControl)group.GetChildByName(THEME_VIDEO_LOOP_FILE_CONTROL)).Enabled = enabled;
                         ((PathControl)group.GetChildByName(THEME_VIDEO_STOP_FILE_CONTROL)).Enabled = enabled;
+                        ((SelectControl)group.GetChildByName(THEME_VIDEO_ROTATION_CONTROL)).Enabled = enabled;
                     },
                 },
                 new PathControlFactory()
@@ -161,6 +163,7 @@ namespace PinJuke.Configurator.Factory
                 },
                 new SelectControlFactory()
                 {
+                    Name = THEME_VIDEO_ROTATION_CONTROL,
                     LabelText = Strings.ThemeVideoRotation,
                     Items = new()
                     {

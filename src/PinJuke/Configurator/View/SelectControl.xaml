@@ -14,6 +14,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <ComboBox ItemsSource="{Binding Items}" SelectedIndex="{Binding SelectedIndex, Mode=OneWay}" SelectionChanged="ComboBox_SelectionChanged"/>
+        <ComboBox ItemsSource="{Binding Items}" SelectedIndex="{Binding SelectedIndex, Mode=OneWay}"
+                  SelectionChanged="ComboBox_SelectionChanged"
+                  IsEnabled="{Binding Enabled}" />
     </Grid>
 </local:ConfiguratorControl>
