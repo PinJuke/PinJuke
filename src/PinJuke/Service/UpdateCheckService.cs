@@ -124,25 +124,17 @@ namespace PinJuke.Service
         private readonly GithubReleaseService githubReleaseService = new();
         private readonly LatestReleaseFinder latestReleaseFinder = new();
 
-        public async Task<List<Release>> GetLatestReleases(string owner, string repo)
+        public async Task<List<Release>> GetLatestReleases(string owner, string repo, string currentVersion)
         {
             var githubReleases = await githubReleaseService.GetReleases(owner, repo);
 
             var latestReleases = latestReleaseFinder.GetLatestReleases(githubReleases);
-            var release = GetAssemblyRelease();
+            var release = latestReleaseFinder.ParseVersion(currentVersion);
             if (release != null)
             {
                 latestReleases = latestReleaseFinder.GetLatestReleasesAfter(release, latestReleases);
             }
             return latestReleases;
-        }
-
-        private Release? GetAssemblyRelease()
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            var productVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "0.0.0";
-            var release = latestReleaseFinder.ParseVersion(productVersion);
-            return release;
         }
     }
 }

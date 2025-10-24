@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -27,8 +28,16 @@ namespace PinJuke.Configuration
             return new DistributionInfo(
                 parser.ParseString(appSection["DownloadLink"]) ?? "https://github.com/PinJuke/PinJuke/releases",
                 parser.ParseString(appSection["UpdateCheckGithubOwner"]) ?? "PinJuke",
-                parser.ParseString(appSection["UpdateCheckGithubRepo"]) ?? "PinJuke"
+                parser.ParseString(appSection["UpdateCheckGithubRepo"]) ?? "PinJuke",
+                parser.ParseString(appSection["PackageVersion"]) ?? GetAssemblyVersion()
             );
+        }
+
+        private string GetAssemblyVersion()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var productVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "0.0.0";
+            return productVersion;
         }
     }
 }

@@ -155,7 +155,11 @@ namespace PinJuke.Configurator
             List<Release> releases;
             try
             {
-                releases = await updateCheckService.GetLatestReleases(distributionInfo.UpdateCheckGithubOwner, distributionInfo.UpdateCheckGithubRepo);
+                releases = await updateCheckService.GetLatestReleases(
+                    distributionInfo.UpdateCheckGithubOwner,
+                    distributionInfo.UpdateCheckGithubRepo,
+                    distributionInfo.PackageVersion
+                );
             }
             catch (Exception e)
             {
