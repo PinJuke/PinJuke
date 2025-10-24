@@ -25,7 +25,9 @@ namespace PinJuke.Configuration
         {
             var appSection = iniDocument["App"];
             return new DistributionInfo(
-                parser.ParseString(appSection["DownloadLink"]) ?? "https://github.com/PinJuke/PinJuke/releases"
+                parser.ParseString(appSection["DownloadLink"]) ?? "https://github.com/PinJuke/PinJuke/releases",
+                parser.ParseString(appSection["UpdateCheckGithubOwner"]) ?? "PinJuke",
+                parser.ParseString(appSection["UpdateCheckGithubRepo"]) ?? "PinJuke"
             );
         }
     }

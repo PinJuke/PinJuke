@@ -124,9 +124,9 @@ namespace PinJuke.Service
         private readonly GithubReleaseService githubReleaseService = new();
         private readonly LatestReleaseFinder latestReleaseFinder = new();
 
-        public async Task<List<Release>> GetLatestReleases()
+        public async Task<List<Release>> GetLatestReleases(string owner, string repo)
         {
-            var githubReleases = await githubReleaseService.GetReleases("PinJuke", "PinJuke");
+            var githubReleases = await githubReleaseService.GetReleases(owner, repo);
 
             var latestReleases = latestReleaseFinder.GetLatestReleases(githubReleases);
             var release = GetAssemblyRelease();

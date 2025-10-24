@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace PinJuke.Configuration
 {
-    public record DistributionInfo(string DownloadLink);
+    public record DistributionInfo(string DownloadLink, string UpdateCheckGithubOwner, string UpdateCheckGithubRepo);
 }
