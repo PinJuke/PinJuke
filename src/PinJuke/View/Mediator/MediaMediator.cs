@@ -4,6 +4,7 @@ using PinJuke.Playlist;
 using PinJuke.View.Media;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -96,10 +97,12 @@ namespace PinJuke.View.Mediator
         {
             if (mainModel.MediaPlaying)
             {
+                Debug.WriteLine("Playing main media...");
                 mediaActionQueue.Play();
             }
             else
             {
+                Debug.WriteLine("Pausing main media...");
                 mediaActionQueue.Pause();
             }
         }

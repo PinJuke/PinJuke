@@ -486,8 +486,8 @@ Titel: neu starten</value>
   <data name="PlayOnStartup" xml:space="preserve">
     <value>Wiedergabe bei Programmstart</value>
   </data>
-  <data name="BackgroundType" xml:space="preserve">
-    <value>Hintergrundtyp</value>
+  <data name="PlaybackBackgroundType" xml:space="preserve">
+    <value>Wiedergabe-Hintergrundtyp</value>
   </data>
   <data name="BackgroundTypeShowSpecifiedImage" xml:space="preserve">
     <value>Angegebenes Bild anzeigen</value>
@@ -499,7 +499,7 @@ Titel: neu starten</value>
     <value>Hintergrundbilddatei</value>
   </data>
   <data name="EnableTrackCover" xml:space="preserve">
-    <value>Titelbild anzeigen</value>
+    <value>Titelbild und -information anzeigen</value>
   </data>
   <data name="EnablePlaybackStatus" xml:space="preserve">
     <value>Wiedergabestatus anzeigen</value>
@@ -542,5 +542,17 @@ Titel: neu starten</value>
   </data>
   <data name="FindTheDownloadPageAt" xml:space="preserve">
     <value>Neue Versionen von PinJuke finden Sie unter:</value>
+  </data>
+  <data name="IdleBackgroundType" xml:space="preserve">
+    <value>Leerlauf-Hintergrundtyp</value>
+  </data>
+  <data name="BackgroundTypeShowLoopVideo" xml:space="preserve">
+    <value>Schleife-Video anzeigen</value>
+  </data>
+  <data name="BackgroundTypeShowIdleVideo" xml:space="preserve">
+    <value>Leerlauf-Video anzeigen</value>
+  </data>
+  <data name="ThemeVideoIdleFile" xml:space="preserve">
+    <value>Thematische Videodatei für Leerlauf</value>
   </data>
 </root>

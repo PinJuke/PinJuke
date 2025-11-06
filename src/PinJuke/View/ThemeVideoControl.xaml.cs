@@ -20,8 +20,9 @@ namespace PinJuke.View
     public partial class ThemeVideoControl : BaseControl
     {
         public event EventHandler? StartMediaEndedEvent;
-        public event EventHandler? LoopMediaEndedEvent;
         public event EventHandler? StopMediaEndedEvent;
+        public event EventHandler? LoopMediaEndedEvent;
+        public event EventHandler? IdleMediaEndedEvent;
 
         private float contentRotation = 0f;
         public float ContentRotation
@@ -40,20 +41,25 @@ namespace PinJuke.View
             //MediaElement.LoopingBehavior = MediaPlaybackState.Pause;
 
             StartMediaElement.LoadedBehavior = MediaPlaybackState.Stop;
+            StopMediaElement.LoadedBehavior = MediaPlaybackState.Stop;
             LoopMediaElement.LoadedBehavior = MediaPlaybackState.Stop;
             LoopMediaElement.LoopingBehavior = MediaPlaybackState.Play;
-            StopMediaElement.LoadedBehavior = MediaPlaybackState.Stop;
+            IdleMediaElement.LoadedBehavior = MediaPlaybackState.Stop;
+            IdleMediaElement.LoopingBehavior = MediaPlaybackState.Play;
 
             StartMediaElement.Visibility = Visibility.Hidden;
-            LoopMediaElement.Visibility = Visibility.Hidden;
             StopMediaElement.Visibility = Visibility.Hidden;
+            LoopMediaElement.Visibility = Visibility.Hidden;
+            IdleMediaElement.Visibility = Visibility.Hidden;
 
             StartMediaElement.MediaEnded += MediaElement_MediaEnded;
             StartMediaElement.MediaStateChanged += MediaElement_MediaStateChanged;
-            LoopMediaElement.MediaEnded += MediaElement_MediaEnded;
-            LoopMediaElement.MediaStateChanged += MediaElement_MediaStateChanged;
             StopMediaElement.MediaEnded += MediaElement_MediaEnded;
             StopMediaElement.MediaStateChanged += MediaElement_MediaStateChanged;
+            LoopMediaElement.MediaEnded += MediaElement_MediaEnded;
+            LoopMediaElement.MediaStateChanged += MediaElement_MediaStateChanged;
+            IdleMediaElement.MediaEnded += MediaElement_MediaEnded;
+            IdleMediaElement.MediaStateChanged += MediaElement_MediaStateChanged;
         }
 
         private void MediaElement_MediaStateChanged(object? sender, MediaStateChangedEventArgs e)
@@ -75,13 +81,17 @@ namespace PinJuke.View
             {
                 StartMediaEndedEvent?.Invoke(this, EventArgs.Empty);
             }
+            else if (mediaElement == StopMediaElement)
+            {
+                StopMediaEndedEvent?.Invoke(this, EventArgs.Empty);
+            }
             else if (mediaElement == LoopMediaElement)
             {
                 LoopMediaEndedEvent?.Invoke(this, EventArgs.Empty);
             }
-            else if (mediaElement == StopMediaElement)
+            else if (mediaElement == IdleMediaElement)
             {
-                StopMediaEndedEvent?.Invoke(this, EventArgs.Empty);
+                IdleMediaEndedEvent?.Invoke(this, EventArgs.Empty);
             }
         }
     }

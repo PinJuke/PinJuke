@@ -48,6 +48,13 @@ namespace PinJuke.Configurator.View
             get => Enabled && RelativeEnabled;
         }
 
+        private int inputWidth = 200;
+        public int InputWidth
+        {
+            get => inputWidth;
+            set => this.SetField(ref inputWidth, value);
+        }
+
         private bool relativeDefault = true;
         public bool RelativeDefault
         {

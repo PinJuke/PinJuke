@@ -486,8 +486,8 @@ Track: restart</value>
   <data name="PlayOnStartup" xml:space="preserve">
     <value>Playback at program start</value>
   </data>
-  <data name="BackgroundType" xml:space="preserve">
-    <value>Background type</value>
+  <data name="PlaybackBackgroundType" xml:space="preserve">
+    <value>Playback background type</value>
   </data>
   <data name="BackgroundTypeShowSpecifiedImage" xml:space="preserve">
     <value>Show specified image</value>
@@ -499,7 +499,7 @@ Track: restart</value>
     <value>Background image file</value>
   </data>
   <data name="EnableTrackCover" xml:space="preserve">
-    <value>Show track cover</value>
+    <value>Show track cover and information</value>
   </data>
   <data name="EnablePlaybackStatus" xml:space="preserve">
     <value>Show playback status</value>
@@ -542,5 +542,17 @@ Track: restart</value>
   </data>
   <data name="FindTheDownloadPageAt" xml:space="preserve">
     <value>New versions of PinJuke can be found at:</value>
+  </data>
+  <data name="IdleBackgroundType" xml:space="preserve">
+    <value>Idle background type</value>
+  </data>
+  <data name="BackgroundTypeShowLoopVideo" xml:space="preserve">
+    <value>Show loop video</value>
+  </data>
+  <data name="BackgroundTypeShowIdleVideo" xml:space="preserve">
+    <value>Show idle videl</value>
+  </data>
+  <data name="ThemeVideoIdleFile" xml:space="preserve">
+    <value>Theme video idle file</value>
   </data>
 </root>

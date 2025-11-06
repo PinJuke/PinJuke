@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace PinJuke.Model
 {
-    public class MediaEventToken
+    public class MediaEventToken<T>
     {
-        private readonly MediaEventArgs mediaEvent;
+        private readonly MediaEventArgs<T> mediaEvent;
 
-        public MediaEventToken(MediaEventArgs mediaEvent)
+        public MediaEventToken(MediaEventArgs<T> mediaEvent)
         {
             this.mediaEvent = mediaEvent;
         }
@@ -21,32 +21,40 @@ namespace PinJuke.Model
         }
     }
 
-    public abstract class MediaEventArgs
+    public enum MediaEventType
     {
-        private readonly Action<PlayFileType> continueWith;
-        private readonly HashSet<MediaEventToken> tokens = new();
+        Play,
+        End,
+    }
+
+    public class MediaEventArgs<T>
+    {
+        public MediaEventType Type { get; }
+        private readonly Action<T> continueWith;
+        private readonly HashSet<MediaEventToken<T>> tokens = new();
 
         public bool Intercepted
         {
             get => tokens.Count != 0;
         }
 
-        public PlayFileType Type { get; }
+        public T Data { get; }
 
-        public MediaEventArgs(Action<PlayFileType> continueWith, PlayFileType type)
+        public MediaEventArgs(MediaEventType type, Action<T> continueWith, T data)
         {
-            this.continueWith = continueWith;
             this.Type = type;
+            this.continueWith = continueWith;
+            this.Data = data;
         }
 
-        public MediaEventToken Intercept()
+        public MediaEventToken<T> Intercept()
         {
-            var token = new MediaEventToken(this);
+            var token = new MediaEventToken<T>(this);
             tokens.Add(token);
             return token;
         }
 
-        public void ContinueFromToken(MediaEventToken token)
+        public void ContinueFromToken(MediaEventToken<T> token)
         {
             tokens.Remove(token);
             ContinueIfNotIntercepted();
@@ -56,22 +64,8 @@ namespace PinJuke.Model
         {
             if (!Intercepted)
             {
-                continueWith(Type);
+                continueWith(Data);
             }
-        }
-    }
-
-    public class PlayMediaEventArgs : MediaEventArgs
-    {
-        public PlayMediaEventArgs(Action<PlayFileType> continueWith, PlayFileType type) : base(continueWith, type)
-        {
-        }
-    }
-
-    public class EndMediaEventArgs : MediaEventArgs
-    {
-        public EndMediaEventArgs(Action<PlayFileType> continueWith, PlayFileType type) : base(continueWith, type)
-        {
         }
     }
 }

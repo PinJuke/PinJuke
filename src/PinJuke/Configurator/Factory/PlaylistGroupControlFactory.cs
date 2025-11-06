@@ -19,28 +19,34 @@ namespace PinJuke.Configurator.Factory
                 {
                     LabelText = Strings.Player,
                     Controls = [
-                        new PathControlFactory()
-                        {
+                        new RowFactory<PathControl>() {
                             LabelText = Strings.MusicPath,
-                            FileMode = false,
-                            RelativeEnabled = false,
-                            Converter = new PathConverter(parser, "Player", "MusicPath"),
-                        },
-                        new SelectControlFactory()
-                        {
-                            LabelText = Strings.StartupTrackType,
-                            Items = new()
+                            ChildFactory = new PathControlFactory()
                             {
-                                new(Strings.StartupTrackTypeLastPlayedTrack, 0),
-                                new(Strings.StartupTrackTypeFirstTrack, 1),
-                                new(Strings.StartupTrackTypeRandomMode, 2),
-                            },
-                            Converter = new IntSelectConverter(parser, "Player", "StartupTrackType"),
+                                FileMode = false,
+                                RelativeEnabled = false,
+                                Converter = new PathConverter(parser, "Player", "MusicPath"),
+                            }
                         },
-                        new BoolControlFactory()
-                        {
+                        new RowFactory<SelectControl>() {
+                            LabelText = Strings.StartupTrackType,
+                            ChildFactory = new SelectControlFactory()
+                            {
+                                Items = new()
+                                {
+                                    new(Strings.StartupTrackTypeLastPlayedTrack, 0),
+                                    new(Strings.StartupTrackTypeFirstTrack, 1),
+                                    new(Strings.StartupTrackTypeRandomMode, 2),
+                                },
+                                Converter = new IntSelectConverter(parser, "Player", "StartupTrackType"),
+                            }
+                        },
+                        new RowFactory<BoolControl>() {
                             LabelText = Strings.PlayOnStartup,
-                            Converter = new BoolConverter(parser, "Player", "PlayOnStartup"),
+                            ChildFactory = new BoolControlFactory()
+                            {
+                                Converter = new BoolConverter(parser, "Player", "PlayOnStartup"),
+                            }
                         },
                     ]
                 },
@@ -62,119 +68,192 @@ namespace PinJuke.Configurator.Factory
 
     public class ContentGroupControlFactory : GroupControlFactory
     {
+        public const string PLAYBACK_BACKGROUND_TYPE_CONTROL = "PlaybackBackgroundType";
+        public const string IDLE_BACKGROUND_TYPE_CONTROL = "IdleBackgroundType";
         public const string BACKGROUND_IMAGE_FILE_CONTROL = "BackgroundImageFile";
         public const string THEME_VIDEO_START_FILE_CONTROL = "ThemeVideoStartFile";
         public const string THEME_VIDEO_LOOP_FILE_CONTROL = "ThemeVideoLoopFile";
         public const string THEME_VIDEO_STOP_FILE_CONTROL = "ThemeVideoStopFile";
+        public const string THEME_VIDEO_IDLE_FILE_CONTROL = "ThemeVideoIdleFile";
         public const string THEME_VIDEO_ROTATION_CONTROL = "ThemeVideoRotation";
 
         public ContentGroupControlFactory(Parser parser, string sectionName, MediaPathProvider mediaPathProvider)
         {
             Controls = [
-                new SelectControlFactory()
-                {
-                    LabelText = Strings.BackgroundType,
-                    Items = new()
-                    {
-                        new(Strings.BackgroundTypeShowSpecifiedImage, 0),
-                        new(Strings.BackgroundTypeShowMilkdropVisualizations, 1),
-                    },
-                    Converter = new IntSelectConverter(parser, sectionName, "BackgroundType"),
-                    ChangedHandler = (ConfiguratorControl control) =>
-                    {
-                        var value = ((SelectControl)control).SelectedValue;
-                        var enabled = value is int intValue && intValue == 0;
-                        var group = control.GetParentGroup();
-                        ((PathControl)group.GetChildByName(BACKGROUND_IMAGE_FILE_CONTROL)).Enabled = enabled;
-                    },
-                },
-                new PathControlFactory()
-                {
-                    Name = BACKGROUND_IMAGE_FILE_CONTROL,
-                    LabelText = Strings.BackgroundImageFile,
-                    FileMode = true,
-                    RelativeEnabled = true,
-                    FileExtension = ".jpg",
-                    FileFilter = $"{Strings.JpegFile}|*.jpg;*.jpeg;*.jpe;*.jfif",
-                    MediaPathProvider = mediaPathProvider,
-                    Converter = new PathConverter(parser, sectionName, "BackgroundImageFile"),
-                },
-                new BoolControlFactory()
-                {
+                new RowFactory<BoolControl>() {
                     LabelText = Strings.EnableTrackCover,
-                    Converter = new BoolConverter(parser, sectionName, "CoverEnabled"),
+                    ChildFactory = new BoolControlFactory()
+                    {
+                        Converter = new BoolConverter(parser, sectionName, "CoverEnabled"),
+                    }
                 },
-                new BoolControlFactory()
-                {
+                new RowFactory<BoolControl>() {
                     LabelText = Strings.EnablePlaybackStatus,
-                    Converter = new BoolConverter(parser, sectionName, "StateEnabled"),
+                    ChildFactory = new BoolControlFactory()
+                    {
+                        Converter = new BoolConverter(parser, sectionName, "StateEnabled"),
+                    }
                 },
-                new BoolControlFactory()
-                {
+                new RowFactory<BoolControl>() {
                     LabelText = Strings.EnableTrackBrowser,
-                    Converter = new BoolConverter(parser, sectionName, "BrowserEnabled"),
-                },
-                new BoolControlFactory()
-                {
-                    LabelText = Strings.EnableThemeVideo,
-                    Converter = new BoolConverter(parser, sectionName, "ThemeVideoEnabled"),
-                    ChangedHandler = (ConfiguratorControl control) =>
+                    ChildFactory = new BoolControlFactory()
                     {
-                        var enabled = ((BoolControl)control).Value;
-                        var group = control.GetParentGroup();
-                        ((PathControl)group.GetChildByName(THEME_VIDEO_START_FILE_CONTROL)).Enabled = enabled;
-                        ((PathControl)group.GetChildByName(THEME_VIDEO_LOOP_FILE_CONTROL)).Enabled = enabled;
-                        ((PathControl)group.GetChildByName(THEME_VIDEO_STOP_FILE_CONTROL)).Enabled = enabled;
-                        ((SelectControl)group.GetChildByName(THEME_VIDEO_ROTATION_CONTROL)).Enabled = enabled;
-                    },
+                        Converter = new BoolConverter(parser, sectionName, "BrowserEnabled"),
+                    }
                 },
-                new PathControlFactory()
-                {
-                    Name = THEME_VIDEO_START_FILE_CONTROL,
-                    LabelText = Strings.ThemeVideoStartFile,
-                    FileMode = true,
-                    RelativeEnabled = true,
-                    FileExtension = ".mp4",
-                    FileFilter = $"{Strings.Mp4File}|*.mp4",
-                    MediaPathProvider = mediaPathProvider,
-                    Converter = new PathConverter(parser, sectionName, "ThemeVideoStartFile"),
+
+                new RowFactory<SelectControl>() {
+                    LabelText = Strings.PlaybackBackgroundType,
+                    ChildFactory = new SelectControlFactory()
+                    {
+                        Name = PLAYBACK_BACKGROUND_TYPE_CONTROL,
+                        Items = new()
+                        {
+                            new(Strings.BackgroundTypeShowSpecifiedImage, 0),
+                            new(Strings.BackgroundTypeShowMilkdropVisualizations, 1),
+                            new(Strings.BackgroundTypeShowLoopVideo, 2),
+                        },
+                        Converter = new IntSelectConverter(parser, sectionName, "PlaybackBackgroundType"),
+                        ChangedHandler = OnBackgroundTypeChanged,
+                    }
                 },
-                new PathControlFactory()
-                {
-                    Name = THEME_VIDEO_LOOP_FILE_CONTROL,
+                new RowFactory<SelectControl>() {
+                    LabelText = Strings.IdleBackgroundType,
+                    ChildFactory = new SelectControlFactory()
+                    {
+                        Name = IDLE_BACKGROUND_TYPE_CONTROL,
+                        Items = new()
+                        {
+                            new(Strings.BackgroundTypeShowSpecifiedImage, 0),
+                            new(Strings.BackgroundTypeShowMilkdropVisualizations, 1),
+                            new(Strings.BackgroundTypeShowIdleVideo, 2),
+                        },
+                        Converter = new IntSelectConverter(parser, sectionName, "IdleBackgroundType"),
+                        ChangedHandler = OnBackgroundTypeChanged,
+                    }
+                },
+
+                new RowFactory<PathControl>() {
+                    LabelText = Strings.BackgroundImageFile,
+                    ChildFactory = new PathControlFactory()
+                    {
+                        Name = BACKGROUND_IMAGE_FILE_CONTROL,
+                        FileMode = true,
+                        RelativeEnabled = true,
+                        FileExtension = ".jpg",
+                        FileFilter = $"{Strings.JpegFile}|*.jpg;*.jpeg;*.jpe;*.jfif",
+                        MediaPathProvider = mediaPathProvider,
+                        Converter = new PathConverter(parser, sectionName, "BackgroundImageFile"),
+                    }
+                },
+
+                new RowFactory<PathControl>() {
                     LabelText = Strings.ThemeVideoLoopFile,
-                    FileMode = true,
-                    RelativeEnabled = true,
-                    FileExtension = ".mp4",
-                    FileFilter = $"{Strings.Mp4File}|*.mp4",
-                    MediaPathProvider = mediaPathProvider,
-                    Converter = new PathConverter(parser, sectionName, "ThemeVideoLoopFile"),
-                },
-                new PathControlFactory()
-                {
-                    Name = THEME_VIDEO_STOP_FILE_CONTROL,
-                    LabelText = Strings.ThemeVideoStopFile,
-                    FileMode = true,
-                    RelativeEnabled = true,
-                    FileExtension = ".mp4",
-                    FileFilter = $"{Strings.Mp4File}|*.mp4",
-                    MediaPathProvider = mediaPathProvider,
-                    Converter = new PathConverter(parser, sectionName, "ThemeVideoStopFile"),
-                },
-                new SelectControlFactory()
-                {
-                    Name = THEME_VIDEO_ROTATION_CONTROL,
-                    LabelText = Strings.ThemeVideoRotation,
-                    Items = new()
+                    ChildFactory = new PathControlFactory()
                     {
-                        new("-90 °", -90),
-                        new("0 °", 0),
-                        new("90 °", 90),
-                        new("180 °", 180),
-                    },
-                    Converter = new IntSelectConverter(parser, sectionName, "ThemeVideoRotation"),
+                        Name = THEME_VIDEO_LOOP_FILE_CONTROL,
+                        FileMode = true,
+                        RelativeEnabled = true,
+                        FileExtension = ".mp4",
+                        FileFilter = $"{Strings.Mp4File}|*.mp4",
+                        MediaPathProvider = mediaPathProvider,
+                        Converter = new PathConverter(parser, sectionName, "ThemeVideoLoopFile"),
+                    }
+                },
+                new RowFactory<PathControl>() {
+                    LabelText = Strings.ThemeVideoIdleFile,
+                    ChildFactory = new PathControlFactory()
+                    {
+                        Name = THEME_VIDEO_IDLE_FILE_CONTROL,
+                        FileMode = true,
+                        RelativeEnabled = true,
+                        FileExtension = ".mp4",
+                        FileFilter = $"{Strings.Mp4File}|*.mp4",
+                        MediaPathProvider = mediaPathProvider,
+                        Converter = new PathConverter(parser, sectionName, "ThemeVideoIdleFile"),
+                    }
+                },
+
+                new RowFactory<BoolControl>() {
+                    LabelText = Strings.ThemeVideoStartFile,
+                    ChildFactory = new BoolControlFactory()
+                    {
+                        Converter = new BoolConverter(parser, sectionName, "ThemeVideoStartFileEnabled"),
+                        Controls = [
+                            new PathControlFactory()
+                            {
+                                Name = THEME_VIDEO_START_FILE_CONTROL,
+                                FileMode = true,
+                                RelativeEnabled = true,
+                                FileExtension = ".mp4",
+                                FileFilter = $"{Strings.Mp4File}|*.mp4",
+                                MediaPathProvider = mediaPathProvider,
+                                Converter = new PathConverter(parser, sectionName, "ThemeVideoStartFile"),
+                                InputWidth = 180,
+                            },
+                        ],
+                    }
+                },
+                new RowFactory<BoolControl>() {
+                    LabelText = Strings.ThemeVideoStopFile,
+                    ChildFactory = new BoolControlFactory()
+                    {
+                        Converter = new BoolConverter(parser, sectionName, "ThemeVideoStopFileEnabled"),
+                        Controls = [
+                            new PathControlFactory()
+                            {
+                                Name = THEME_VIDEO_STOP_FILE_CONTROL,
+                                FileMode = true,
+                                RelativeEnabled = true,
+                                FileExtension = ".mp4",
+                                FileFilter = $"{Strings.Mp4File}|*.mp4",
+                                MediaPathProvider = mediaPathProvider,
+                                Converter = new PathConverter(parser, sectionName, "ThemeVideoStopFile"),
+                                InputWidth = 180,
+                            },
+                        ],
+                    }
+                },
+
+
+                new RowFactory<SelectControl>() {
+                    LabelText = Strings.ThemeVideoRotation,
+                    ChildFactory = new SelectControlFactory()
+                    {
+                        Name = THEME_VIDEO_ROTATION_CONTROL,
+                        Items = new()
+                        {
+                            new("-90 °", -90),
+                            new("0 °", 0),
+                            new("90 °", 90),
+                            new("180 °", 180),
+                        },
+                        Converter = new IntSelectConverter(parser, sectionName, "ThemeVideoRotation"),
+                    }
                 },
             ];
+        }
+
+        private void OnBackgroundTypeChanged(ConfiguratorControl control)
+        {
+            var group = control.GetParentGroup();
+
+            var playbackBackgroundTypeControl = (SelectControl)group.GetChildByName(PLAYBACK_BACKGROUND_TYPE_CONTROL);
+            var idleBackgroundTypeControl = (SelectControl)group.GetChildByName(IDLE_BACKGROUND_TYPE_CONTROL);
+
+            var backgroundImageFileControl = (PathControl)group.GetChildByName(BACKGROUND_IMAGE_FILE_CONTROL);
+            var themeVideoLoopFileControl = (PathControl)group.GetChildByName(THEME_VIDEO_LOOP_FILE_CONTROL);
+            var themeVideoIdleFileControl = (PathControl)group.GetChildByName(THEME_VIDEO_IDLE_FILE_CONTROL);
+
+            {
+                backgroundImageFileControl.Enabled =
+                    (playbackBackgroundTypeControl.SelectedValue is int playbackType && playbackType == 0)
+                    || (idleBackgroundTypeControl.SelectedValue is int idleType && idleType == 0);
+            }
+            {
+                themeVideoLoopFileControl.Enabled = playbackBackgroundTypeControl.SelectedValue is int playbackType && playbackType == 2;
+                themeVideoIdleFileControl.Enabled = idleBackgroundTypeControl.SelectedValue is int idleType && idleType == 2;
+            }
         }
     }
 }

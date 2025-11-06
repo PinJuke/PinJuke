@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace PinJuke.View.Mediator
@@ -33,6 +34,7 @@ namespace PinJuke.View.Mediator
             base.OnLoaded();
 
             UpdateView();
+            UpdateVisibility();
             mainModel.PropertyChanged += MainModel_PropertyChanged;
             mainModel.PresetEvent += MainModel_PresetEvent;
 
@@ -52,6 +54,9 @@ namespace PinJuke.View.Mediator
             {
                 case nameof(MainModel.PresetInfoVisible):
                     UpdateView();
+                    break;
+                case nameof(MainModel.MediaPlaying):
+                    UpdateVisibility();
                     break;
             }
         }
@@ -77,6 +82,14 @@ namespace PinJuke.View.Mediator
         private void UpdateView()
         {
             visualizerControl.PresetInfoVisible = mainModel.PresetInfoVisible;
+        }
+
+        private void UpdateVisibility()
+        {
+            var visible = mainModel.MediaPlaying
+                ? displayConfig.Content.PlaybackBackgroundType == BackgroundType.MilkdropVisualization
+                : displayConfig.Content.IdleBackgroundType == BackgroundType.MilkdropVisualization;
+            visualizerControl.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 }

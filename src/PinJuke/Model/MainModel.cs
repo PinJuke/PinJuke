@@ -47,6 +47,10 @@ namespace PinJuke.Model
 
     public record State(StateType Type, object? Data = null);
 
+    public class MediaEventData
+    {
+    }
+
     public class MainModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -55,11 +59,9 @@ namespace PinJuke.Model
         public event EventHandler? ShutdownEvent;
         public event EventHandler<InputActionEventArgs>? InputEvent;
         public event EventHandler<PresetActionEventArgs>? PresetEvent;
-        public event EventHandler<PlayMediaEventArgs>? PlayMediaEvent;
-        public event EventHandler<EndMediaEventArgs>? EndMediaEvent;
+        public event EventHandler<MediaEventArgs<MediaEventData>>? MediaEvent;
 
-        private PlayMediaEventArgs? playMediaEventArgs = null;
-        private EndMediaEventArgs? endMediaEventArgs = null;
+        private MediaEventArgs<MediaEventData>? mediaEventArgs = null;
 
         public Configuration.Configuration Configuration { get; }
         public Configuration.UserConfiguration UserConfiguration { get; }
@@ -503,7 +505,7 @@ namespace PinJuke.Model
                 if (PlayingFile != null)
                 {
                     // Play paused file.
-                    PlayFile(PlayingFile, PlayFileType.Play, TriggerType.Automatic);
+                    PlayFile(PlayingFile, TriggerType.Automatic);
                 }
                 else
                 {
@@ -514,90 +516,97 @@ namespace PinJuke.Model
 
         public void TogglePlayPause(TriggerType triggerType)
         {
-            PlayFile(PlayingFile, Playing ? PlayFileType.Pause : PlayFileType.Resume, triggerType);
+            EnterPlayback();
+            Playing = !Playing;
+            UpdateMedia(triggerType);
         }
 
-        public void PlayFile(FileNode? node, PlayFileType type, TriggerType triggerType, StateType? playingStateType = null)
+        public void PlayFile(FileNode? node, TriggerType triggerType, StateType? playingStateType = null)
         {
             EnterPlayback();
-
             node = node?.FindThisOrNextPlayable();
-
-            if (type == PlayFileType.Resume || type == PlayFileType.Pause)
-            {
-                Playing = type == PlayFileType.Resume;
-            }
-            else
-            {
-                // To restart a track first reset the playing track to trigger an event in any case.
-                Playing = false;
-                PlayingFile = null;
-                PlayingFile = node;
-                Playing = node != null;
-            }
-
-            ShowPlaybackState(playingStateType);
+            // To restart a track first reset the playing track to trigger an event in any case.
+            Playing = false;
+            PlayingFile = null;
+            PlayingFile = node;
+            Playing = node != null;
             GetUserPlaylist().TrackFilePath = node?.FullName ?? "";
+            UpdateMedia(triggerType, playingStateType);
+        }
 
-            if (playMediaEventArgs != null || endMediaEventArgs != null)
+        private void UpdateMedia(TriggerType triggerType, StateType? playingStateType = null)
+        {
+            ShowPlaybackState(playingStateType);
+            
+            if (mediaEventArgs != null)
             {
                 return;
             }
 
-            // Optional: Don't show "end media" followed by "play media" if a flipper button is used.
-            if (triggerType == TriggerType.Playback)
+            // Optional: Don't trigger "end media" followed by "play media" if a flipper button is used.
+            if (triggerType != TriggerType.Playback)
             {
-                if (Playing)
+                if (Playing && MediaPlaying)
                 {
-                    if (MediaPlaying)
-                    {
-                        PlayMediaFinished(type);
-                    }
-                    else
-                    {
-                        BeginPlayMedia(type);
-                    }
+                    BeginEndMedia(new MediaEventData());
                     return;
                 }
             }
 
-            BeginEndMedia(type);
-        }
-
-        private void BeginEndMedia(PlayFileType type)
-        {
-            endMediaEventArgs = new(EndMediaFinished, type);
-            EndMediaEvent?.Invoke(this, endMediaEventArgs);
-            endMediaEventArgs.ContinueIfNotIntercepted();
-        }
-
-        private void EndMediaFinished(PlayFileType type)
-        {
-            endMediaEventArgs = null;
-
-            MediaPlaying = false;
-            if (type == PlayFileType.Play)
+            if (Playing == MediaPlaying)
             {
-                MediaPlayingFile = null;
+                MediaPlayingFile = PlayingFile;
+                return;
             }
 
-            BeginPlayMedia(type);
+            if (Playing)
+            {
+                BeginPlayMedia(new MediaEventData());
+            }
+            else
+            {
+                BeginEndMedia(new MediaEventData());
+            }
         }
 
-        private void BeginPlayMedia(PlayFileType type)
+        private void BeginEndMedia(MediaEventData data)
         {
-            // Playing may be false if no following track is played.
-            playMediaEventArgs = new (PlayMediaFinished, type);
-            PlayMediaEvent?.Invoke(this, playMediaEventArgs);
-            playMediaEventArgs.ContinueIfNotIntercepted();
+            MediaPlaying = false;
+            MediaPlayingFile = PlayingFile;
+
+            mediaEventArgs = new(MediaEventType.End, EndMediaFinished, data);
+            MediaEvent?.Invoke(this, mediaEventArgs);
+            mediaEventArgs.ContinueIfNotIntercepted();
         }
 
-        private void PlayMediaFinished(PlayFileType type)
+        private void EndMediaFinished(MediaEventData data)
         {
-            playMediaEventArgs = null;
+            mediaEventArgs = null;
+
+            if (Playing)
+            {
+                BeginPlayMedia(data);
+            }
+        }
+
+        private void BeginPlayMedia(MediaEventData data)
+        {
+            mediaEventArgs = new (MediaEventType.Play, PlayMediaFinished, data);
+            MediaEvent?.Invoke(this, mediaEventArgs);
+            mediaEventArgs.ContinueIfNotIntercepted();
+        }
+
+        private void PlayMediaFinished(MediaEventData data)
+        {
+            mediaEventArgs = null;
 
             MediaPlayingFile = PlayingFile;
-            MediaPlaying = Playing;
+            MediaPlaying = true;
+
+            if (!Playing)
+            {
+                BeginEndMedia(data);
+            }
         }
 
         public void PlayNext(TriggerType triggerType)
@@ -605,7 +614,7 @@ namespace PinJuke.Model
             // The next file can become null when the end is reached.
             var nextIndex = PlayingFile == null ? 0 : PlayingFileIndex + 1;
             var nextFile = Playlist.ElementAtOrDefault(nextIndex);
-            PlayFile(nextFile, PlayFileType.Play, triggerType, StateType.Next);
+            PlayFile(nextFile, triggerType, StateType.Next);
         }
 
         public void PlayPrevious(TriggerType triggerType)
@@ -613,7 +622,7 @@ namespace PinJuke.Model
             // The previous file can become null when the beginning is reached.
             var previousIndex = PlayingFile == null ? Playlist.Count - 1 : PlayingFileIndex - 1;
             var previousFile = Playlist.ElementAtOrDefault(previousIndex);
-            PlayFile(previousFile, PlayFileType.Play, triggerType, StateType.Previous);
+            PlayFile(previousFile, triggerType, StateType.Previous);
         }
 
         public void PlayOrFollowDirectory(TriggerType triggerType)
@@ -625,7 +634,7 @@ namespace PinJuke.Model
 
             if (NavigationNode.Playable)
             {
-                PlayFile(NavigationNode, PlayFileType.Play, triggerType);
+                PlayFile(NavigationNode, triggerType);
                 return;
             }
 

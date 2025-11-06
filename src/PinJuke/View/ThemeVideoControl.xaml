@@ -15,9 +15,11 @@
         </Grid.LayoutTransform>
         <ffme:MediaElement x:Name="StartMediaElement">
         </ffme:MediaElement>
+        <ffme:MediaElement x:Name="StopMediaElement">
+        </ffme:MediaElement>
         <ffme:MediaElement x:Name="LoopMediaElement">
         </ffme:MediaElement>
-        <ffme:MediaElement x:Name="StopMediaElement">
+        <ffme:MediaElement x:Name="IdleMediaElement">
         </ffme:MediaElement>
     </Grid>
 </local:BaseControl>

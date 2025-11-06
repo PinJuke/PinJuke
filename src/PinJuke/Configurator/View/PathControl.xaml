@@ -10,7 +10,7 @@
     >
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="{Binding InputWidth}"/>
             <ColumnDefinition Width="150"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
