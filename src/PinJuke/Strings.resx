@@ -555,4 +555,7 @@ Track: restart</value>
   <data name="ThemeVideoIdleFile" xml:space="preserve">
     <value>Theme video idle file</value>
   </data>
+  <data name="TrackBrowserOn" xml:space="preserve">
+    <value>Show track browser on</value>
+  </data>
 </root>

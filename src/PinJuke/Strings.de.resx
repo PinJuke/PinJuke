@@ -555,4 +555,7 @@ Titel: neu starten</value>
   <data name="ThemeVideoIdleFile" xml:space="preserve">
     <value>Thematische Videodatei für Leerlauf</value>
   </data>
+  <data name="TrackBrowserOn" xml:space="preserve">
+    <value>Titel-Browser anzeigen auf</value>
+  </data>
 </root>
