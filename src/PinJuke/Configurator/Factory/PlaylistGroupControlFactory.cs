@@ -88,13 +88,6 @@ namespace PinJuke.Configurator.Factory
                     }
                 },
                 new RowFactory<BoolControl>() {
-                    LabelText = Strings.EnablePlaybackStatus,
-                    ChildFactory = new BoolControlFactory()
-                    {
-                        Converter = new BoolConverter(parser, sectionName, "StateEnabled"),
-                    }
-                },
-                new RowFactory<BoolControl>() {
                     LabelText = Strings.EnableTrackBrowser,
                     ChildFactory = new BoolControlFactory()
                     {
