@@ -15,7 +15,7 @@
         <valueConverter:LabelConverter x:Key="LabelConverter" />
 
         <Style x:Key="ViewVisibleFadeStyle" TargetType="{x:Type FrameworkElement}">
-            <Setter Property="Opacity" Value="0" />
+            <Setter Property="Opacity" Value="{Binding ViewOpacity, FallbackValue=0.0}" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding ViewVisible}" Value="True">
                     <DataTrigger.EnterActions>

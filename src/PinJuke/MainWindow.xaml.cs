@@ -42,6 +42,7 @@ namespace PinJuke
         private readonly BackgroundImageControl? backgroundImageControl = null;
         private readonly VisualizerControl? visualizerControl = null;
         private readonly ThemeVideoControl? themeVideoControl = null;
+        private readonly IntroImageControl introImageControl;
         private readonly MediaControl? mediaControl = null;
         private readonly CoverControl? coverControl = null;
         private readonly BrowserControl? browserControl = null;
@@ -91,6 +92,10 @@ namespace PinJuke
                 new ThemeVideoMediator(themeVideoControl, mainModel, displayConfig).Initialize();
                 ThemeVideoContainer.Content = themeVideoControl;
             }
+
+            introImageControl = new();
+            new IntroImageMediator(introImageControl, mainModel).Initialize();
+            IntroImageContainer.Content = introImageControl;
 
             if (displayConfig.Role == Configuration.DisplayRole.BackGlass)
             {

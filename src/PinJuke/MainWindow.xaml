@@ -29,6 +29,9 @@
         <ContentControl x:Name="ThemeVideoContainer">
         </ContentControl>
 
+        <ContentControl x:Name="IntroImageContainer">
+        </ContentControl>
+
         <ContentControl x:Name="MediaElementContainer">
         </ContentControl>
 
