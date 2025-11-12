@@ -1,7 +1,4 @@
-﻿#if !DISABLE_DIRECTOUTPUT
-using DirectOutput.Cab.Out.DMX;
-#endif
-using PinJuke.Model;
+﻿using PinJuke.Model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,21 +10,21 @@ using System.Windows.Media.Imaging;
 
 namespace PinJuke.View.Mediator
 {
-    public class BrowserMediator : Mediator
+    public class IntroImageMediator : Mediator
     {
-        private readonly BrowserControl browserControl;
+        private readonly IntroImageControl introImageControl;
         private readonly MainModel mainModel;
 
-        public BrowserMediator(BrowserControl browserControl, MainModel mainModel) : base(browserControl)
+        public IntroImageMediator(IntroImageControl introImageControl, MainModel mainModel) : base(introImageControl)
         {
-            this.browserControl = browserControl;
+            this.introImageControl = introImageControl;
             this.mainModel = mainModel;
         }
 
         protected override void OnLoaded()
         {
             base.OnLoaded();
-            UpdateView();
+            UpdateVisibility();
             mainModel.PropertyChanged += MainModel_PropertyChanged;
         }
 
@@ -41,19 +38,15 @@ namespace PinJuke.View.Mediator
         {
             switch (e.PropertyName)
             {
-                case nameof(MainModel.NavigationNode):
-                    UpdateView();
-                    break;
-                case nameof(MainModel.BrowserVisible):
-                    UpdateView();
+                case nameof(MainModel.SceneType):
+                    UpdateVisibility();
                     break;
             }
         }
 
-        private void UpdateView()
+        private void UpdateVisibility()
         {
-            browserControl.FileNode = mainModel.NavigationNode;
-            browserControl.ViewVisible = mainModel.BrowserVisible;
+            introImageControl.ViewVisible = mainModel.SceneType == SceneType.Intro;
         }
     }
 }

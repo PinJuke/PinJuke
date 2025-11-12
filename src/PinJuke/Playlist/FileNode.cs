@@ -15,6 +15,10 @@ namespace PinJuke.Playlist
         Video,
         Stream,
         M3u,
+        SpotifyPlaylist,
+        SpotifyTrack,
+        SpotifyAlbum,
+        SpotifyArtist,
     }
 
     public class FileNode
@@ -30,7 +34,7 @@ namespace PinJuke.Playlist
         public FileType Type { get; }
         public int ChildCount { get; private set; } = 0;
 
-        public bool Playable => Type == FileType.Music || Type == FileType.Video || Type == FileType.Stream;
+        public bool Playable => Type == FileType.Music || Type == FileType.Video || Type == FileType.Stream || Type == FileType.SpotifyTrack;
 
         public string DisplayBasePath
         {

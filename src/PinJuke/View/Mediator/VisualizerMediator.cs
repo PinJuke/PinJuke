@@ -1,4 +1,6 @@
-﻿using DirectOutput.Cab.Out.DMX;
+﻿#if !DISABLE_DIRECTOUTPUT
+using DirectOutput.Cab.Out.DMX;
+#endif
 using PinJuke.Audio;
 using PinJuke.Configuration;
 using PinJuke.Model;
