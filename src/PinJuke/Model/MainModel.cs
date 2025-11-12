@@ -280,6 +280,8 @@ namespace PinJuke.Model
 
         private int presetInfoLastHideQueuedAt;
 
+        private int presetChangedByMediaAt;
+
         private State lastState = new State(StateType.Stop);
         /// <summary>
         /// Saves the last occurred state.
@@ -404,6 +406,17 @@ namespace PinJuke.Model
         {
             PresetEvent?.Invoke(this, new(PresetAction.Next));
             ShowPresetInfo();
+        }
+
+        private void TriggerNextPresetByMedia()
+        {
+            var now = presetInfoLastHideQueuedAt = Environment.TickCount;
+            if (now - presetChangedByMediaAt < 5000)
+            {
+                return;
+            }
+            presetChangedByMediaAt = now;
+            PresetEvent?.Invoke(this, new(PresetAction.Next));
         }
 
         private UserPlaylist GetUserPlaylist()
@@ -555,7 +568,7 @@ namespace PinJuke.Model
 
             if (Playing == MediaPlaying)
             {
-                MediaPlayingFile = PlayingFile;
+                UpdateMediaPlaying(MediaPlaying);
                 return;
             }
 
@@ -571,8 +584,7 @@ namespace PinJuke.Model
 
         private void BeginEndMedia(MediaEventData data)
         {
-            MediaPlaying = false;
-            MediaPlayingFile = PlayingFile;
+            UpdateMediaPlaying(false);
 
             mediaEventArgs = new(MediaEventType.End, EndMediaFinished, data);
             MediaEvent?.Invoke(this, mediaEventArgs);
@@ -600,12 +612,27 @@ namespace PinJuke.Model
         {
             mediaEventArgs = null;
 
-            MediaPlayingFile = PlayingFile;
-            MediaPlaying = true;
+            UpdateMediaPlaying(true);
 
             if (!Playing)
             {
                 BeginEndMedia(data);
+            }
+        }
+
+        private void UpdateMediaPlaying(bool mediaPlaying)
+        {
+            if (mediaPlaying)
+            {
+                MediaPlayingFile = PlayingFile;
+                MediaPlaying = true;
+
+                TriggerNextPresetByMedia();
+            }
+            else
+            {
+                MediaPlaying = false;
+                MediaPlayingFile = PlayingFile;
             }
         }
 
