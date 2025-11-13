@@ -3,6 +3,7 @@ using PinJuke.Model;
 using PinJuke.Playlist;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,6 +17,8 @@ namespace PinJuke.Spotify
         private readonly ISpotifyService _spotifyService;
         private readonly SpotifyConfig _config;
         private readonly SpotifyMediaProvider _mediaProvider;
+        private readonly SpotifyPlaybackController _playbackController;
+        private SpotifyStateSynchronizer? _stateSynchronizer;
         private MainModel? _mainModel;
         private bool _isInitialized = false;
 
@@ -23,12 +26,20 @@ namespace PinJuke.Spotify
         public bool IsConnected => _spotifyService.IsConnected;
         public ISpotifyService SpotifyService => _spotifyService;
         public SpotifyMediaProvider MediaProvider => _mediaProvider;
+        public SpotifyPlaybackController PlaybackController => _playbackController;
+
+        // Cache for the current active playlist to avoid reloading all playlists
+        private SpotifyPlaylist? _currentPlaylistCache = null;
+        private string? _currentPlaylistId = null;
+        private readonly Configuration.Configuration _configuration;
 
         public SpotifyIntegrationService(Configuration.Configuration configuration)
         {
             _config = configuration.Spotify;
+            _configuration = configuration; // Store full configuration to access Player.SpotifyPlaylistId
             _spotifyService = new SpotifyService();
-            _mediaProvider = new SpotifyMediaProvider(_config);
+            _mediaProvider = new SpotifyMediaProvider(_config, () => GetCurrentPlaylistWithTracksAsync());
+            _playbackController = new SpotifyPlaybackController(_config);
             
             // Automatically load any saved authentication tokens
             try
@@ -50,6 +61,9 @@ namespace PinJuke.Spotify
             }
 
             _mainModel = mainModel;
+            
+            // Set the Spotify integration reference in MainModel
+            mainModel.SetSpotifyIntegration(this);
 
             if (!IsEnabled)
             {
@@ -136,9 +150,17 @@ namespace PinJuke.Spotify
         /// </summary>
         public void SetAuthResult(SpotifyAuthResult authResult)
         {
-            System.Diagnostics.Debug.WriteLine("SpotifyIntegrationService: Setting auth result for both SpotifyService and MediaProvider");
+            System.Diagnostics.Debug.WriteLine("SpotifyIntegrationService: Setting auth result for SpotifyService, MediaProvider, and PlaybackController");
             _spotifyService.AuthService.SetAuthResult(authResult);
             _mediaProvider.SetAuthResult(authResult);
+            _playbackController.SetAuthResult(authResult);
+            
+            // Start state synchronizer if we have a valid auth result and main model
+            if (authResult.IsSuccess && _mainModel != null && _stateSynchronizer == null)
+            {
+                _stateSynchronizer = new SpotifyStateSynchronizer(this, _mainModel);
+                System.Diagnostics.Debug.WriteLine("SpotifyIntegrationService: Started Spotify state synchronizer");
+            }
         }
 
         public async Task<bool> AuthenticateAsync()
@@ -236,6 +258,88 @@ namespace PinJuke.Spotify
             }
         }
 
+        /// <summary>
+        /// Get the current active playlist with tracks loaded
+        /// This is much more efficient than loading all playlists - we only load the playlist we're actually playing from
+        /// </summary>
+        private async Task<List<SpotifyPlaylist>> GetCurrentPlaylistWithTracksAsync()
+        {
+            try
+            {
+                if (!IsConnected)
+                {
+                    Trace.WriteLine("SpotifyIntegration: Not connected, cannot load current playlist");
+                    return new List<SpotifyPlaylist>();
+                }
+
+                // Try to get the current playlist ID from the main model
+                string? currentPlaylistId = GetCurrentPlaylistId();
+                
+                if (string.IsNullOrEmpty(currentPlaylistId))
+                {
+                    Trace.WriteLine("SpotifyIntegration: No current playlist ID available");
+                    return new List<SpotifyPlaylist>();
+                }
+
+                // Check if we already have this playlist cached
+                if (_currentPlaylistCache != null && _currentPlaylistId == currentPlaylistId)
+                {
+                    Trace.WriteLine($"SpotifyIntegration: Using cached playlist '{_currentPlaylistCache.Name}' with {_currentPlaylistCache.Tracks.Count} tracks");
+                    return new List<SpotifyPlaylist> { _currentPlaylistCache };
+                }
+
+                // Load the specific playlist with tracks
+                Trace.WriteLine($"SpotifyIntegration: Loading current playlist {currentPlaylistId} with tracks...");
+                var fullPlaylist = await _spotifyService.GetPlaylistAsync(currentPlaylistId);
+                
+                if (fullPlaylist != null && fullPlaylist.Tracks.Count > 0)
+                {
+                    // Cache the playlist
+                    _currentPlaylistCache = fullPlaylist;
+                    _currentPlaylistId = currentPlaylistId;
+                    
+                    Trace.WriteLine($"SpotifyIntegration: Loaded current playlist '{fullPlaylist.Name}' with {fullPlaylist.Tracks.Count} tracks");
+                    return new List<SpotifyPlaylist> { fullPlaylist };
+                }
+                else
+                {
+                    Trace.WriteLine($"SpotifyIntegration: Current playlist {currentPlaylistId} is empty or not found");
+                    return new List<SpotifyPlaylist>();
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"SpotifyIntegration: Error loading current playlist with tracks: {ex.Message}");
+                return new List<SpotifyPlaylist>();
+            }
+        }
+
+        /// <summary>
+        /// Get the current playlist ID from configuration
+        /// </summary>
+        private string? GetCurrentPlaylistId()
+        {
+            // Get the playlist ID directly from the configuration
+            // This is much more reliable than trying to guess from file nodes
+            if (_configuration.Player.SourceType == Configuration.PlayerSourceType.SpotifyPlaylist &&
+                !string.IsNullOrEmpty(_configuration.Player.SpotifyPlaylistId))
+            {
+                return _configuration.Player.SpotifyPlaylistId;
+            }
+
+            return null; // Not playing from a Spotify playlist
+        }
+
+        /// <summary>
+        /// Clear the playlist cache (call this when switching playlists)
+        /// </summary>
+        public void ClearPlaylistCache()
+        {
+            _currentPlaylistCache = null;
+            _currentPlaylistId = null;
+            Trace.WriteLine("SpotifyIntegration: Cleared playlist cache");
+        }
+
         public SpotifyMediaProvider GetMediaProvider()
         {
             return _mediaProvider;
@@ -258,8 +362,10 @@ namespace PinJuke.Spotify
 
         public void Dispose()
         {
+            _stateSynchronizer?.Dispose();
             _mediaProvider?.Dispose();
             _spotifyService?.Dispose();
+            _playbackController?.Dispose();
         }
     }
 }

@@ -352,6 +352,108 @@ namespace PinJuke.Spotify
             }
         }
 
+        /// <summary>
+        /// Get the current playback state
+        /// </summary>
+        public async Task<SpotifyCurrentlyPlaying?> GetCurrentlyPlayingAsync()
+        {
+            try
+            {
+                var response = await httpClient.GetAsync("https://api.spotify.com/v1/me/player/currently-playing");
+                
+                if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                {
+                    // No playback currently active
+                    return null;
+                }
+                
+                if (!response.IsSuccessStatusCode)
+                {
+                    Debug.WriteLine($"Failed to get currently playing: {response.StatusCode}");
+                    return null;
+                }
+
+                var jsonContent = await response.Content.ReadAsStringAsync();
+                var jsonDoc = JsonDocument.Parse(jsonContent);
+                
+                var isPlaying = jsonDoc.RootElement.GetProperty("is_playing").GetBoolean();
+                var progressMs = jsonDoc.RootElement.GetProperty("progress_ms").GetInt32();
+                
+                var itemElement = jsonDoc.RootElement.GetProperty("item");
+                SpotifyTrack? track = null;
+                
+                if (itemElement.ValueKind != JsonValueKind.Null)
+                {
+                    var trackId = itemElement.GetProperty("id").GetString() ?? "";
+                    var trackName = itemElement.GetProperty("name").GetString() ?? "";
+                    var trackUri = itemElement.GetProperty("uri").GetString() ?? "";
+                    var durationMs = itemElement.GetProperty("duration_ms").GetInt32();
+                    
+                    var artists = new List<string>();
+                    var artistsArray = itemElement.GetProperty("artists").EnumerateArray();
+                    foreach (var artist in artistsArray)
+                    {
+                        artists.Add(artist.GetProperty("name").GetString() ?? "");
+                    }
+                    
+                    track = new SpotifyTrack
+                    {
+                        Id = trackId,
+                        Name = trackName,
+                        Uri = trackUri,
+                        DurationMs = durationMs,
+                        Artists = artists
+                    };
+                }
+
+                return new SpotifyCurrentlyPlaying
+                {
+                    Item = track,
+                    IsPlaying = isPlaying,
+                    ProgressMs = progressMs
+                };
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error getting currently playing: {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Set repeat mode for playback
+        /// </summary>
+        /// <param name="state">off, track, context</param>
+        /// <param name="deviceId">Device ID</param>
+        public async Task<bool> SetRepeatAsync(string state = "context", string? deviceId = null)
+        {
+            try
+            {
+                var url = $"https://api.spotify.com/v1/me/player/repeat?state={state}";
+                if (!string.IsNullOrEmpty(deviceId))
+                {
+                    url += $"&device_id={deviceId}";
+                }
+
+                var response = await httpClient.PutAsync(url, null);
+                if (response.IsSuccessStatusCode)
+                {
+                    Debug.WriteLine($"Successfully set repeat mode to: {state}");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Failed to set repeat mode: {response.StatusCode}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error setting repeat mode: {ex.Message}");
+                return false;
+            }
+        }
+
         public void Dispose()
         {
             httpClient?.Dispose();

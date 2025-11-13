@@ -24,6 +24,10 @@ namespace PinJuke
 {
     public partial class App : Application
     {
+        // Console debugging disabled for production
+        // [DllImport("kernel32.dll")]
+        // private static extern bool AllocConsole();
+        
         private MainModel? mainModel;
         private ConfigurationService configurationService = new();
         private BeaconService beaconService = new();
@@ -144,6 +148,13 @@ namespace PinJuke
 
         private void RunPlayer(string? playlistConfigFilePath)
         {
+            // Console debugging disabled for production
+            // AllocConsole();
+            // var consoleListener = new ConsoleTraceListener();
+            // System.Diagnostics.Trace.Listeners.Add(consoleListener);
+            // Console.WriteLine("=== PinJuke Debug Console ===");
+            // Debug.WriteLine("Debug console initialized");
+            
             try
             {
                 if (playlistConfigFilePath != null)
@@ -293,7 +304,7 @@ namespace PinJuke
                     {
                         try
                         {
-                            var pauseResult = await spotifyIntegration.MediaProvider.PauseAsync();
+                            var pauseResult = await spotifyIntegration.PlaybackController.PauseAsync();
                             var resultMessage = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [SPOTIFY ESC] Background pause result: {pauseResult}";
                             
                             // Try to log the result, but don't rely on it since app might be closing

@@ -2,6 +2,7 @@
 using PinJuke.Configuration;
 using PinJuke.Controller;
 using PinJuke.Playlist;
+using PinJuke.Spotify;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -36,6 +37,7 @@ namespace PinJuke.Model
         Play,
         Resume,
         Pause,
+        Sync, // Update UI state only without triggering media events
     }
 
     public enum TriggerType
@@ -43,6 +45,7 @@ namespace PinJuke.Model
         Playback,
         Browser,
         Automatic,
+        Remote, // For remote Spotify changes
     }
 
     public record State(StateType Type, object? Data = null);
@@ -298,11 +301,49 @@ namespace PinJuke.Model
         }
 
         public bool ShuttingDown { get; private set; } = false;
+        
+        // Spotify integration
+        private SpotifyIntegrationService? spotifyIntegration = null;
+        public SpotifyIntegrationService? SpotifyIntegration => spotifyIntegration;
+        
+        // Track user-initiated play/pause actions to avoid double notifications from polling
+        private DateTime lastUserPlayPauseAction = DateTime.MinValue;
+        private const int USER_ACTION_DEBOUNCE_MS = 2000; // Skip polling notifications for 2 seconds after user action
 
         public MainModel(Configuration.Configuration configuration, Configuration.UserConfiguration userConfiguration)
         {
             Configuration = configuration;
             UserConfiguration = userConfiguration;
+        }
+
+        public void SetSpotifyIntegration(SpotifyIntegrationService spotifyIntegrationService)
+        {
+            spotifyIntegration = spotifyIntegrationService;
+        }
+
+        /// <summary>
+        /// Set the playing state directly without triggering media events (for Spotify sync)
+        /// </summary>
+        public void SetPlayingState(bool playing)
+        {
+            Playing = playing;
+        }
+
+        /// <summary>
+        /// Check if we should skip polling notifications due to recent user action
+        /// </summary>
+        public bool ShouldSkipPollingNotification()
+        {
+            var timeSinceLastAction = DateTime.Now - lastUserPlayPauseAction;
+            return timeSinceLastAction.TotalMilliseconds < USER_ACTION_DEBOUNCE_MS;
+        }
+
+        /// <summary>
+        /// Get current playlist for Spotify integration use
+        /// </summary>
+        public List<FileNode> GetCurrentPlaylist()
+        {
+            return Playlist;
         }
 
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
@@ -532,11 +573,72 @@ namespace PinJuke.Model
 
         public void TogglePlayPause(TriggerType triggerType)
         {
+            // Check if current track is from Spotify and use Spotify API
+            if (PlayingFile is SpotifyFileNode && spotifyIntegration?.IsConnected == true)
+            {
+                // Track that user initiated this action
+                lastUserPlayPauseAction = DateTime.Now;
+                
+                // Show immediate UI feedback - don't wait for Spotify response
+                var willBePlaying = !Playing;
+                Playing = willBePlaying;
+                ShowPlaybackState(willBePlaying ? StateType.Play : StateType.Pause);
+                
+                Task.Run(async () =>
+                {
+                    try
+                    {
+                        bool success;
+                        if (willBePlaying)
+                        {
+                            success = await spotifyIntegration.PlaybackController.ResumeAsync();
+                            if (success)
+                            {
+                                Debug.WriteLine("Spotify: Successfully resumed playback");
+                            }
+                        }
+                        else
+                        {
+                            success = await spotifyIntegration.PlaybackController.PauseAsync();
+                            if (success)
+                            {
+                                Debug.WriteLine("Spotify: Successfully paused playback");
+                            }
+                        }
+
+                        if (!success)
+                        {
+                            Debug.WriteLine("Spotify: Failed to toggle play/pause, reverting UI state");
+                            // Revert UI state if Spotify call failed
+                            System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                Playing = !willBePlaying;
+                                ShowPlaybackState(!willBePlaying ? StateType.Play : StateType.Pause);
+                            });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Spotify: Error toggling play/pause: {ex.Message}");
+                        // Revert UI state if Spotify call failed
+                        System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            Playing = !willBePlaying;
+                            ShowPlaybackState(!willBePlaying ? StateType.Play : StateType.Pause);
+                        });
+                    }
+                });
+                return;
+            }
+
+            // Use local control for non-Spotify content
             PlayFile(PlayingFile, Playing ? PlayFileType.Pause : PlayFileType.Resume, triggerType);
         }
 
         public void PlayFile(FileNode? node, PlayFileType type, TriggerType triggerType, StateType? playingStateType = null)
         {
+            Trace.WriteLine($"MainModel.PlayFile: Playing {node?.DisplayName ?? "null"} (Type: {type}, Trigger: {triggerType})");
+            
             EnterPlayback();
 
             node = node?.FindThisOrNextPlayable();
@@ -544,6 +646,16 @@ namespace PinJuke.Model
             if (type == PlayFileType.Resume || type == PlayFileType.Pause)
             {
                 Playing = type == PlayFileType.Resume;
+            }
+            else if (type == PlayFileType.Sync)
+            {
+                // Sync mode: Update UI state only, don't trigger media events or status overlays
+                // This is used when Spotify has already changed tracks and we just need to update the local UI silently
+                PlayingFile = node;
+                Playing = node != null;
+                GetUserPlaylist().TrackFilePath = node?.FullName ?? "";
+                // Don't call ShowPlaybackState() to avoid showing status overlays during sync
+                return; // Don't trigger any media events
             }
             else
             {
@@ -620,6 +732,48 @@ namespace PinJuke.Model
 
         public void PlayNext(TriggerType triggerType)
         {
+            // Check if current track is from Spotify and use Spotify API
+            if (PlayingFile is SpotifyFileNode && spotifyIntegration?.IsConnected == true)
+            {
+                Task.Run(async () =>
+                {
+                    try
+                    {
+                        var success = await spotifyIntegration.PlaybackController.NextTrackAsync();
+                        if (success)
+                        {
+                            Debug.WriteLine("Spotify: Successfully skipped to next track");
+                            // Don't update local state here - let the polling service handle it
+                        }
+                        else
+                        {
+                            Debug.WriteLine("Spotify: Failed to skip to next track, falling back to local navigation");
+                            // Fallback to local navigation
+                            System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                PlayNextLocal(triggerType);
+                            });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Spotify: Error skipping to next track: {ex.Message}");
+                        // Fallback to local navigation
+                        System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            PlayNextLocal(triggerType);
+                        });
+                    }
+                });
+                return;
+            }
+
+            // Use local playlist navigation for non-Spotify content
+            PlayNextLocal(triggerType);
+        }
+
+        private void PlayNextLocal(TriggerType triggerType)
+        {
             // The next file can become null when the end is reached.
             var nextIndex = PlayingFile == null ? 0 : PlayingFileIndex + 1;
             var nextFile = Playlist.ElementAtOrDefault(nextIndex);
@@ -627,6 +781,48 @@ namespace PinJuke.Model
         }
 
         public void PlayPrevious(TriggerType triggerType)
+        {
+            // Check if current track is from Spotify and use Spotify API
+            if (PlayingFile is SpotifyFileNode && spotifyIntegration?.IsConnected == true)
+            {
+                Task.Run(async () =>
+                {
+                    try
+                    {
+                        var success = await spotifyIntegration.PlaybackController.PreviousTrackAsync();
+                        if (success)
+                        {
+                            Debug.WriteLine("Spotify: Successfully skipped to previous track");
+                            // Don't update local state here - let the polling service handle it
+                        }
+                        else
+                        {
+                            Debug.WriteLine("Spotify: Failed to skip to previous track, falling back to local navigation");
+                            // Fallback to local navigation
+                            System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                PlayPreviousLocal(triggerType);
+                            });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Spotify: Error skipping to previous track: {ex.Message}");
+                        // Fallback to local navigation
+                        System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            PlayPreviousLocal(triggerType);
+                        });
+                    }
+                });
+                return;
+            }
+
+            // Use local playlist navigation for non-Spotify content
+            PlayPreviousLocal(triggerType);
+        }
+
+        private void PlayPreviousLocal(TriggerType triggerType)
         {
             // The previous file can become null when the beginning is reached.
             var previousIndex = PlayingFile == null ? Playlist.Count - 1 : PlayingFileIndex - 1;

@@ -1,5 +1,6 @@
 using PinJuke.Playlist;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -13,11 +14,13 @@ namespace PinJuke.Spotify
         private readonly SpotifyConfig config;
         private readonly SpotifyPlaybackController playbackController;
         private SpotifyAuthResult? currentAuth;
+        private readonly Func<Task<List<SpotifyPlaylist>>>? getPlaylistsFunc;
 
-        public SpotifyMediaProvider(SpotifyConfig config)
+        public SpotifyMediaProvider(SpotifyConfig config, Func<Task<List<SpotifyPlaylist>>>? getPlaylistsFunc = null)
         {
             this.config = config;
             this.playbackController = new SpotifyPlaybackController(config);
+            this.getPlaylistsFunc = getPlaylistsFunc;
         }
 
         public void SetAuthResult(SpotifyAuthResult authResult)
@@ -63,22 +66,22 @@ namespace PinJuke.Spotify
         {
             try
             {
-                Debug.WriteLine($"SpotifyMediaProvider: Controlling Spotify playback for {fileNode.DisplayName}");
-                Debug.WriteLine($"SpotifyMediaProvider: Track URI: {fileNode.FullName}");
-                Debug.WriteLine($"SpotifyMediaProvider: Config DeviceId: '{config.DeviceId}', DeviceName: '{config.DeviceName}'");
-                Debug.WriteLine($"SpotifyMediaProvider: Auto-transfer enabled: {config.AutoTransferPlayback}");
+                Trace.WriteLine($"SpotifyMediaProvider: Controlling Spotify playback for {fileNode.DisplayName}");
+                Trace.WriteLine($"SpotifyMediaProvider: Track URI: {fileNode.FullName}");
+                Trace.WriteLine($"SpotifyMediaProvider: Config DeviceId: '{config.DeviceId}', DeviceName: '{config.DeviceName}'");
+                Trace.WriteLine($"SpotifyMediaProvider: Auto-transfer enabled: {config.AutoTransferPlayback}");
 
                 var currentAuth = GetCurrentAuth();
                 if (currentAuth == null || currentAuth.IsExpired)
                 {
-                    Debug.WriteLine("SpotifyMediaProvider: No valid authentication available");
+                    Trace.WriteLine("SpotifyMediaProvider: No valid authentication available");
                     return null;
                 }
 
                 // Validate device ID
                 if (string.IsNullOrEmpty(config.DeviceId))
                 {
-                    Debug.WriteLine("SpotifyMediaProvider: ERROR - No device selected! Please select a playback device in Global Config.");
+                    Trace.WriteLine("SpotifyMediaProvider: ERROR - No device selected! Please select a playback device in Global Config.");
                     return null;
                 }
 
@@ -87,8 +90,8 @@ namespace PinJuke.Spotify
                 
                 if (isPlaylistTrack)
                 {
-                    Debug.WriteLine("SpotifyMediaProvider: This appears to be a track from a playlist");
-                    Debug.WriteLine("SpotifyMediaProvider: For better experience, consider playing the whole playlist in Spotify app");
+                    Trace.WriteLine("SpotifyMediaProvider: This appears to be a track from a playlist");
+                    Trace.WriteLine("SpotifyMediaProvider: For better experience, consider playing the whole playlist in Spotify app");
                     
                     // Get the playlist URI from the parent node or try to derive it
                     // For now, we'll play the individual track but log suggestions for improvement
@@ -97,35 +100,79 @@ namespace PinJuke.Spotify
                 // If auto-transfer is enabled and we have a device configured, transfer playback first
                 if (config.AutoTransferPlayback && !string.IsNullOrEmpty(config.DeviceId))
                 {
-                    Debug.WriteLine($"SpotifyMediaProvider: Transferring playback to device {config.DeviceName} ({config.DeviceId})");
+                    Trace.WriteLine($"SpotifyMediaProvider: Transferring playback to device {config.DeviceName} ({config.DeviceId})");
                     var transferSuccess = await playbackController.TransferPlaybackAsync(config.DeviceId, false);
-                    Debug.WriteLine($"SpotifyMediaProvider: Transfer result: {transferSuccess}");
+                    Trace.WriteLine($"SpotifyMediaProvider: Transfer result: {transferSuccess}");
                     
                     // Wait a moment for the transfer to complete
                     await Task.Delay(500);
                 }
 
                 // Start playing the track on Spotify
-                Debug.WriteLine($"SpotifyMediaProvider: Starting track playback on device {config.DeviceId}...");
+                Trace.WriteLine($"SpotifyMediaProvider: Starting Spotify playback for track: {fileNode.DisplayName}");
                 
                 // Validate the track URI format
                 if (!fileNode.FullName.StartsWith("spotify:track:"))
                 {
-                    Debug.WriteLine($"SpotifyMediaProvider: WARNING - Invalid track URI format: {fileNode.FullName}");
-                    Debug.WriteLine("SpotifyMediaProvider: Expected format: spotify:track:TRACKID");
+                    Trace.WriteLine($"SpotifyMediaProvider: WARNING - Invalid track URI format: {fileNode.FullName}");
+                    Trace.WriteLine("SpotifyMediaProvider: Expected format: spotify:track:TRACKID");
+                    return null;
+                }
+
+                bool success = false;
+                
+                // For Spotify tracks, we ONLY use playlist context - no individual track playback
+                if (fileNode is SpotifyFileNode spotifyTrack && spotifyTrack.SpotifyTrack != null)
+                {
+                    Trace.WriteLine($"SpotifyMediaProvider: Processing Spotify track: {spotifyTrack.DisplayName}");
+                    Trace.WriteLine($"SpotifyMediaProvider: Track ID: {spotifyTrack.SpotifyTrack.Id}");
+                    Trace.WriteLine($"SpotifyMediaProvider: getPlaylistsFunc is {(getPlaylistsFunc != null ? "available" : "null")}");
+                    
+                    // Try to find a playlist that contains this track
+                    var (playlist, trackIndex) = await FindTrackInPlaylistsAsync(spotifyTrack.SpotifyTrack.Id);
+                    
+                    if (playlist != null && trackIndex >= 0)
+                    {
+                        // Found the track in a playlist - use playlist context for proper next/previous
+                        var playlistUri = playlist.Id == "liked" ? "spotify:collection:tracks" : $"spotify:playlist:{playlist.Id}";
+                        Trace.WriteLine($"SpotifyMediaProvider: Found track in playlist '{playlist.Name}' at position {trackIndex}");
+                        Trace.WriteLine($"SpotifyMediaProvider: Playing playlist {playlistUri} at position {trackIndex}");
+                        
+                        success = await playbackController.PlayPlaylistAsync(playlistUri, config.DeviceId, trackIndex);
+                        
+                        if (success)
+                        {
+                            // Set repeat mode to context (repeat entire playlist)
+                            await playbackController.SetRepeatAsync("context", config.DeviceId);
+                            Trace.WriteLine("SpotifyMediaProvider: Set repeat mode to context for playlist");
+                        }
+                        else
+                        {
+                            Trace.WriteLine("SpotifyMediaProvider: PlayPlaylistAsync failed, cannot play without playlist context");
+                        }
+                    }
+                    else
+                    {
+                        Trace.WriteLine("SpotifyMediaProvider: ERROR - Track not found in any accessible playlist!");
+                        Trace.WriteLine("SpotifyMediaProvider: Cannot play individual tracks - playlist context required for proper next/previous");
+                        Trace.WriteLine("SpotifyMediaProvider: Try playing a track from within a Spotify playlist in the app first");
+                        return null; // REFUSE to play individual tracks
+                    }
+                }
+                else
+                {
+                    Trace.WriteLine($"SpotifyMediaProvider: ERROR - Not a valid SpotifyFileNode: {fileNode?.GetType().Name}");
                     return null;
                 }
                 
-                var success = await playbackController.PlayTrackAsync(fileNode.FullName, config.DeviceId);
-                
                 if (success)
                 {
-                    Debug.WriteLine($"SpotifyMediaProvider: Successfully started Spotify playback on {config.DeviceName}");
+                    Trace.WriteLine($"SpotifyMediaProvider: Successfully started Spotify playback on {config.DeviceName}");
                     
                     // Set volume if configured
                     if (config.DefaultVolume > 0 && config.DefaultVolume <= 100)
                     {
-                        Debug.WriteLine($"SpotifyMediaProvider: Setting volume to {config.DefaultVolume}%");
+                        Trace.WriteLine($"SpotifyMediaProvider: Setting volume to {config.DefaultVolume}%");
                         await playbackController.SetVolumeAsync(config.DefaultVolume, config.DeviceId);
                     }
                     
@@ -135,18 +182,18 @@ namespace PinJuke.Spotify
                 }
                 else
                 {
-                    Debug.WriteLine($"SpotifyMediaProvider: FAILED to start Spotify playback! Check:");
-                    Debug.WriteLine($"  - Device '{config.DeviceName}' ({config.DeviceId}) is active in Spotify app");
-                    Debug.WriteLine($"  - Spotify app is running and logged in");
-                    Debug.WriteLine($"  - Track URI '{fileNode.FullName}' is valid");
-                    Debug.WriteLine($"  - Network connection is available");
+                    Trace.WriteLine($"SpotifyMediaProvider: FAILED to start Spotify playback! Check:");
+                    Trace.WriteLine($"  - Device '{config.DeviceName}' ({config.DeviceId}) is active in Spotify app");
+                    Trace.WriteLine($"  - Spotify app is running and logged in");
+                    Trace.WriteLine($"  - Track is available in a Spotify playlist");
+                    Trace.WriteLine($"  - Network connection is available");
                     return null;
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"SpotifyMediaProvider error: {ex.Message}");
-                Debug.WriteLine($"SpotifyMediaProvider stack trace: {ex.StackTrace}");
+                Trace.WriteLine($"SpotifyMediaProvider error: {ex.Message}");
+                Trace.WriteLine($"SpotifyMediaProvider stack trace: {ex.StackTrace}");
                 return null;
             }
         }
@@ -191,7 +238,7 @@ namespace PinJuke.Spotify
             var currentAuth = GetCurrentAuth();
             if (currentAuth == null || currentAuth.IsExpired)
             {
-                Debug.WriteLine("SpotifyMediaProvider: No valid authentication for device lookup");
+                Trace.WriteLine("SpotifyMediaProvider: No valid authentication for device lookup");
                 return new System.Collections.Generic.List<SpotifyDevice>();
             }
 
@@ -256,8 +303,105 @@ namespace PinJuke.Spotify
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"SpotifyMediaProvider: Error loading authentication: {ex.Message}");
+                Trace.WriteLine($"SpotifyMediaProvider: Error loading authentication: {ex.Message}");
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Find a track in the user's playlists and return the playlist and track index
+        /// </summary>
+        private async Task<(SpotifyPlaylist? playlist, int trackIndex)> FindTrackInPlaylistsAsync(string trackId)
+        {
+            try
+            {
+                var currentAuth = GetCurrentAuth();
+                if (currentAuth == null || currentAuth.IsExpired)
+                {
+                    Trace.WriteLine("SpotifyMediaProvider: No valid auth for playlist search");
+                    return (null, -1);
+                }
+
+                // Use the provided playlist function if available
+                if (getPlaylistsFunc != null)
+                {
+                    Trace.WriteLine("SpotifyMediaProvider: Searching for track in user playlists...");
+                    var playlists = await getPlaylistsFunc();
+                    Trace.WriteLine($"SpotifyMediaProvider: Found {playlists.Count} playlists to search");
+                    
+                    foreach (var playlist in playlists)
+                    {
+                        Trace.WriteLine($"SpotifyMediaProvider: Checking playlist '{playlist.Name}' ({playlist.Tracks.Count} tracks)");
+                        
+                        // Check if this playlist contains the track
+                        for (int i = 0; i < playlist.Tracks.Count; i++)
+                        {
+                            if (playlist.Tracks[i].Id == trackId)
+                            {
+                                Trace.WriteLine($"SpotifyMediaProvider: FOUND track {trackId} in playlist '{playlist.Name}' at position {i}");
+                                return (playlist, i);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Trace.WriteLine("SpotifyMediaProvider: No playlist function available, cannot search for track context");
+                }
+                
+                Trace.WriteLine($"SpotifyMediaProvider: Track {trackId} not found in any of the accessible playlists");
+                return (null, -1);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"SpotifyMediaProvider: Error searching for track in playlists: {ex.Message}");
+                return (null, -1);
+            }
+        }
+
+        /// <summary>
+        /// Find the index of a track within its parent playlist
+        /// </summary>
+        private int GetTrackIndexInPlaylist(SpotifyFileNode trackNode, SpotifyFileNode playlistNode)
+        {
+            try
+            {
+                if (trackNode.SpotifyTrack == null || playlistNode.SpotifyPlaylist == null)
+                {
+                    return -1;
+                }
+
+                // Find the track in the playlist's track collection
+                for (int i = 0; i < playlistNode.SpotifyPlaylist.Tracks.Count; i++)
+                {
+                    if (playlistNode.SpotifyPlaylist.Tracks[i].Id == trackNode.SpotifyId)
+                    {
+                        Trace.WriteLine($"SpotifyMediaProvider: Found track '{trackNode.DisplayName}' at position {i} in playlist");
+                        return i;
+                    }
+                }
+
+                // If not found in the collection, try walking the FileNode children
+                int childIndex = 0;
+                var currentChild = playlistNode.FirstChild;
+                while (currentChild != null)
+                {
+                    if (currentChild is SpotifyFileNode childSpotifyNode && childSpotifyNode.SpotifyId == trackNode.SpotifyId)
+                    {
+                        Trace.WriteLine($"SpotifyMediaProvider: Found track '{trackNode.DisplayName}' at child position {childIndex} in playlist");
+                        return childIndex;
+                    }
+                    currentChild = currentChild.NextSibling;
+                    childIndex++;
+                }
+
+                Trace.WriteLine($"SpotifyMediaProvider: Could not find track '{trackNode.DisplayName}' in playlist '{playlistNode.DisplayName}'");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"SpotifyMediaProvider: Error finding track index: {ex.Message}");
+                return -1;
             }
         }
 

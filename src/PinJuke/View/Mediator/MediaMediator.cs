@@ -81,14 +81,18 @@ namespace PinJuke.View.Mediator
                 case SceneType.Playback:
                     if (mainModel.MediaPlayingFile != null)
                     {
+                        Trace.WriteLine($"MediaMediator.PlayFile: Playing file: {mainModel.MediaPlayingFile.DisplayName} (Type: {mainModel.MediaPlayingFile.Type})");
+                        
                         // Check if this is a Spotify track
                         if (spotifyMediaProvider?.CanHandle(mainModel.MediaPlayingFile) == true)
                         {
+                            Trace.WriteLine($"MediaMediator.PlayFile: Detected Spotify track, using SpotifyMediaProvider");
                             // Handle Spotify tracks asynchronously
                             _ = PlaySpotifyTrackAsync(mainModel.MediaPlayingFile);
                         }
                         else
                         {
+                            Trace.WriteLine($"MediaMediator.PlayFile: Regular file, using local playback");
                             // Handle regular files
                             mediaActionQueue.Open(mainModel.MediaPlayingFile.FullName);
                             SetPlayPause();
@@ -96,6 +100,7 @@ namespace PinJuke.View.Mediator
                     }
                     else
                     {
+                        Trace.WriteLine($"MediaMediator.PlayFile: No media file to play, closing");
                         mediaActionQueue.Close();
                     }
                     fileType = mainModel.MediaPlayingFile?.Type;
@@ -109,18 +114,18 @@ namespace PinJuke.View.Mediator
         {
             try
             {
-                Debug.WriteLine($"MediaMediator.PlaySpotifyTrackAsync: Starting playback for {spotifyTrack.DisplayName}");
+                Trace.WriteLine($"MediaMediator.PlaySpotifyTrackAsync: Starting playback for {spotifyTrack.DisplayName}");
                 
                 if (spotifyMediaProvider == null)
                 {
-                    Debug.WriteLine("MediaMediator.PlaySpotifyTrackAsync: spotifyMediaProvider is null!");
+                    Trace.WriteLine("MediaMediator.PlaySpotifyTrackAsync: spotifyMediaProvider is null!");
                     return;
                 }
 
                 var result = await spotifyMediaProvider.CreateMediaStreamAsync(spotifyTrack);
                 if (result == "spotify:external:playback")
                 {
-                    Debug.WriteLine($"MediaMediator.PlaySpotifyTrackAsync: Spotify external playback started for {spotifyTrack.DisplayName}");
+                    Trace.WriteLine($"MediaMediator.PlaySpotifyTrackAsync: Spotify external playbook started for {spotifyTrack.DisplayName}");
                     
                     // Close any local media playback since Spotify is handling it externally
                     mediaActionQueue.Close();
@@ -130,13 +135,13 @@ namespace PinJuke.View.Mediator
                 }
                 else
                 {
-                    Debug.WriteLine($"Spotify track not available for playback: {spotifyTrack.DisplayName}");
+                    Trace.WriteLine($"Spotify track not available for playback: {spotifyTrack.DisplayName}");
                     mediaActionQueue.Close();
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error playing Spotify track: {ex.Message}");
+                Trace.WriteLine($"Error playing Spotify track: {ex.Message}");
                 mediaActionQueue.Close();
             }
         }
@@ -173,23 +178,23 @@ namespace PinJuke.View.Mediator
                 bool success;
                 if (mainModel.MediaPlaying)
                 {
-                    Debug.WriteLine("MediaMediator: Resuming Spotify playback...");
+                    Trace.WriteLine("MediaMediator: Resuming Spotify playback...");
                     success = await spotifyMediaProvider.ResumeAsync();
                 }
                 else
                 {
-                    Debug.WriteLine("MediaMediator: Pausing Spotify playback...");
+                    Trace.WriteLine("MediaMediator: Pausing Spotify playback...");
                     success = await spotifyMediaProvider.PauseAsync();
                 }
 
                 if (!success)
                 {
-                    Debug.WriteLine($"MediaMediator: Failed to {(mainModel.MediaPlaying ? "resume" : "pause")} Spotify playback");
+                    Trace.WriteLine($"MediaMediator: Failed to {(mainModel.MediaPlaying ? "resume" : "pause")} Spotify playback");
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"MediaMediator: Error controlling Spotify playback: {ex.Message}");
+                Trace.WriteLine($"MediaMediator: Error controlling Spotify playback: {ex.Message}");
             }
         }
 

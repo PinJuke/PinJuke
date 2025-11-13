@@ -131,7 +131,8 @@ namespace PinJuke.Controller
                 var trackUri = $"spotify:track:{track.Id}";
                 var displayName = $"{track.Name} - {string.Join(", ", track.Artists)}";
                 
-                var trackNode = new FileNode(trackUri, displayName, FileType.SpotifyTrack);
+                // Create SpotifyFileNode instead of regular FileNode for proper playlist detection
+                var trackNode = new SpotifyFileNode(track);
                 rootNode.AppendChild(trackNode);
             }
 
