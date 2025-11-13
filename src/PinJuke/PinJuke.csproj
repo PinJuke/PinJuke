@@ -20,8 +20,6 @@
     <FileVersion>1.0.0.21</FileVersion>
     <Version>1.0.0-alpha.21</Version>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-    <!-- DirectOutput uses precompiled DLL instead of source compilation -->
-    <DefineConstants>DISABLE_DIRECTOUTPUT</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,11 +27,9 @@
     <PackageReference Include="FFME.Windows" Version="7.0.361-beta.1" />
     <PackageReference Include="NaturalSort.Extension" Version="4.4.0" />
     <PackageReference Include="NAudio.Wasapi" Version="2.2.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="OpenTK.GLWpfControl" Version="4.3.3" />
     <PackageReference Include="SoftCircuits.OrderedDictionary" Version="3.3.0" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
-    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,9 +46,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="ffmpeg\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="native\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -99,74 +92,22 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>LICENSE</TargetPath>
     </ContentWithTargetPath>
-    <!-- ProjectM and GLEW native dependencies -->
-    <ContentWithTargetPath Include="native\projectM-4.dll" Condition="Exists('native\projectM-4.dll')">
+    <ContentWithTargetPath Include="..\..\deps\projectm\dist\bin\projectM-4.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>projectM-4.dll</TargetPath>
     </ContentWithTargetPath>
-    <ContentWithTargetPath Include="native\projectM-4-playlist.dll" Condition="Exists('native\projectM-4-playlist.dll')">
+    <ContentWithTargetPath Include="..\..\deps\projectm\dist\bin\projectM-4-playlist.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>projectM-4-playlist.dll</TargetPath>
     </ContentWithTargetPath>
-    <ContentWithTargetPath Include="native\glew32.dll" Condition="Exists('native\glew32.dll')">
+    <ContentWithTargetPath Include="..\..\deps\projectm\build\vcpkg_installed\x64-windows\bin\glew32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>glew32.dll</TargetPath>
-    </ContentWithTargetPath>
-    
-    <!-- DirectOutput native dependencies -->
-    <ContentWithTargetPath Include="native\DirectOutput-PinJuke.dll" Condition="Exists('native\DirectOutput-PinJuke.dll')">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>DirectOutput-PinJuke.dll</TargetPath>
-    </ContentWithTargetPath>
-    <ContentWithTargetPath Include="native\FTD2XX32.dll" Condition="Exists('native\FTD2XX32.dll')">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>FTD2XX32.dll</TargetPath>
-    </ContentWithTargetPath>
-    <ContentWithTargetPath Include="native\FTD2XX64.dll" Condition="Exists('native\FTD2XX64.dll')">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>FTD2XX64.dll</TargetPath>
-    </ContentWithTargetPath>
-    <ContentWithTargetPath Include="native\PacDrive32.dll" Condition="Exists('native\PacDrive32.dll')">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>PacDrive32.dll</TargetPath>
-    </ContentWithTargetPath>
-    <ContentWithTargetPath Include="native\PacDrive64.dll" Condition="Exists('native\PacDrive64.dll')">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>PacDrive64.dll</TargetPath>
-    </ContentWithTargetPath>
-    
-    <!-- Audio library dependencies -->
-    <ContentWithTargetPath Include="native\ManagedBass.dll" Condition="Exists('native\ManagedBass.dll')">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>ManagedBass.dll</TargetPath>
-    </ContentWithTargetPath>
-    <ContentWithTargetPath Include="native\ManagedBass.Fx.dll" Condition="Exists('native\ManagedBass.Fx.dll')">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>ManagedBass.Fx.dll</TargetPath>
-    </ContentWithTargetPath>
-    <ContentWithTargetPath Include="native\ManagedBass.Mix.dll" Condition="Exists('native\ManagedBass.Mix.dll')">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>ManagedBass.Mix.dll</TargetPath>
-    </ContentWithTargetPath>
-    
-    <!-- Utility and system dependencies -->
-    <ContentWithTargetPath Include="native\Flee.dll" Condition="Exists('native\Flee.dll')">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>Flee.dll</TargetPath>
-    </ContentWithTargetPath>
-    <ContentWithTargetPath Include="native\Q42.HueApi.dll" Condition="Exists('native\Q42.HueApi.dll')">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>Q42.HueApi.dll</TargetPath>
-    </ContentWithTargetPath>
-    <ContentWithTargetPath Include="native\Q42.HueApi.ColorConverters.dll" Condition="Exists('native\Q42.HueApi.ColorConverters.dll')">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>Q42.HueApi.ColorConverters.dll</TargetPath>
     </ContentWithTargetPath>
   </ItemGroup>
 
   <ItemGroup>
-    <!-- DirectOutput dependency uses precompiled DLL from native folder instead of source reference -->
-    <!-- <ProjectReference Include="..\DirectOutput-PinJuke\DirectOutput-PinJuke.csproj" /> -->
+    <ProjectReference Include="..\DirectOutput-PinJuke\DirectOutput-PinJuke.csproj" />
   </ItemGroup>
 
   <ItemGroup>

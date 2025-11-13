@@ -1,9 +1,4 @@
-﻿#if !DISABLE_DIRECTOUTPUT
-using DirectOutput;
-using DirectOutput.PinballSupport;
-using DirectOutput.Table;
-#endif
-using PinJuke.Configuration;
+﻿﻿using DirectOutput;
 using PinJuke.Model;
 using System;
 using System.Collections.Generic;
@@ -48,10 +43,9 @@ namespace PinJuke.Dof
 
         private readonly MainModel mainModel;
         private readonly Configuration.Dof dof;
-#if !DISABLE_DIRECTOUTPUT
         private readonly Pinball pinball;
-#endif
         private bool disposed = false;
+        private bool setup = false;
         private bool initialized = false;
 
         public bool Initialized { get { return initialized; } }
@@ -61,9 +55,7 @@ namespace PinJuke.Dof
             this.mainModel = mainModel;
             this.dof = dof;
 
-#if !DISABLE_DIRECTOUTPUT
             pinball = new Pinball();
-#endif
         }
 
         public void Dispose()
@@ -72,14 +64,11 @@ namespace PinJuke.Dof
             disposed = true;
             mainModel.InputEvent -= MainModel_InputEvent;
             mainModel.PropertyChanged -= MainModel_PropertyChanged;
-#if !DISABLE_DIRECTOUTPUT
             pinball.Finish();
-#endif
         }
 
         public void Startup()
         {
-#if !DISABLE_DIRECTOUTPUT
             try
             {
                 pinball.Setup(dof.GlobalConfigFilePath, "", dof.RomName);
@@ -106,12 +95,6 @@ namespace PinJuke.Dof
             mainModel.PropertyChanged += MainModel_PropertyChanged;
 
             Trigger(Lamp.Startup);
-#else
-            // DirectOutput disabled for testing
-            initialized = true;
-            mainModel.InputEvent += MainModel_InputEvent;
-            mainModel.PropertyChanged += MainModel_PropertyChanged;
-#endif
         }
 
         private void MainModel_InputEvent(object? sender, InputActionEventArgs e)
@@ -154,23 +137,17 @@ namespace PinJuke.Dof
 
         private void Trigger(Lamp lamp)
         {
-#if !DISABLE_DIRECTOUTPUT
             pinball.ReceiveData((char)TableElementTypeEnum.Lamp, (int)lamp, 1); // Lamp on
             pinball.ReceiveData((char)TableElementTypeEnum.Lamp, (int)lamp, 0); // Lamp off
-#endif
         }
 
         public string[] GetControllerNames()
         {
-#if !DISABLE_DIRECTOUTPUT
             return pinball.Cabinet.OutputControllers
                 .Select(controller => Regex.Replace(controller.Name, @"\s\d+$", ""))
                 .Distinct()
                 .OrderBy(str => str, StringComparer.InvariantCulture)
                 .ToArray();
-#else
-            return new string[0];
-#endif
         }
     }
 }

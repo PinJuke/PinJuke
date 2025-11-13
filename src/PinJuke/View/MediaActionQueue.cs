@@ -1,6 +1,4 @@
-﻿#if !DISABLE_DIRECTOUTPUT
-using DirectOutput.FX.TimmedFX;
-#endif
+﻿﻿using DirectOutput.FX.TimmedFX;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
