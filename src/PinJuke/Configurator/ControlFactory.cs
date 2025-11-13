@@ -148,6 +148,17 @@ namespace PinJuke.Configurator
         }
     }
 
+    public class TextControlFactory : BaseControlFactory<TextControl>
+    {
+        public override TextControl CreateControlForRow()
+        {
+            return new TextControl()
+            {
+                Name = Name,
+            };
+        }
+    }
+
     public class SelectControlFactory : BaseControlFactory<SelectControl>
     {
         public List<Item> Items { get; set; } = new();

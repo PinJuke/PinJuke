@@ -6,6 +6,7 @@
 - [Setup Wizard](ONBOARDING.md)
 - [Configuration](CONFIGURATION.md)
 - [Theme Video Clips](THEME-VIDEOS.md)
+- [Spotify Integration](SPOTIFY-INTEGRATION.md)
 - [Controls](CONTROLS.md)
 - [Run a Playlist File](RUN.md)
 - [Pinup Popper](PINUP-POPPER.md)

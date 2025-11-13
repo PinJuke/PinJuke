@@ -52,6 +52,7 @@ namespace PinJuke.Model
         public event PropertyChangedEventHandler? PropertyChanged;
 
         // TODO: Move these into an event bus.
+        public event EventHandler? PreShutdownEvent;
         public event EventHandler? ShutdownEvent;
         public event EventHandler<InputActionEventArgs>? InputEvent;
         public event EventHandler<PresetActionEventArgs>? PresetEvent;
@@ -317,6 +318,9 @@ namespace PinJuke.Model
                 return;
             }
 
+            Debug.WriteLine("Triggering pre-shutdown event for cleanup tasks.");
+            PreShutdownEvent?.Invoke(this, EventArgs.Empty);
+
             Debug.WriteLine("Triggering shutdown event.");
             ShuttingDown = true;
             ShutdownEvent?.Invoke(this, EventArgs.Empty);
@@ -411,9 +415,13 @@ namespace PinJuke.Model
 
         public void SetScanResult(ScanResult scanResult)
         {
+            Debug.WriteLine($"MainModel.SetScanResult: Root node = {scanResult.RootFileNode?.DisplayName}, Playable files = {scanResult.PlayableFileNodesByFullName.Count}");
+            
             RootDirectory = scanResult.RootFileNode;
 
             var playlist = new List<FileNode>(scanResult.PlayableFileNodesByFullName.Values);
+            Debug.WriteLine($"MainModel.SetScanResult: Created playlist with {playlist.Count} tracks");
+            
             var index = -1;
             if (Configuration.Player.StartupTrackType == StartupTrackType.Random)
             {
@@ -435,6 +443,8 @@ namespace PinJuke.Model
             PlayingFileIndex = -1;
             Playlist = playlist;
             PlayingFileIndex = index;
+            
+            Debug.WriteLine($"MainModel.SetScanResult: Set PlayingFileIndex to {index}, Playlist count: {Playlist.Count}");
 
             NavigationNode = navigationNode ?? RootDirectory?.FindChild() ?? RootDirectory;
 
@@ -498,17 +508,25 @@ namespace PinJuke.Model
 
         private void CheckPlayOnStartup()
         {
+            Debug.WriteLine($"CheckPlayOnStartup called - PlayOnStartup: {Configuration.Player.PlayOnStartup}, SceneType: {SceneType}, PlayingFile: {PlayingFile?.DisplayName ?? "null"}");
+            
             if (Configuration.Player.PlayOnStartup && SceneType == SceneType.Playback)
             {
                 if (PlayingFile != null)
                 {
                     // Play paused file.
+                    Debug.WriteLine($"CheckPlayOnStartup: Playing paused file {PlayingFile.DisplayName}");
                     PlayFile(PlayingFile, PlayFileType.Play, TriggerType.Automatic);
                 }
                 else
                 {
+                    Debug.WriteLine("CheckPlayOnStartup: Playing next track automatically");
                     PlayNext(TriggerType.Automatic);
                 }
+            }
+            else
+            {
+                Debug.WriteLine($"CheckPlayOnStartup: Not auto-playing - PlayOnStartup: {Configuration.Player.PlayOnStartup}, SceneType: {SceneType}");
             }
         }
 

@@ -66,6 +66,23 @@ namespace PinJuke.Configurator
         }
     }
 
+    public class StringConverter : BaseConverter<TextControl>
+    {
+        public StringConverter(Parser parser, string sectionName, string entryName) : base(parser, sectionName, entryName)
+        {
+        }
+
+        public override void ReadFromControl(TextControl control, IniDocument iniDocument)
+        {
+            iniDocument[SectionName][EntryName] = Parser.FormatString(control.Value);
+        }
+
+        public override void WriteToControl(TextControl control, IniDocument iniDocument)
+        {
+            control.Value = Parser.ParseString(iniDocument[SectionName][EntryName]) ?? "";
+        }
+    }
+
     public class IntNumberConverter : BaseConverter<NumberControl>
     {
         public IntNumberConverter(Parser parser, string sectionName, string entryName) : base(parser, sectionName, entryName)
@@ -132,6 +149,24 @@ namespace PinJuke.Configurator
         public override void WriteToControl(SelectControl control, IniDocument iniDocument)
         {
             control.SelectedValue = Parser.ParseEnum<TEnum>(iniDocument[SectionName][EntryName]);
+        }
+    }
+
+    public class StringSelectConverter : BaseConverter<SelectControl>
+    {
+        public StringSelectConverter(Parser parser, string sectionName, string entryName) : base(parser, sectionName, entryName)
+        {
+        }
+
+        public override void ReadFromControl(SelectControl control, IniDocument iniDocument)
+        {
+            iniDocument[SectionName][EntryName] = control.SelectedValue?.ToString() ?? "";
+        }
+
+        public override void WriteToControl(SelectControl control, IniDocument iniDocument)
+        {
+            var value = iniDocument[SectionName][EntryName];
+            control.SelectedValue = string.IsNullOrEmpty(value) ? null : value;
         }
     }
 

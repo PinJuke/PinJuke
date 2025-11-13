@@ -38,8 +38,9 @@ namespace PinJuke.Configuration
             var dmd = CreateDisplay(DisplayRole.DMD, iniDocument["DMD"], mediaPath);
             var milkdrop = CreateMilkdrop(iniDocument["Milkdrop"]);
             var dof = CreateDof(iniDocument["DOF"]);
+            var spotify = CreateSpotify(iniDocument["Spotify"]);
             var cursorVisible = parser.ParseBool(iniDocument["PinJuke"]["CursorVisible"]) ?? false;
-            return new Configuration(playlistConfigFilePath, mediaPath, player, keyboard, playField, backGlass, dmd, milkdrop, dof, cursorVisible);
+            return new Configuration(playlistConfigFilePath, mediaPath, player, keyboard, playField, backGlass, dmd, milkdrop, dof, spotify, cursorVisible);
         }
 
         /// <summary>
@@ -84,13 +85,19 @@ namespace PinJuke.Configuration
 
         protected Player CreatePlayer(IniSection playerSection)
         {
+            var sourceType = parser.ParseEnum<PlayerSourceType>(playerSection["SourceType"])
+                ?? PlayerSourceType.LocalFiles;
             var musicPath = parser.ParseString(playerSection["MusicPath"])
                 ?? Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+            var spotifyPlaylistId = parser.ParseString(playerSection["SpotifyPlaylistId"])
+                ?? "";
             var startupTrackType = parser.ParseEnum<StartupTrackType>(playerSection["StartupTrackType"])
                 ?? StartupTrackType.FirstTrack;
             var playOnStartup = parser.ParseBool(playerSection["PlayOnStartup"])
                 ?? true;
-            return new Player(musicPath, startupTrackType, playOnStartup);
+            var shufflePlaylist = parser.ParseBool(playerSection["ShufflePlaylist"])
+                ?? false;
+            return new Player(sourceType, musicPath, spotifyPlaylistId, startupTrackType, playOnStartup, shufflePlaylist);
         }
 
         protected Keyboard CreateKeyboard(IniSection keyboardSection)
@@ -215,6 +222,36 @@ namespace PinJuke.Configuration
             }
 
             return rotation;
+        }
+
+        protected Spotify.SpotifyConfig CreateSpotify(IniSection spotifySection)
+        {
+            var enabled = parser.ParseBool(spotifySection["Enabled"]) ?? false;
+            var clientId = parser.ParseString(spotifySection["ClientId"]) ?? string.Empty;
+            var clientSecret = parser.ParseString(spotifySection["ClientSecret"]) ?? string.Empty;
+            var redirectUri = parser.ParseString(spotifySection["RedirectUri"]) ?? "http://localhost:8888/callback";
+            var usePreviewUrls = parser.ParseBool(spotifySection["UsePreviewUrls"]) ?? true;
+            var cacheDurationMinutes = parser.ParseInt(spotifySection["CacheDurationMinutes"]) ?? 30;
+            var maxTracksPerPlaylist = parser.ParseInt(spotifySection["MaxTracksPerPlaylist"]) ?? 500;
+            var deviceId = parser.ParseString(spotifySection["DeviceId"]) ?? string.Empty;
+            var deviceName = parser.ParseString(spotifySection["DeviceName"]) ?? string.Empty;
+            var autoTransferPlayback = parser.ParseBool(spotifySection["AutoTransferPlayback"]) ?? true;
+            var defaultVolume = parser.ParseInt(spotifySection["DefaultVolume"]) ?? 80;
+            
+            return new Spotify.SpotifyConfig
+            {
+                Enabled = enabled,
+                ClientId = clientId,
+                ClientSecret = clientSecret,
+                RedirectUri = redirectUri,
+                UsePreviewUrls = usePreviewUrls,
+                CacheDurationMinutes = cacheDurationMinutes,
+                MaxTracksPerPlaylist = maxTracksPerPlaylist,
+                DeviceId = deviceId,
+                DeviceName = deviceName,
+                AutoTransferPlayback = autoTransferPlayback,
+                DefaultVolume = defaultVolume
+            };
         }
     }
 
