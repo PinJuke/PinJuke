@@ -19,12 +19,96 @@ namespace PinJuke.Configurator.Factory
                 {
                     LabelText = Strings.Player,
                     Controls = [
+                        new SelectControlFactory()
+                        {
+                            Name = "PlayerSourceType",
+                            LabelText = "Music Source",
+                            Items = new()
+                            {
+                                new("Local MP3 Files", 0),
+                                new("Spotify Playlist", 1),
+                            },
+                            Converter = new IntSelectConverter(parser, "Player", "SourceType"),
+                            ChangedHandler = async (ConfiguratorControl control) =>
+                            {
+                                var value = ((SelectControl)control).SelectedValue;
+                                var isLocalFiles = value is int intValue && intValue == 0;
+                                var group = control.GetParentGroup();
+                                ((PathControl)group.GetChildByName("PlayerMusicPath")).IsEnabled = isLocalFiles;
+                                ((SelectControl)group.GetChildByName("PlayerSpotifyPlaylist")).IsEnabled = !isLocalFiles;
+                                ((ButtonControl)group.GetChildByName("RefreshSpotifyPlaylistsButton")).IsEnabled = !isLocalFiles;
+                                
+                                // If Spotify is selected, load playlists
+                                if (!isLocalFiles)
+                                {
+                                    var playlistControl = (SelectControl)group.GetChildByName("PlayerSpotifyPlaylist");
+                                    await LoadSpotifyPlaylistsAsync(playlistControl, parser);
+                                }
+                            },
+                        },
                         new PathControlFactory()
                         {
+                            Name = "PlayerMusicPath",
                             LabelText = Strings.MusicPath,
                             FileMode = false,
                             RelativeEnabled = false,
                             Converter = new PathConverter(parser, "Player", "MusicPath"),
+                        },
+                        new SelectControlFactory()
+                        {
+                            Name = "PlayerSpotifyPlaylist",
+                            LabelText = "Spotify Playlist",
+                            Items = new()
+                            {
+                                new("(Loading playlists...)", "")
+                            },
+                            Converter = new StringSelectConverter(parser, "Player", "SpotifyPlaylistId"),
+                        },
+                        new ButtonControlFactory()
+                        {
+                            Name = "RefreshSpotifyPlaylistsButton",
+                            Text = "Refresh Playlists",
+                            ClickHandler = async (control) =>
+                            {
+                                try
+                                {
+                                    System.Diagnostics.Debug.WriteLine("=== REFRESH BUTTON CLICKED ===");
+                                    
+                                    var group = control.GetParentGroup();
+                                    var playlistControl = (SelectControl)group.GetChildByName("PlayerSpotifyPlaylist");
+                                    
+                                    // Store current selection to preserve it if possible
+                                    var currentSelection = playlistControl.SelectedValue;
+                                    
+                                    // Show loading state
+                                    playlistControl.Items = new List<Item> { new Item("Refreshing playlists...", "") };
+                                    
+                                    await LoadSpotifyPlaylistsAsync(playlistControl, parser);
+                                    
+                                    // Try to restore selection if the playlist still exists
+                                    if (currentSelection != null)
+                                    {
+                                        var matchingItem = playlistControl.Items.FirstOrDefault(item => 
+                                            item.Value != null && item.Value.Equals(currentSelection));
+                                        if (matchingItem != null)
+                                        {
+                                            playlistControl.SelectedValue = currentSelection;
+                                        }
+                                    }
+                                    
+                                    System.Windows.MessageBox.Show("Playlist refresh completed!", "PinJuke", System.Windows.MessageBoxButton.OK);
+                                }
+                                catch (Exception ex)
+                                {
+                                    System.Windows.MessageBox.Show($"Error refreshing playlists: {ex.Message}", "Error", System.Windows.MessageBoxButton.OK);
+                                }
+                            },
+                        },
+                        new BoolControlFactory()
+                        {
+                            Name = "PlayerShufflePlaylist",
+                            LabelText = "Shuffle Playlist (randomize song order)",
+                            Converter = new BoolConverter(parser, "Player", "ShufflePlaylist"),
                         },
                         new SelectControlFactory()
                         {
@@ -57,6 +141,157 @@ namespace PinJuke.Configurator.Factory
                     LabelText = Strings.DisplayDmd,
                 },
             ];
+        }
+
+        private static async Task LoadSpotifyPlaylistsAsync(SelectControl playlistControl, Parser parser)
+        {
+            try
+            {
+                // Read Spotify configuration from the global config file
+                var globalConfigPath = PinJuke.Configuration.ConfigPath.CONFIG_GLOBAL_FILE_PATH;
+                var iniDoc = PinJuke.Ini.IniReader.TryRead(globalConfigPath) ?? new PinJuke.Ini.IniDocument();
+                
+                var spotifySection = iniDoc["Spotify"];
+                
+                if (spotifySection == null)
+                {
+                    playlistControl.Items = new List<Item> { new Item("(Spotify not configured in Global Config)", "") };
+                    return;
+                }
+
+                var clientId = parser.ParseString(spotifySection["ClientId"]);
+                var clientSecret = parser.ParseString(spotifySection["ClientSecret"]);
+                var redirectUri = parser.ParseString(spotifySection["RedirectUri"]) ?? "http://127.0.0.1:8888/callback";
+                var enabled = parser.ParseBool(spotifySection["Enabled"]) ?? false;
+
+                if (!enabled || string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret))
+                {
+                    playlistControl.Items = new List<Item> { new Item("(Authenticate in Global Config first)", "") };
+                    return;
+                }
+
+                // Check for saved authentication tokens
+                var accessToken = parser.ParseString(spotifySection["AccessToken"]);
+                var refreshToken = parser.ParseString(spotifySection["RefreshToken"]);
+                var expiresAtStr = parser.ParseString(spotifySection["ExpiresAt"]);
+                var scopesStr = parser.ParseString(spotifySection["Scopes"]);
+
+                if (string.IsNullOrEmpty(accessToken))
+                {
+                    playlistControl.Items = new List<Item> { new Item("(Authenticate in Global Config first)", "") };
+                    return;
+                }
+
+                // Check if token is expired
+                DateTime expiresAt = DateTime.Now.AddDays(-1); // Default to expired
+                if (!string.IsNullOrEmpty(expiresAtStr) && DateTime.TryParse(expiresAtStr, out var parsedDate))
+                {
+                    expiresAt = parsedDate;
+                }
+
+                // Create temporary Spotify service with saved tokens
+                var spotifyConfig = new PinJuke.Spotify.SpotifyConfig
+                {
+                    Enabled = true,
+                    ClientId = clientId,
+                    ClientSecret = clientSecret,
+                    RedirectUri = redirectUri
+                };
+
+                using var spotifyService = new PinJuke.Spotify.SpotifyService();
+                await spotifyService.InitializeAsync(spotifyConfig);
+
+                // Create auth result from saved tokens
+                var authResult = new PinJuke.Spotify.SpotifyAuthResult
+                {
+                    IsSuccess = true,
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken ?? "",
+                    ExpiresAt = expiresAt,
+                    Scopes = !string.IsNullOrEmpty(scopesStr) ? scopesStr.Split(',') : Array.Empty<string>()
+                };
+
+                // Set the authentication in the service
+                spotifyService.AuthService.SetAuthResult(authResult);
+
+                // Check if token is still valid, refresh if needed
+                if (authResult.IsExpired && !string.IsNullOrEmpty(authResult.RefreshToken))
+                {
+                    System.Diagnostics.Debug.WriteLine("Token expired, attempting refresh...");
+                    var refreshResult = await spotifyService.AuthService.RefreshTokenAsync();
+                    if (!refreshResult.IsSuccess)
+                    {
+                        playlistControl.Items = new List<Item> { new Item("(Authentication expired - re-authenticate in Global Config)", "") };
+                        return;
+                    }
+                    
+                    // Save the refreshed tokens
+                    System.Diagnostics.Debug.WriteLine("Token refreshed successfully, saving new tokens...");
+                    SaveUpdatedAuthTokens(refreshResult);
+                }
+                else if (authResult.IsExpired)
+                {
+                    playlistControl.Items = new List<Item> { new Item("(Authentication expired - re-authenticate in Global Config)", "") };
+                    return;
+                }
+
+                // Load playlists
+                var newItems = new List<Item>();
+                newItems.Add(new Item("Loading playlists...", ""));
+                playlistControl.Items = newItems;
+
+                System.Diagnostics.Debug.WriteLine("Fetching playlists from Spotify API...");
+                var playlists = await spotifyService.GetUserPlaylistsAsync();
+                System.Diagnostics.Debug.WriteLine($"Retrieved {playlists.Count} playlists from Spotify");
+                
+                // Create a fresh list with the new playlists
+                var finalItems = new List<Item>();
+                if (playlists.Count == 0)
+                {
+                    finalItems.Add(new Item("(No playlists found)", ""));
+                }
+                else
+                {
+                    foreach (var playlist in playlists)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Adding playlist: {playlist.Name} (ID: {playlist.Id})");
+                        finalItems.Add(new Item($"{playlist.Name} ({playlist.TrackCount} tracks)", playlist.Id));
+                    }
+                }
+                
+                // Assign the new list to trigger property change notification
+                playlistControl.Items = finalItems;
+            }
+            catch (Exception ex)
+            {
+                var errorItems = new List<Item> { new Item($"(Error loading playlists: {ex.Message})", "") };
+                playlistControl.Items = errorItems;
+            }
+        }
+
+        private static void SaveUpdatedAuthTokens(PinJuke.Spotify.SpotifyAuthResult authResult)
+        {
+            try
+            {
+                var globalConfigPath = PinJuke.Configuration.ConfigPath.CONFIG_GLOBAL_FILE_PATH;
+                var iniDoc = PinJuke.Ini.IniReader.TryRead(globalConfigPath) ?? new PinJuke.Ini.IniDocument();
+                
+                var spotifySection = iniDoc["Spotify"];
+                spotifySection["AccessToken"] = authResult.AccessToken;
+                spotifySection["RefreshToken"] = authResult.RefreshToken;
+                spotifySection["ExpiresAt"] = authResult.ExpiresAt.ToString("yyyy-MM-dd HH:mm:ss");
+                spotifySection["Scopes"] = string.Join(",", authResult.Scopes);
+                
+                // Save the updated configuration
+                using var textWriter = new System.IO.StreamWriter(globalConfigPath);
+                iniDoc.WriteTo(textWriter);
+                
+                System.Diagnostics.Debug.WriteLine("Updated Spotify auth tokens saved successfully");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error saving updated auth tokens: {ex.Message}");
+            }
         }
     }
 

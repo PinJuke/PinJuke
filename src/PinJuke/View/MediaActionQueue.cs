@@ -1,4 +1,4 @@
-﻿using DirectOutput.FX.TimmedFX;
+﻿﻿using DirectOutput.FX.TimmedFX;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

@@ -1,6 +1,7 @@
 ﻿using PinJuke.Audio;
 using PinJuke.Model;
 using PinJuke.Playlist;
+using PinJuke.Spotify;
 using PinJuke.View;
 using PinJuke.View.Mediator;
 using System;
@@ -26,10 +27,8 @@ using Unosquare.FFME.Common;
 
 namespace PinJuke
 {
-    public partial class MainWindow : Window, INotifyPropertyChanged
+    public partial class MainWindow : Window
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-
         public event EventHandler? ShutdownRequestedEvent;
 
         public float ContentScale { get; }
@@ -46,10 +45,14 @@ namespace PinJuke
         private readonly CoverControl? coverControl = null;
         private readonly BrowserControl? browserControl = null;
         private readonly PlayingTrackControl? playingTrackControl = null;
+        private readonly SpotifyMediaProvider? spotifyMediaProvider = null;
+        private readonly SpotifyIntegrationService? spotifyIntegrationService = null;
 
-        public MainWindow(MainModel mainModel, Configuration.Display displayConfig, AudioManager audioManager)
+        public MainWindow(MainModel mainModel, Configuration.Display displayConfig, AudioManager audioManager, SpotifyMediaProvider? spotifyMediaProvider = null, SpotifyIntegrationService? spotifyIntegrationService = null)
         {
             this.mainModel = mainModel;
+            this.spotifyMediaProvider = spotifyMediaProvider;
+            this.spotifyIntegrationService = spotifyIntegrationService;
             DisplayConfig = displayConfig;
 
             InitializeComponent();
@@ -93,14 +96,14 @@ namespace PinJuke
             if (displayConfig.Role == Configuration.DisplayRole.BackGlass)
             {
                 mediaControl = new();
-                new MediaMediator(mediaControl, mainModel).Initialize();
+                new MediaMediator(mediaControl, mainModel, spotifyMediaProvider).Initialize();
                 MediaElementContainer.Content = mediaControl;
             }
 
             if (displayConfig.Content.CoverEnabled)
             {
                 coverControl = new();
-                new CoverMediator(coverControl, mainModel).Initialize();
+                new CoverMediator(coverControl, mainModel, spotifyIntegrationService).Initialize();
                 CoverContainer.Content = coverControl;
             }
 

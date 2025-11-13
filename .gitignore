@@ -396,3 +396,11 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# vscode
+.vscode/
+
+# Native DDL files
+src/PinJuke/native/*
+
+# Config files
