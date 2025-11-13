@@ -20,6 +20,14 @@ namespace PinJuke.Configurator.Factory
             // Some cases of Key share the same value.
             var keys = Enum.GetNames<Key>().Select(name => new Item(name, Enum.Parse<Key>(name))).ToList();
 
+            // Create controller button options (1-32 for typical gamepad controllers)
+            var controllerButtons = new List<Item>();
+            controllerButtons.Add(new Item("None", 0)); // Option for no button assigned
+            for (int i = 1; i <= 32; i++)
+            {
+                controllerButtons.Add(new Item($"Button {i}", i));
+            }
+
             LabelText = Strings.GlobalConfiguration;
             Controls = [
                 new GroupControlFactory()
@@ -93,6 +101,54 @@ namespace PinJuke.Configurator.Factory
                             LabelText = Strings.KeyVolumeUp,
                             Items = keys,
                             Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "VolumeUp"),
+                        },
+                    ]
+                },
+                new GroupControlFactory()
+                {
+                    LabelText = Strings.Controller,
+                    Controls = [
+                        new SelectControlFactory()
+                        {
+                            LabelText = Strings.ControllerExit,
+                            Items = controllerButtons,
+                            Converter = new ControllerSelectConverter(parser, "Controller", "Exit"),
+                        },
+                        new SelectControlFactory()
+                        {
+                            LabelText = Strings.ControllerBrowse,
+                            Items = controllerButtons,
+                            Converter = new ControllerSelectConverter(parser, "Controller", "Browse"),
+                        },
+                        new SelectControlFactory()
+                        {
+                            LabelText = Strings.ControllerPrevious,
+                            Items = controllerButtons,
+                            Converter = new ControllerSelectConverter(parser, "Controller", "Previous"),
+                        },
+                        new SelectControlFactory()
+                        {
+                            LabelText = Strings.ControllerNext,
+                            Items = controllerButtons,
+                            Converter = new ControllerSelectConverter(parser, "Controller", "Next"),
+                        },
+                        new SelectControlFactory()
+                        {
+                            LabelText = Strings.ControllerPlayPause,
+                            Items = controllerButtons,
+                            Converter = new ControllerSelectConverter(parser, "Controller", "PlayPause"),
+                        },
+                        new SelectControlFactory()
+                        {
+                            LabelText = Strings.ControllerVolumeDown,
+                            Items = controllerButtons,
+                            Converter = new ControllerSelectConverter(parser, "Controller", "VolumeDown"),
+                        },
+                        new SelectControlFactory()
+                        {
+                            LabelText = Strings.ControllerVolumeUp,
+                            Items = controllerButtons,
+                            Converter = new ControllerSelectConverter(parser, "Controller", "VolumeUp"),
                         },
                     ]
                 },

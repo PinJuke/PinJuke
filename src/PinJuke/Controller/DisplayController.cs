@@ -50,6 +50,7 @@ namespace PinJuke.Controller
         public void Dispose()
         {
             tiltSoundPlayer.Dispose();
+            inputManager.Dispose();
         }
 
         public void ObserveWindow(MainWindow window)

@@ -33,6 +33,7 @@ namespace PinJuke.Configuration
             mediaPath = GetFullPath(mediaPath);
             var player = CreatePlayer(iniDocument["Player"]);
             var keyboard = CreateKeyboard(iniDocument["Keyboard"]);
+            var controller = CreateController(iniDocument["Controller"]);
             var playField = CreateDisplay(DisplayRole.PlayField, iniDocument["PlayField"], mediaPath);
             var backGlass = CreateDisplay(DisplayRole.BackGlass, iniDocument["BackGlass"], mediaPath);
             var dmd = CreateDisplay(DisplayRole.DMD, iniDocument["DMD"], mediaPath);
@@ -40,7 +41,7 @@ namespace PinJuke.Configuration
             var dof = CreateDof(iniDocument["DOF"]);
             var spotify = CreateSpotify(iniDocument["Spotify"]);
             var cursorVisible = parser.ParseBool(iniDocument["PinJuke"]["CursorVisible"]) ?? false;
-            return new Configuration(playlistConfigFilePath, mediaPath, player, keyboard, playField, backGlass, dmd, milkdrop, dof, spotify, cursorVisible);
+            return new Configuration(playlistConfigFilePath, mediaPath, player, keyboard, controller, playField, backGlass, dmd, milkdrop, dof, spotify, cursorVisible);
         }
 
         /// <summary>
@@ -64,6 +65,18 @@ namespace PinJuke.Configuration
             //iniDocument["Keyboard"]["VolumeDown"] = parser.FormatEnum<Key>(configuration.Keyboard.VolumeDown);
             //iniDocument["Keyboard"]["VolumeUp"] = parser.FormatEnum<Key>(configuration.Keyboard.VolumeUp);
             //iniDocument["Keyboard"]["Tilt"] = parser.FormatEnum<Key>(configuration.Keyboard.Tilt);
+
+            //if (configuration.Controller != null)
+            //{
+            //    iniDocument["Controller"]["Exit"] = parser.FormatInt(configuration.Controller.Exit);
+            //    iniDocument["Controller"]["Browse"] = parser.FormatInt(configuration.Controller.Browse);
+            //    iniDocument["Controller"]["Previous"] = parser.FormatInt(configuration.Controller.Previous);
+            //    iniDocument["Controller"]["Next"] = parser.FormatInt(configuration.Controller.Next);
+            //    iniDocument["Controller"]["PlayPause"] = parser.FormatInt(configuration.Controller.PlayPause);
+            //    iniDocument["Controller"]["VolumeDown"] = parser.FormatInt(configuration.Controller.VolumeDown);
+            //    iniDocument["Controller"]["VolumeUp"] = parser.FormatInt(configuration.Controller.VolumeUp);
+            //    iniDocument["Controller"]["Tilt"] = parser.FormatInt(configuration.Controller.Tilt);
+            //}
 
             //iniDocument["Milkdrop"]["PresetsPath"] = parser.FormatString(configuration.Milkdrop.PresetsPath);
             //iniDocument["Milkdrop"]["TexturesPath"] = parser.FormatString(configuration.Milkdrop.TexturesPath);
@@ -252,6 +265,32 @@ namespace PinJuke.Configuration
                 AutoTransferPlayback = autoTransferPlayback,
                 DefaultVolume = defaultVolume
             };
+        }
+
+        protected Controller? CreateController(IniSection controllerSection)
+        {
+            // Check if any controller settings exist
+            if (string.IsNullOrEmpty(controllerSection["Exit"]) && 
+                string.IsNullOrEmpty(controllerSection["Browse"]) &&
+                string.IsNullOrEmpty(controllerSection["Previous"]) &&
+                string.IsNullOrEmpty(controllerSection["Next"]) &&
+                string.IsNullOrEmpty(controllerSection["PlayPause"]) &&
+                string.IsNullOrEmpty(controllerSection["VolumeDown"]) &&
+                string.IsNullOrEmpty(controllerSection["VolumeUp"]) &&
+                string.IsNullOrEmpty(controllerSection["Tilt"]))
+            {
+                return null; // No controller configuration
+            }
+
+            var exit = parser.ParseInt(controllerSection["Exit"]) ?? 0;
+            var browse = parser.ParseInt(controllerSection["Browse"]) ?? 0;
+            var previous = parser.ParseInt(controllerSection["Previous"]) ?? 0;
+            var next = parser.ParseInt(controllerSection["Next"]) ?? 0;
+            var playPause = parser.ParseInt(controllerSection["PlayPause"]) ?? 0;
+            var volumeDown = parser.ParseInt(controllerSection["VolumeDown"]) ?? 0;
+            var volumeUp = parser.ParseInt(controllerSection["VolumeUp"]) ?? 0;
+            var tilt = parser.ParseInt(controllerSection["Tilt"]) ?? 0;
+            return new Controller(exit, browse, previous, next, playPause, volumeDown, volumeUp, tilt);
         }
     }
 

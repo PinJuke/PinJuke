@@ -793,6 +793,87 @@ namespace PinJuke {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controller.
+        /// </summary>
+        public static string Controller {
+            get {
+                return ResourceManager.GetString("Controller", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exit.
+        /// </summary>
+        public static string ControllerExit {
+            get {
+                return ResourceManager.GetString("ControllerExit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse.
+        /// </summary>
+        public static string ControllerBrowse {
+            get {
+                return ResourceManager.GetString("ControllerBrowse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Back/previous.
+        /// </summary>
+        public static string ControllerPrevious {
+            get {
+                return ResourceManager.GetString("ControllerPrevious", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next/forward.
+        /// </summary>
+        public static string ControllerNext {
+            get {
+                return ResourceManager.GetString("ControllerNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Play/pause.
+        /// </summary>
+        public static string ControllerPlayPause {
+            get {
+                return ResourceManager.GetString("ControllerPlayPause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume down.
+        /// </summary>
+        public static string ControllerVolumeDown {
+            get {
+                return ResourceManager.GetString("ControllerVolumeDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume up.
+        /// </summary>
+        public static string ControllerVolumeUp {
+            get {
+                return ResourceManager.GetString("ControllerVolumeUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tilt.
+        /// </summary>
+        public static string ControllerTilt {
+            get {
+                return ResourceManager.GetString("ControllerTilt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to License.
         /// </summary>
         public static string License {

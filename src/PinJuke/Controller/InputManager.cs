@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace PinJuke.Controller
 {
-    public class InputManager
+    public class InputManager : IDisposable
     {
         public event EventHandler<InputActionEventArgs>? InputEvent;
         public event EventHandler<InputActionEventArgs>? ExitEvent;
@@ -22,10 +22,39 @@ namespace PinJuke.Controller
         public event EventHandler<InputActionEventArgs>? TiltEvent;
 
         private readonly Configuration.Configuration configuration;
+        private readonly GamepadManager? gamepadManager;
+        private bool disposed = false;
 
         public InputManager(Configuration.Configuration configuration)
         {
             this.configuration = configuration;
+            
+            // Initialize gamepad manager if controller configuration exists
+            if (configuration.Controller != null)
+            {
+                try
+                {
+                    gamepadManager = new GamepadManager();
+                    gamepadManager.ButtonPressed += GamepadManager_ButtonPressed;
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Failed to initialize gamepad manager: {ex.Message}");
+                    gamepadManager = null;
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            if (disposed) return;
+            disposed = true;
+
+            if (gamepadManager != null)
+            {
+                gamepadManager.ButtonPressed -= GamepadManager_ButtonPressed;
+                gamepadManager.Dispose();
+            }
         }
 
         public bool HandleKeyDown(System.Windows.Input.KeyEventArgs e)
@@ -82,6 +111,65 @@ namespace PinJuke.Controller
             }
 
             return eventArgs != null;
+        }
+
+        private void GamepadManager_ButtonPressed(object? sender, GamepadButtonEventArgs e)
+        {
+            if (configuration.Controller == null) return;
+
+            var controller = configuration.Controller;
+            InputActionEventArgs? eventArgs = null;
+
+            if (e.ButtonNumber == controller.Exit)
+            {
+                eventArgs = new(InputAction.Exit, false);
+                ExitEvent?.Invoke(this, eventArgs);
+            }
+            else if (e.ButtonNumber == controller.Browse)
+            {
+                eventArgs = new(InputAction.Browse, false);
+                BrowseEvent?.Invoke(this, eventArgs);
+            }
+            else if (e.ButtonNumber == controller.Previous)
+            {
+                eventArgs = new(InputAction.Previous, false);
+                PreviousEvent?.Invoke(this, eventArgs);
+            }
+            else if (e.ButtonNumber == controller.Next)
+            {
+                eventArgs = new(InputAction.Next, false);
+                NextEvent?.Invoke(this, eventArgs);
+            }
+            else if (e.ButtonNumber == controller.PlayPause)
+            {
+                eventArgs = new(InputAction.PlayPause, false);
+                PlayPauseEvent?.Invoke(this, eventArgs);
+            }
+            else if (e.ButtonNumber == controller.VolumeDown)
+            {
+                eventArgs = new(InputAction.VolumeDown, false);
+                VolumeDownEvent?.Invoke(this, eventArgs);
+            }
+            else if (e.ButtonNumber == controller.VolumeUp)
+            {
+                eventArgs = new(InputAction.VolumeUp, false);
+                VolumeUpEvent?.Invoke(this, eventArgs);
+            }
+            else if (e.ButtonNumber == controller.Tilt)
+            {
+                eventArgs = new(InputAction.Tilt, false);
+                TiltEvent?.Invoke(this, eventArgs);
+            }
+
+            if (eventArgs != null)
+            {
+                InputEvent?.Invoke(this, eventArgs);
+            }
+        }
+
+        public GamepadManager? GetGamepadManager()
+        {
+            return gamepadManager;
         }
     }
 }

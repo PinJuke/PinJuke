@@ -1,4 +1,4 @@
-﻿﻿using DirectOutput;
+﻿using DirectOutput;
 using PinJuke.Model;
 using System;
 using System.Collections.Generic;

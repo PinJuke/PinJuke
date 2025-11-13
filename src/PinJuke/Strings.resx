@@ -438,6 +438,33 @@ Track: restart</value>
   <data name="KeyVolumeUp" xml:space="preserve">
     <value>Volume up</value>
   </data>
+  <data name="Controller" xml:space="preserve">
+    <value>Controller</value>
+  </data>
+  <data name="ControllerExit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="ControllerBrowse" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="ControllerPrevious" xml:space="preserve">
+    <value>Back/previous</value>
+  </data>
+  <data name="ControllerNext" xml:space="preserve">
+    <value>Next/forward</value>
+  </data>
+  <data name="ControllerPlayPause" xml:space="preserve">
+    <value>Play/pause</value>
+  </data>
+  <data name="ControllerVolumeDown" xml:space="preserve">
+    <value>Volume down</value>
+  </data>
+  <data name="ControllerVolumeUp" xml:space="preserve">
+    <value>Volume up</value>
+  </data>
+  <data name="ControllerTilt" xml:space="preserve">
+    <value>Tilt</value>
+  </data>
   <data name="MilkdropPresetsPath" xml:space="preserve">
     <value>Presets path</value>
   </data>
