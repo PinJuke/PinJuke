@@ -15,6 +15,7 @@ This open source software adds a media player to your virtual pinball cabinet, f
   - Plays music streams listed in playlists (m3u).
 - Milkdrop visualizations thanks to [projectM - The most advanced open-source music visualizer](https://github.com/projectM-visualizer/projectm).
 - "Themed video clips" automatically play when the track starts, loops, or ends.
+- Spotify Integration (added by Mikedmor)
 - User-friendly file browser while your track is playing.
 - Extensive configuration options available:
   - Configuration is divided into a global setup and one or more playlist-specific configurations.
