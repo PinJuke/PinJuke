@@ -1,5 +1,6 @@
 ﻿using PinJuke.Configuration;
 using PinJuke.Configurator.View;
+using PinJuke.Ini;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -125,6 +126,17 @@ namespace PinJuke.Configurator.Factory
                         {
                             LabelText = Strings.PlayOnStartup,
                             Converter = new BoolConverter(parser, "Player", "PlayOnStartup"),
+                        },
+                        new SelectControlFactory()
+                        {
+                            LabelText = Strings.TrackBrowserOn,
+                            Items = new()
+                            {
+                                new(Strings.DisplayPlayField, 0),
+                                new(Strings.DisplayBackGlass, 1),
+                                new(Strings.DisplayDmd, 2),
+                            },
+                            Converter = new TrackBrowserOnConverter(parser),
                         },
                     ]
                 },
@@ -295,6 +307,42 @@ namespace PinJuke.Configurator.Factory
         }
     }
 
+    public class TrackBrowserOnConverter : Converter<SelectControl>
+    {
+        public Parser Parser { get; }
+
+        public TrackBrowserOnConverter(Parser parser)
+        {
+            Parser = parser;
+        }
+
+        public void ReadFromControl(SelectControl control, IniDocument iniDocument)
+        {
+            var selectedValue = (int?)control.SelectedValue;
+            iniDocument["PlayField"]["BrowserEnabled"] = Parser.FormatBool(selectedValue == 0);
+            iniDocument["BackGlass"]["BrowserEnabled"] = Parser.FormatBool(selectedValue == 1);
+            iniDocument["DMD"]["BrowserEnabled"] = Parser.FormatBool(selectedValue == 2);
+        }
+
+        public void WriteToControl(SelectControl control, IniDocument iniDocument)
+        {
+            int? selectedValue = null;
+            if (Parser.ParseBool(iniDocument["PlayField"]["BrowserEnabled"]) == true)
+            {
+                selectedValue = 0;
+            }
+            else if (Parser.ParseBool(iniDocument["BackGlass"]["BrowserEnabled"]) == true)
+            {
+                selectedValue = 1;
+            }
+            else if (Parser.ParseBool(iniDocument["DMD"]["BrowserEnabled"]) == true)
+            {
+                selectedValue = 2;
+            }
+            control.SelectedValue = selectedValue;
+        }
+    }
+
     public class ContentGroupControlFactory : GroupControlFactory
     {
         public const string BACKGROUND_IMAGE_FILE_CONTROL = "BackgroundImageFile";
@@ -343,11 +391,6 @@ namespace PinJuke.Configurator.Factory
                 {
                     LabelText = Strings.EnablePlaybackStatus,
                     Converter = new BoolConverter(parser, sectionName, "StateEnabled"),
-                },
-                new BoolControlFactory()
-                {
-                    LabelText = Strings.EnableTrackBrowser,
-                    Converter = new BoolConverter(parser, sectionName, "BrowserEnabled"),
                 },
                 new BoolControlFactory()
                 {
