@@ -45,7 +45,6 @@ namespace PinJuke.Dof
         private readonly Configuration.Dof dof;
         private readonly Pinball pinball;
         private bool disposed = false;
-        private bool setup = false;
         private bool initialized = false;
 
         public bool Initialized { get { return initialized; } }
@@ -78,7 +77,6 @@ namespace PinJuke.Dof
                 Debug.WriteLine("Error setting up DOF.");
                 return;
             }
-            setup = true;
 
             try
             {

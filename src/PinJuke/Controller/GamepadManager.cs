@@ -134,7 +134,7 @@ namespace PinJuke.Controller
                                 {
                                     // Button was just pressed - marshal to UI thread
                                     var buttonNumber = i + 1; // 1-based button numbering
-                                    System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
+                                    _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
                                     {
                                         ButtonPressed?.Invoke(this, new GamepadButtonEventArgs(buttonNumber));
                                     });

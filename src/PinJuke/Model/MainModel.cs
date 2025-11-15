@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
 using PinJuke.Configuration;
 using PinJuke.Controller;
+using PinJuke.Service;
 using PinJuke.Playlist;
-using PinJuke.Spotify;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -302,9 +302,8 @@ namespace PinJuke.Model
 
         public bool ShuttingDown { get; private set; } = false;
         
-        // Spotify integration
-        private SpotifyIntegrationService? spotifyIntegration = null;
-        public SpotifyIntegrationService? SpotifyIntegration => spotifyIntegration;
+        // Media controller manager for external services (Spotify, etc.)
+        private readonly MediaControllerManager mediaControllerManager = new();
         
         // Track user-initiated play/pause actions to avoid double notifications from polling
         private DateTime lastUserPlayPauseAction = DateTime.MinValue;
@@ -314,11 +313,26 @@ namespace PinJuke.Model
         {
             Configuration = configuration;
             UserConfiguration = userConfiguration;
+            
+            // Subscribe to media controller events
+            mediaControllerManager.MediaStateChanged += OnMediaControllerStateChanged;
+            mediaControllerManager.TrackChanged += OnMediaControllerTrackChanged;
         }
 
-        public void SetSpotifyIntegration(SpotifyIntegrationService spotifyIntegrationService)
+        /// <summary>
+        /// Register a media controller (e.g., Spotify, Apple Music)
+        /// </summary>
+        public void RegisterMediaController(IMediaController controller)
         {
-            spotifyIntegration = spotifyIntegrationService;
+            mediaControllerManager.RegisterController(controller);
+        }
+
+        /// <summary>
+        /// Initialize all registered media controllers
+        /// </summary>
+        public async Task InitializeMediaControllersAsync()
+        {
+            await mediaControllerManager.InitializeAllAsync();
         }
 
         /// <summary>
@@ -364,6 +378,20 @@ namespace PinJuke.Model
 
             Debug.WriteLine("Triggering shutdown event.");
             ShuttingDown = true;
+            
+            // Shutdown media controllers
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await mediaControllerManager.ShutdownAllAsync();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"MainModel: Error shutting down media controllers: {ex.Message}");
+                }
+            });
+            
             ShutdownEvent?.Invoke(this, EventArgs.Empty);
         }
 
@@ -573,65 +601,52 @@ namespace PinJuke.Model
 
         public void TogglePlayPause(TriggerType triggerType)
         {
-            // Check if current track is from Spotify and use Spotify API
-            if (PlayingFile is SpotifyFileNode && spotifyIntegration?.IsConnected == true)
+            // Try to use external media controller first
+            if (PlayingFile != null)
             {
-                // Track that user initiated this action
-                lastUserPlayPauseAction = DateTime.Now;
-                
-                // Show immediate UI feedback - don't wait for Spotify response
-                var willBePlaying = !Playing;
-                Playing = willBePlaying;
-                ShowPlaybackState(willBePlaying ? StateType.Play : StateType.Pause);
-                
-                Task.Run(async () =>
+                var controller = mediaControllerManager.FindControllerForFile(PlayingFile);
+                if (controller != null && controller.IsConnected)
                 {
-                    try
+                    // Track that user initiated this action
+                    lastUserPlayPauseAction = DateTime.Now;
+                    
+                    // Show immediate UI feedback - don't wait for external service response
+                    var willBePlaying = !Playing;
+                    Playing = willBePlaying;
+                    ShowPlaybackState(willBePlaying ? StateType.Play : StateType.Pause);
+                    
+                    Task.Run(async () =>
                     {
-                        bool success;
-                        if (willBePlaying)
+                        try
                         {
-                            success = await spotifyIntegration.PlaybackController.ResumeAsync();
-                            if (success)
+                            var success = await controller.TogglePlayPauseAsync();
+                            if (!success)
                             {
-                                Debug.WriteLine("Spotify: Successfully resumed playback");
+                                Debug.WriteLine($"MediaController '{controller.Name}': Failed to toggle play/pause, reverting UI state");
+                                // Revert UI state if external service call failed
+                                _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
+                                {
+                                    Playing = !willBePlaying;
+                                    ShowPlaybackState(!willBePlaying ? StateType.Play : StateType.Pause);
+                                });
                             }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            success = await spotifyIntegration.PlaybackController.PauseAsync();
-                            if (success)
-                            {
-                                Debug.WriteLine("Spotify: Successfully paused playback");
-                            }
-                        }
-
-                        if (!success)
-                        {
-                            Debug.WriteLine("Spotify: Failed to toggle play/pause, reverting UI state");
-                            // Revert UI state if Spotify call failed
-                            System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
+                            Debug.WriteLine($"MediaController '{controller.Name}': Error toggling play/pause: {ex.Message}");
+                            // Revert UI state if external service call failed
+                            _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
                             {
                                 Playing = !willBePlaying;
                                 ShowPlaybackState(!willBePlaying ? StateType.Play : StateType.Pause);
                             });
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"Spotify: Error toggling play/pause: {ex.Message}");
-                        // Revert UI state if Spotify call failed
-                        System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            Playing = !willBePlaying;
-                            ShowPlaybackState(!willBePlaying ? StateType.Play : StateType.Pause);
-                        });
-                    }
-                });
-                return;
+                    });
+                    return;
+                }
             }
 
-            // Use local control for non-Spotify content
+            // Use local control for non-external content
             PlayFile(PlayingFile, Playing ? PlayFileType.Pause : PlayFileType.Resume, triggerType);
         }
 
@@ -732,43 +747,47 @@ namespace PinJuke.Model
 
         public void PlayNext(TriggerType triggerType)
         {
-            // Check if current track is from Spotify and use Spotify API
-            if (PlayingFile is SpotifyFileNode && spotifyIntegration?.IsConnected == true)
+            // Try to use external media controller first
+            if (PlayingFile != null)
             {
-                Task.Run(async () =>
+                var controller = mediaControllerManager.FindControllerForFile(PlayingFile);
+                if (controller != null && controller.IsConnected)
                 {
-                    try
+                    Task.Run(async () =>
                     {
-                        var success = await spotifyIntegration.PlaybackController.NextTrackAsync();
-                        if (success)
+                        try
                         {
-                            Debug.WriteLine("Spotify: Successfully skipped to next track");
-                            // Don't update local state here - let the polling service handle it
+                            var success = await controller.NextTrackAsync();
+                            if (success)
+                            {
+                                Debug.WriteLine($"MediaController '{controller.Name}': Successfully skipped to next track");
+                                // Don't update local state here - let the controller events handle it
+                            }
+                            else
+                            {
+                                Debug.WriteLine($"MediaController '{controller.Name}': Failed to skip to next track, falling back to local navigation");
+                                // Fallback to local navigation
+                                _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
+                                {
+                                    PlayNextLocal(triggerType);
+                                });
+                            }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            Debug.WriteLine("Spotify: Failed to skip to next track, falling back to local navigation");
+                            Debug.WriteLine($"MediaController '{controller.Name}': Error skipping to next track: {ex.Message}");
                             // Fallback to local navigation
-                            System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
+                            _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
                             {
                                 PlayNextLocal(triggerType);
                             });
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"Spotify: Error skipping to next track: {ex.Message}");
-                        // Fallback to local navigation
-                        System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            PlayNextLocal(triggerType);
-                        });
-                    }
-                });
-                return;
+                    });
+                    return;
+                }
             }
 
-            // Use local playlist navigation for non-Spotify content
+            // Use local playlist navigation for non-external content
             PlayNextLocal(triggerType);
         }
 
@@ -782,43 +801,47 @@ namespace PinJuke.Model
 
         public void PlayPrevious(TriggerType triggerType)
         {
-            // Check if current track is from Spotify and use Spotify API
-            if (PlayingFile is SpotifyFileNode && spotifyIntegration?.IsConnected == true)
+            // Try to use external media controller first
+            if (PlayingFile != null)
             {
-                Task.Run(async () =>
+                var controller = mediaControllerManager.FindControllerForFile(PlayingFile);
+                if (controller != null && controller.IsConnected)
                 {
-                    try
+                    Task.Run(async () =>
                     {
-                        var success = await spotifyIntegration.PlaybackController.PreviousTrackAsync();
-                        if (success)
+                        try
                         {
-                            Debug.WriteLine("Spotify: Successfully skipped to previous track");
-                            // Don't update local state here - let the polling service handle it
+                            var success = await controller.PreviousTrackAsync();
+                            if (success)
+                            {
+                                Debug.WriteLine($"MediaController '{controller.Name}': Successfully skipped to previous track");
+                                // Don't update local state here - let the controller events handle it
+                            }
+                            else
+                            {
+                                Debug.WriteLine($"MediaController '{controller.Name}': Failed to skip to previous track, falling back to local navigation");
+                                // Fallback to local navigation
+                                _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
+                                {
+                                    PlayPreviousLocal(triggerType);
+                                });
+                            }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            Debug.WriteLine("Spotify: Failed to skip to previous track, falling back to local navigation");
+                            Debug.WriteLine($"MediaController '{controller.Name}': Error skipping to previous track: {ex.Message}");
                             // Fallback to local navigation
-                            System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
+                            _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
                             {
                                 PlayPreviousLocal(triggerType);
                             });
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"Spotify: Error skipping to previous track: {ex.Message}");
-                        // Fallback to local navigation
-                        System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            PlayPreviousLocal(triggerType);
-                        });
-                    }
-                });
-                return;
+                    });
+                    return;
+                }
             }
 
-            // Use local playlist navigation for non-Spotify content
+            // Use local playlist navigation for non-external content
             PlayPreviousLocal(triggerType);
         }
 
@@ -852,6 +875,59 @@ namespace PinJuke.Model
                 case FileType.DirectoryUp:
                     NavigationNode = NavigationNode.FindParent() ?? NavigationNode;
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Handle media state changes from external controllers
+        /// </summary>
+        private void OnMediaControllerStateChanged(object? sender, MediaStateChangedEventArgs e)
+        {
+            try
+            {
+                // Update local playing state silently
+                SetPlayingState(e.IsPlaying);
+                
+                // Show notification only if requested and not from recent user action
+                if (e.ShouldShowNotification && !ShouldSkipPollingNotification())
+                {
+                    ShowPlaybackState(e.IsPlaying ? StateType.Play : StateType.Pause);
+                }
+                
+                Debug.WriteLine($"MediaController: State changed - Playing: {e.IsPlaying}, Track: {e.TrackName}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"MainModel: Error handling media controller state change: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Handle track changes from external controllers
+        /// </summary>
+        private void OnMediaControllerTrackChanged(object? sender, TrackChangedEventArgs e)
+        {
+            try
+            {
+                if (e.MatchingFileNode != null)
+                {
+                    // Update to the new track silently
+                    PlayingFile = e.MatchingFileNode;
+                    Playing = e.IsPlaying;
+                    GetUserPlaylist().TrackFilePath = e.MatchingFileNode.FullName ?? "";
+                    
+                    // Track changes should generally be silent unless specifically requested
+                    if (e.ShouldShowNotification)
+                    {
+                        ShowPlaybackState(e.IsPlaying ? StateType.Play : StateType.Pause);
+                    }
+                }
+                
+                Debug.WriteLine($"MediaController: Track changed - {e.TrackName} by {e.ArtistName}, Playing: {e.IsPlaying}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"MainModel: Error handling media controller track change: {ex.Message}");
             }
         }
     }

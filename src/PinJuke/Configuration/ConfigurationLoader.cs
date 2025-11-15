@@ -250,6 +250,14 @@ namespace PinJuke.Configuration
             var deviceName = parser.ParseString(spotifySection["DeviceName"]) ?? string.Empty;
             var autoTransferPlayback = parser.ParseBool(spotifySection["AutoTransferPlayback"]) ?? true;
             var defaultVolume = parser.ParseInt(spotifySection["DefaultVolume"]) ?? 80;
+            var accessToken = parser.ParseString(spotifySection["AccessToken"]) ?? null;
+            var refreshToken = parser.ParseString(spotifySection["RefreshToken"]) ?? null;
+            DateTime? tokenExpiresAt = null;
+            if (parser.ParseString(spotifySection["TokenExpiresAt"]) is string expiresAtStr && 
+                DateTime.TryParse(expiresAtStr, out var parsedDate))
+            {
+                tokenExpiresAt = parsedDate;
+            }
             
             return new Spotify.SpotifyConfig
             {
@@ -263,7 +271,10 @@ namespace PinJuke.Configuration
                 DeviceId = deviceId,
                 DeviceName = deviceName,
                 AutoTransferPlayback = autoTransferPlayback,
-                DefaultVolume = defaultVolume
+                DefaultVolume = defaultVolume,
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+                TokenExpiresAt = tokenExpiresAt
             };
         }
 

@@ -6,6 +6,7 @@ using PinJuke.Ini;
 using PinJuke.Model;
 using PinJuke.Onboarding;
 using PinJuke.Service;
+using PinJuke.Spotify;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,7 +19,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using PinJuke.Spotify;
 
 namespace PinJuke
 {
@@ -38,6 +38,7 @@ namespace PinJuke
         private DofMediator? dofMediator = null;
         private AudioManager? audioManager = null;
         private SpotifyIntegrationService? spotifyIntegration = null;
+        private MediaControllerManager? mediaControllerManager = null;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -198,7 +199,10 @@ namespace PinJuke
                     dofMediator.Startup();
                 }
 
-                // Initialize Spotify integration if enabled (before creating windows)
+                // Initialize media controller system
+                mediaControllerManager = new MediaControllerManager();
+
+                // Initialize Spotify integration if enabled
                 SimpleLogger.Log($"Spotify.Enabled: {configuration.Spotify.Enabled}");
                 SimpleLogger.Log($"Spotify.ClientId: '{configuration.Spotify.ClientId}'");
                 SimpleLogger.Log($"Spotify.RedirectUri: '{configuration.Spotify.RedirectUri}'");
@@ -211,6 +215,11 @@ namespace PinJuke
                     Debug.WriteLine($"Spotify RedirectUri: {configuration.Spotify.RedirectUri}");
                     spotifyIntegration = new SpotifyIntegrationService(configuration);
                     _ = spotifyIntegration.InitializeAsync(mainModel);
+                    
+                    // Register Spotify as a media controller
+                    var spotifyController = new SpotifyMediaController(spotifyIntegration, () => mainModel.GetCurrentPlaylist());
+                    mediaControllerManager.RegisterController(spotifyController);
+                    
                     SimpleLogger.Log("Spotify integration initialization started.");
                     Debug.WriteLine("Spotify integration initialization started.");
                 }
@@ -412,6 +421,7 @@ namespace PinJuke
             appController?.Dispose();
             audioManager?.Dispose();
             dofMediator?.Dispose();
+            mediaControllerManager?.Dispose();
             spotifyIntegration?.Dispose();
         }
 

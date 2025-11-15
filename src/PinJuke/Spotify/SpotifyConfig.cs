@@ -79,6 +79,33 @@ namespace PinJuke.Spotify
         public int DefaultVolume { get; set; } = 80;
 
         /// <summary>
+        /// Stored access token for automatic authentication
+        /// </summary>
+        public string? AccessToken { get; set; } = null;
+
+        /// <summary>
+        /// Stored refresh token for automatic token renewal
+        /// </summary>
+        public string? RefreshToken { get; set; } = null;
+
+        /// <summary>
+        /// Token expiration timestamp
+        /// </summary>
+        public DateTime? TokenExpiresAt { get; set; } = null;
+
+        /// <summary>
+        /// Gets whether stored tokens are available
+        /// </summary>
+        public bool HasStoredTokens => 
+            !string.IsNullOrEmpty(AccessToken) && !string.IsNullOrEmpty(RefreshToken);
+
+        /// <summary>
+        /// Gets whether stored tokens are still valid
+        /// </summary>
+        public bool HasValidStoredTokens => 
+            HasStoredTokens && TokenExpiresAt.HasValue && DateTime.Now < TokenExpiresAt.Value;
+
+        /// <summary>
         /// Validates the configuration
         /// </summary>
         public bool IsValid =>

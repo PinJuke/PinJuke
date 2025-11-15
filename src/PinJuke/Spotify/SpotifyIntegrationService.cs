@@ -4,6 +4,7 @@ using PinJuke.Playlist;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -41,6 +42,9 @@ namespace PinJuke.Spotify
             _mediaProvider = new SpotifyMediaProvider(_config, () => GetCurrentPlaylistWithTracksAsync());
             _playbackController = new SpotifyPlaybackController(_config);
             
+            // Subscribe to authentication changes to auto-save refreshed tokens
+            _spotifyService.AuthService.AuthenticationChanged += OnAuthenticationChanged;
+            
             // Automatically load any saved authentication tokens
             try
             {
@@ -61,9 +65,6 @@ namespace PinJuke.Spotify
             }
 
             _mainModel = mainModel;
-            
-            // Set the Spotify integration reference in MainModel
-            mainModel.SetSpotifyIntegration(this);
 
             if (!IsEnabled)
             {
@@ -137,6 +138,24 @@ namespace PinJuke.Spotify
                 // Set the auth result on both services
                 SetAuthResult(authResult);
                 System.Diagnostics.Debug.WriteLine($"SpotifyIntegrationService: Loaded saved authentication tokens (expires: {expiresAt})");
+                
+                // If tokens are expired or close to expiring (within 5 minutes), refresh them proactively
+                if (DateTime.Now >= expiresAt.AddMinutes(-5))
+                {
+                    System.Diagnostics.Debug.WriteLine("SpotifyIntegrationService: Tokens expired or close to expiring, refreshing...");
+                    _ = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await _spotifyService.AuthService.RefreshTokenAsync();
+                            System.Diagnostics.Debug.WriteLine("SpotifyIntegrationService: Tokens refreshed successfully");
+                        }
+                        catch (Exception refreshEx)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"SpotifyIntegrationService: Failed to refresh tokens: {refreshEx.Message}");
+                        }
+                    });
+                }
             }
             catch (Exception ex)
             {
@@ -155,12 +174,21 @@ namespace PinJuke.Spotify
             _mediaProvider.SetAuthResult(authResult);
             _playbackController.SetAuthResult(authResult);
             
+            // Save tokens for automatic reloading on next startup
+            if (authResult.IsSuccess && !string.IsNullOrEmpty(authResult.AccessToken) && !string.IsNullOrEmpty(authResult.RefreshToken))
+            {
+                SaveAuthenticationTokens(authResult);
+            }
+            
             // Start state synchronizer if we have a valid auth result and main model
             if (authResult.IsSuccess && _mainModel != null && _stateSynchronizer == null)
             {
                 _stateSynchronizer = new SpotifyStateSynchronizer(this, _mainModel);
                 System.Diagnostics.Debug.WriteLine("SpotifyIntegrationService: Started Spotify state synchronizer");
             }
+
+            // Save tokens to config for persistence
+            SaveAuthenticationTokens(authResult);
         }
 
         public async Task<bool> AuthenticateAsync()
@@ -360,8 +388,68 @@ namespace PinJuke.Spotify
             return await _mediaProvider.IsTrackAvailableAsync(fileNode.FullName);
         }
 
+        /// <summary>
+        /// Save authentication tokens to the global config file for automatic reloading
+        /// </summary>
+        private void SaveAuthenticationTokens(SpotifyAuthResult authResult)
+        {
+            try
+            {
+                var globalConfigPath = Configuration.ConfigPath.CONFIG_GLOBAL_FILE_PATH;
+                
+                // Read existing config
+                var iniDoc = Ini.IniReader.TryRead(globalConfigPath);
+                if (iniDoc == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("SpotifyIntegrationService: Could not read global config file for token saving");
+                    return;
+                }
+
+                // Update Spotify section with tokens
+                var spotifySection = iniDoc["Spotify"];
+                spotifySection["AccessToken"] = authResult.AccessToken ?? "";
+                spotifySection["RefreshToken"] = authResult.RefreshToken ?? "";
+                spotifySection["ExpiresAt"] = authResult.ExpiresAt.ToString("yyyy-MM-dd HH:mm:ss");
+                spotifySection["Scopes"] = string.Join(",", authResult.Scopes ?? Array.Empty<string>());
+
+                // Write back to file
+                using var textWriter = new StreamWriter(globalConfigPath);
+                iniDoc.WriteTo(textWriter);
+                
+                System.Diagnostics.Debug.WriteLine($"SpotifyIntegrationService: Saved authentication tokens to config (expires: {authResult.ExpiresAt})");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SpotifyIntegrationService: Error saving authentication tokens: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Handle authentication changes including automatic token refreshes
+        /// </summary>
+        private void OnAuthenticationChanged(object? sender, SpotifyAuthResult authResult)
+        {
+            if (authResult.IsSuccess && !string.IsNullOrEmpty(authResult.AccessToken) && !string.IsNullOrEmpty(authResult.RefreshToken))
+            {
+                System.Diagnostics.Debug.WriteLine("SpotifyIntegrationService: Authentication changed - updating MediaProvider and PlaybackController and saving tokens");
+                
+                // Update all components with new tokens
+                _mediaProvider.SetAuthResult(authResult);
+                _playbackController.SetAuthResult(authResult);
+                
+                // Save the new/refreshed tokens
+                SaveAuthenticationTokens(authResult);
+            }
+        }
+
         public void Dispose()
         {
+            // Unsubscribe from events
+            if (_spotifyService?.AuthService != null)
+            {
+                _spotifyService.AuthService.AuthenticationChanged -= OnAuthenticationChanged;
+            }
+            
             _stateSynchronizer?.Dispose();
             _mediaProvider?.Dispose();
             _spotifyService?.Dispose();
