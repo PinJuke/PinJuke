@@ -262,16 +262,16 @@
     <value>Display-Positionen von PinUP holen</value>
   </data>
   <data name="DisplayPlayField" xml:space="preserve">
-    <value>Play field</value>
+    <value>Playfield</value>
   </data>
   <data name="DisplayBackGlass" xml:space="preserve">
-    <value>Back glass</value>
+    <value>Backglass</value>
   </data>
   <data name="DisplayDmd" xml:space="preserve">
     <value>DMD</value>
   </data>
   <data name="NoSeparateDmdMonitorHint" xml:space="preserve">
-    <value>Wenn Sie keinen separaten Monitor für die DMD-Ausgabe haben, können Sie das DMD-Fenster z.B. das Back glass-Fenster überlagern lassen.</value>
+    <value>Wenn Sie keinen separaten Monitor für die DMD-Ausgabe haben, können Sie das DMD-Fenster z.B. das Backglass-Fenster überlagern lassen.</value>
   </data>
   <data name="ConfigurationOfDof" xml:space="preserve">
     <value>Konfiguration von DOF</value>

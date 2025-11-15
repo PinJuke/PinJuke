@@ -523,7 +523,7 @@ namespace PinJuke {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Back glass.
+        ///   Looks up a localized string similar to Backglass.
         /// </summary>
         public static string DisplayBackGlass {
             get {
@@ -541,7 +541,7 @@ namespace PinJuke {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Play field.
+        ///   Looks up a localized string similar to Playfield.
         /// </summary>
         public static string DisplayPlayField {
             get {
@@ -973,7 +973,7 @@ namespace PinJuke {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you do not have a separate monitor for the DMD output, you can have the DMD window overlay the back glass window, for example..
+        ///   Looks up a localized string similar to If you do not have a separate monitor for the DMD output, you can have the DMD window overlay the backglass window, for example..
         /// </summary>
         public static string NoSeparateDmdMonitorHint {
             get {
