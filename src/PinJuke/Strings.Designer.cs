@@ -1450,15 +1450,6 @@ namespace PinJuke {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show track browser on.
-        /// </summary>
-        public static string TrackBrowserOn {
-            get {
-                return ResourceManager.GetString("TrackBrowserOn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to You are all set!.
         /// </summary>
         public static string YouAreAllSet {

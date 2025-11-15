@@ -74,6 +74,7 @@ namespace PinJuke.Configurator
     public abstract class BaseControlFactory<T> : ControlFactory<T> where T : ConfiguratorControl
     {
         public string? Name { get; set; } = null;
+        public string LabelText { get; set; } = "";
         public Converter<T>? Converter { get; set; } = null;
         public ConfiguratorControl.ChangedHandler? ChangedHandler { get; set; } = null;
 
@@ -257,7 +258,7 @@ namespace PinJuke.Configurator
 
     public class TextControlFactory : BaseControlFactory<TextControl>
     {
-        public override TextControl CreateControlForRow()
+        public override TextControl CreateConfiguratorControl()
         {
             return new TextControl()
             {

@@ -128,7 +128,7 @@ namespace PinJuke.Controller
                 }
                 else
                 {
-                    mainModel.PlayFile(mainModel.NavigationNode, TriggerType.Browser);
+                    mainModel.PlayFile(mainModel.NavigationNode, PlayFileType.Play, TriggerType.Browser);
                     // Select the actual track.
                     mainModel.NavigateTo(mainModel.PlayingFile ?? mainModel.NavigationNode);
                 }

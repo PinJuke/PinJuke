@@ -20,123 +20,159 @@ namespace PinJuke.Configurator.Factory
                 {
                     LabelText = Strings.Player,
                     Controls = [
-                        new SelectControlFactory()
-                        {
-                            Name = "PlayerSourceType",
+                        new RowFactory<SelectControl>() {
                             LabelText = "Music Source",
-                            Items = new()
+                            ChildFactory = new SelectControlFactory()
                             {
-                                new("Local MP3 Files", 0),
-                                new("Spotify Playlist", 1),
-                            },
-                            Converter = new IntSelectConverter(parser, "Player", "SourceType"),
-                            ChangedHandler = async (ConfiguratorControl control) =>
-                            {
-                                var value = ((SelectControl)control).SelectedValue;
-                                var isLocalFiles = value is int intValue && intValue == 0;
-                                var group = control.GetParentGroup();
-                                ((PathControl)group.GetChildByName("PlayerMusicPath")).IsEnabled = isLocalFiles;
-                                ((SelectControl)group.GetChildByName("PlayerSpotifyPlaylist")).IsEnabled = !isLocalFiles;
-                                ((ButtonControl)group.GetChildByName("RefreshSpotifyPlaylistsButton")).IsEnabled = !isLocalFiles;
-                                
-                                // If Spotify is selected, load playlists
-                                if (!isLocalFiles)
+                                Name = "PlayerSourceType",
+                                Items = new()
                                 {
-                                    var playlistControl = (SelectControl)group.GetChildByName("PlayerSpotifyPlaylist");
-                                    await LoadSpotifyPlaylistsAsync(playlistControl, parser);
-                                }
-                            },
-                        },
-                        new PathControlFactory()
-                        {
-                            Name = "PlayerMusicPath",
-                            LabelText = Strings.MusicPath,
-                            FileMode = false,
-                            RelativeEnabled = false,
-                            Converter = new PathConverter(parser, "Player", "MusicPath"),
-                        },
-                        new SelectControlFactory()
-                        {
-                            Name = "PlayerSpotifyPlaylist",
-                            LabelText = "Spotify Playlist",
-                            Items = new()
-                            {
-                                new("(Loading playlists...)", "")
-                            },
-                            Converter = new StringSelectConverter(parser, "Player", "SpotifyPlaylistId"),
-                        },
-                        new ButtonControlFactory()
-                        {
-                            Name = "RefreshSpotifyPlaylistsButton",
-                            Text = "Refresh Playlists",
-                            ClickHandler = async (control) =>
-                            {
-                                try
+                                    new("Local MP3 Files", 0),
+                                    new("Spotify Playlist", 1),
+                                },
+                                Converter = new IntSelectConverter(parser, "Player", "SourceType"),
+                                ChangedHandler = async (ConfiguratorControl control) =>
                                 {
-                                    System.Diagnostics.Debug.WriteLine("=== REFRESH BUTTON CLICKED ===");
-                                    
+                                    var value = ((SelectControl)control).SelectedValue;
+                                    var isLocalFiles = value is int intValue && intValue == 0;
                                     var group = control.GetParentGroup();
-                                    var playlistControl = (SelectControl)group.GetChildByName("PlayerSpotifyPlaylist");
                                     
-                                    // Store current selection to preserve it if possible
-                                    var currentSelection = playlistControl.SelectedValue;
-                                    
-                                    // Show loading state
-                                    playlistControl.Items = new List<Item> { new Item("Refreshing playlists...", "") };
-                                    
-                                    await LoadSpotifyPlaylistsAsync(playlistControl, parser);
-                                    
-                                    // Try to restore selection if the playlist still exists
-                                    if (currentSelection != null)
+                                    // Safely update controls if they exist
+                                    try
                                     {
-                                        var matchingItem = playlistControl.Items.FirstOrDefault(item => 
-                                            item.Value != null && item.Value.Equals(currentSelection));
-                                        if (matchingItem != null)
+                                        var musicPathControl = group.GetChildByName("PlayerMusicPath") as PathControl;
+                                        if (musicPathControl != null) musicPathControl.IsEnabled = isLocalFiles;
+                                        
+                                        var spotifyPlaylistControl = group.GetChildByName("PlayerSpotifyPlaylist") as SelectControl;
+                                        if (spotifyPlaylistControl != null) spotifyPlaylistControl.IsEnabled = !isLocalFiles;
+                                        
+                                        var refreshButtonControl = group.GetChildByName("RefreshSpotifyPlaylistsButton") as ButtonControl;
+                                        if (refreshButtonControl != null) refreshButtonControl.IsEnabled = !isLocalFiles;
+                                        
+                                        // If Spotify is selected, load playlists
+                                        if (!isLocalFiles && spotifyPlaylistControl != null)
                                         {
-                                            playlistControl.SelectedValue = currentSelection;
+                                            await LoadSpotifyPlaylistsAsync(spotifyPlaylistControl, parser);
                                         }
                                     }
-                                    
-                                    System.Windows.MessageBox.Show("Playlist refresh completed!", "PinJuke", System.Windows.MessageBoxButton.OK);
-                                }
-                                catch (Exception ex)
+                                    catch
+                                    {
+                                        // Controls may not exist yet, ignore
+                                    }
+                                },
+                            }
+                        },
+                        new RowFactory<PathControl>() {
+                            LabelText = Strings.MusicPath,
+                            ChildFactory = new PathControlFactory()
+                            {
+                                Name = "PlayerMusicPath",
+                                FileMode = false,
+                                RelativeEnabled = false,
+                                Converter = new PathConverter(parser, "Player", "MusicPath"),
+                            }
+                        },
+                        new RowFactory<SelectControl>() {
+                            LabelText = "Spotify Playlist",
+                            ChildFactory = new SelectControlFactory()
+                            {
+                                Name = "PlayerSpotifyPlaylist",
+                                Items = new()
                                 {
-                                    System.Windows.MessageBox.Show($"Error refreshing playlists: {ex.Message}", "Error", System.Windows.MessageBoxButton.OK);
-                                }
-                            },
+                                    new("(Loading playlists...)", "")
+                                },
+                                Converter = new StringSelectConverter(parser, "Player", "SpotifyPlaylistId"),
+                            }
                         },
-                        new BoolControlFactory()
-                        {
-                            Name = "PlayerShufflePlaylist",
+                        new RowFactory<ButtonControl>() {
+                            LabelText = "Playlist Management",
+                            ChildFactory = new ButtonControlFactory()
+                            {
+                                Name = "RefreshSpotifyPlaylistsButton",
+                                Text = "Refresh Playlists",
+                                ClickHandler = async (control) =>
+                                {
+                                    try
+                                    {
+                                        System.Diagnostics.Debug.WriteLine("=== REFRESH BUTTON CLICKED ===");
+                                        
+                                        var group = control.GetParentGroup();
+                                        var playlistControl = group.GetChildByName("PlayerSpotifyPlaylist") as SelectControl;
+                                        
+                                        if (playlistControl == null)
+                                        {
+                                            System.Windows.MessageBox.Show("Error refreshing playlist: Cannot return child. Found no control for \"PlayerSpotifyPlaylist\".", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                                            return;
+                                        }
+                                        
+                                        // Store current selection to preserve it if possible
+                                        var currentSelection = playlistControl.SelectedValue;
+                                        
+                                        // Show loading state
+                                        playlistControl.Items = new List<Item> { new Item("Refreshing playlists...", "") };
+                                        
+                                        await LoadSpotifyPlaylistsAsync(playlistControl, parser);
+                                        
+                                        // Try to restore selection if the playlist still exists
+                                        if (currentSelection != null)
+                                        {
+                                            var matchingItem = playlistControl.Items.FirstOrDefault(item => 
+                                                item.Value != null && item.Value.Equals(currentSelection));
+                                            if (matchingItem != null)
+                                            {
+                                                playlistControl.SelectedValue = currentSelection;
+                                            }
+                                        }
+                                        
+                                        System.Windows.MessageBox.Show("Playlist refresh completed!", "PinJuke", System.Windows.MessageBoxButton.OK);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        System.Windows.MessageBox.Show($"Error refreshing playlists: {ex.Message}", "Error", System.Windows.MessageBoxButton.OK);
+                                    }
+                                },
+                            }
+                        },
+                        new RowFactory<BoolControl>() {
                             LabelText = "Shuffle Playlist (randomize song order)",
-                            Converter = new BoolConverter(parser, "Player", "ShufflePlaylist"),
+                            ChildFactory = new BoolControlFactory()
+                            {
+                                Name = "PlayerShufflePlaylist",
+                                Converter = new BoolConverter(parser, "Player", "ShufflePlaylist"),
+                            }
                         },
-                        new SelectControlFactory()
-                        {
+                        new RowFactory<SelectControl>() {
                             LabelText = Strings.StartupTrackType,
-                            Items = new()
+                            ChildFactory = new SelectControlFactory()
                             {
-                                new(Strings.StartupTrackTypeLastPlayedTrack, 0),
-                                new(Strings.StartupTrackTypeFirstTrack, 1),
-                                new(Strings.StartupTrackTypeRandomMode, 2),
-                            },
-                            Converter = new IntSelectConverter(parser, "Player", "StartupTrackType"),
+                                Items = new()
+                                {
+                                    new(Strings.StartupTrackTypeLastPlayedTrack, 0),
+                                    new(Strings.StartupTrackTypeFirstTrack, 1),
+                                    new(Strings.StartupTrackTypeRandomMode, 2),
+                                },
+                                Converter = new IntSelectConverter(parser, "Player", "StartupTrackType"),
+                            }
                         },
-                        new BoolControlFactory()
-                        {
+                        new RowFactory<BoolControl>() {
                             LabelText = Strings.PlayOnStartup,
-                            Converter = new BoolConverter(parser, "Player", "PlayOnStartup"),
-                        },
-                        new SelectControlFactory()
-                        {
-                            LabelText = Strings.TrackBrowserOn,
-                            Items = new()
+                            ChildFactory = new BoolControlFactory()
                             {
-                                new(Strings.DisplayPlayField, 0),
-                                new(Strings.DisplayBackGlass, 1),
-                                new(Strings.DisplayDmd, 2),
-                            },
-                            Converter = new TrackBrowserOnConverter(parser),
+                                Converter = new BoolConverter(parser, "Player", "PlayOnStartup"),
+                            }
+                        },
+                        new RowFactory<SelectControl>() {
+                            LabelText = Strings.TrackBrowserOn,
+                            ChildFactory = new SelectControlFactory()
+                            {
+                                Items = new()
+                                {
+                                    new(Strings.DisplayPlayField, 0),
+                                    new(Strings.DisplayBackGlass, 1),
+                                    new(Strings.DisplayDmd, 2),
+                                },
+                                Converter = new TrackBrowserOnConverter(parser),
+                            }
                         },
                     ]
                 },
@@ -354,98 +390,142 @@ namespace PinJuke.Configurator.Factory
         public ContentGroupControlFactory(Parser parser, string sectionName, MediaPathProvider mediaPathProvider)
         {
             Controls = [
-                new SelectControlFactory()
+                new RowFactory<SelectControl>()
                 {
-                    LabelText = Strings.BackgroundType,
-                    Items = new()
+                    LabelText = Strings.PlaybackBackgroundType,
+                    ChildFactory = new SelectControlFactory()
                     {
-                        new(Strings.BackgroundTypeShowSpecifiedImage, 0),
-                        new(Strings.BackgroundTypeShowMilkdropVisualizations, 1),
-                    },
-                    Converter = new IntSelectConverter(parser, sectionName, "BackgroundType"),
-                    ChangedHandler = (ConfiguratorControl control) =>
-                    {
-                        var value = ((SelectControl)control).SelectedValue;
-                        var enabled = value is int intValue && intValue == 0;
-                        var group = control.GetParentGroup();
-                        ((PathControl)group.GetChildByName(BACKGROUND_IMAGE_FILE_CONTROL)).Enabled = enabled;
-                    },
+                        Items = new()
+                        {
+                            new(Strings.BackgroundTypeShowSpecifiedImage, 0),
+                            new(Strings.BackgroundTypeShowMilkdropVisualizations, 1),
+                            new(Strings.BackgroundTypeShowLoopVideo, 2),
+                        },
+                        Converter = new IntSelectConverter(parser, sectionName, "PlaybackBackgroundType"),
+                        ChangedHandler = (ConfiguratorControl control) =>
+                        {
+                            var value = ((SelectControl)control).SelectedValue;
+                            var group = control.GetParentGroup();
+                            // Enable image file control only for Image background type (0)
+                            var isImageType = value is int intValue && intValue == 0;
+                            var backgroundImageControl = group.GetChildByName(BACKGROUND_IMAGE_FILE_CONTROL) as PathControl;
+                            if (backgroundImageControl != null) backgroundImageControl.Enabled = isImageType;
+                            // Video-related controls would be handled elsewhere since this is the background type selector
+                        },
+                    }
                 },
-                new PathControlFactory()
+                new RowFactory<PathControl>()
                 {
-                    Name = BACKGROUND_IMAGE_FILE_CONTROL,
                     LabelText = Strings.BackgroundImageFile,
-                    FileMode = true,
-                    RelativeEnabled = true,
-                    FileExtension = ".jpg",
-                    FileFilter = $"{Strings.JpegFile}|*.jpg;*.jpeg;*.jpe;*.jfif",
-                    MediaPathProvider = mediaPathProvider,
-                    Converter = new PathConverter(parser, sectionName, "BackgroundImageFile"),
+                    ChildFactory = new PathControlFactory()
+                    {
+                        Name = BACKGROUND_IMAGE_FILE_CONTROL,
+                        FileMode = true,
+                        RelativeEnabled = true,
+                        FileExtension = ".jpg",
+                        FileFilter = $"{Strings.JpegFile}|*.jpg;*.jpeg;*.jpe;*.jfif",
+                        MediaPathProvider = mediaPathProvider,
+                        Converter = new PathConverter(parser, sectionName, "BackgroundImageFile"),
+                    }
                 },
-                new BoolControlFactory()
+                new RowFactory<BoolControl>()
                 {
                     LabelText = Strings.EnableTrackCover,
-                    Converter = new BoolConverter(parser, sectionName, "CoverEnabled"),
+                    ChildFactory = new BoolControlFactory()
+                    {
+                        Converter = new BoolConverter(parser, sectionName, "CoverEnabled"),
+                    }
                 },
-                new BoolControlFactory()
+                new RowFactory<BoolControl>()
                 {
                     LabelText = Strings.EnableThemeVideo,
-                    Converter = new BoolConverter(parser, sectionName, "ThemeVideoEnabled"),
-                    ChangedHandler = (ConfiguratorControl control) =>
+                    ChildFactory = new BoolControlFactory()
                     {
-                        var enabled = ((BoolControl)control).Value;
-                        var group = control.GetParentGroup();
-                        ((PathControl)group.GetChildByName(THEME_VIDEO_START_FILE_CONTROL)).Enabled = enabled;
-                        ((PathControl)group.GetChildByName(THEME_VIDEO_LOOP_FILE_CONTROL)).Enabled = enabled;
-                        ((PathControl)group.GetChildByName(THEME_VIDEO_STOP_FILE_CONTROL)).Enabled = enabled;
-                        ((SelectControl)group.GetChildByName(THEME_VIDEO_ROTATION_CONTROL)).Enabled = enabled;
-                    },
+                        Converter = new BoolConverter(parser, sectionName, "ThemeVideoEnabled"),
+                        ChangedHandler = (ConfiguratorControl control) =>
+                        {
+                            var enabled = ((BoolControl)control).Value;
+                            var group = control.GetParentGroup();
+                            
+                            // Safely update video controls if they exist
+                            try
+                            {
+                                var startFileControl = group.GetChildByName(THEME_VIDEO_START_FILE_CONTROL) as PathControl;
+                                if (startFileControl != null) startFileControl.Enabled = enabled;
+                                
+                                var loopFileControl = group.GetChildByName(THEME_VIDEO_LOOP_FILE_CONTROL) as PathControl;
+                                if (loopFileControl != null) loopFileControl.Enabled = enabled;
+                                
+                                var stopFileControl = group.GetChildByName(THEME_VIDEO_STOP_FILE_CONTROL) as PathControl;
+                                if (stopFileControl != null) stopFileControl.Enabled = enabled;
+                                
+                                var rotationControl = group.GetChildByName(THEME_VIDEO_ROTATION_CONTROL) as SelectControl;
+                                if (rotationControl != null) rotationControl.Enabled = enabled;
+                            }
+                            catch
+                            {
+                                // Controls may not exist yet, ignore
+                            }
+                        },
+                    }
                 },
-                new PathControlFactory()
+                new RowFactory<PathControl>()
                 {
-                    Name = THEME_VIDEO_START_FILE_CONTROL,
                     LabelText = Strings.ThemeVideoStartFile,
-                    FileMode = true,
-                    RelativeEnabled = true,
-                    FileExtension = ".mp4",
-                    FileFilter = $"{Strings.Mp4File}|*.mp4",
-                    MediaPathProvider = mediaPathProvider,
-                    Converter = new PathConverter(parser, sectionName, "ThemeVideoStartFile"),
-                },
-                new PathControlFactory()
-                {
-                    Name = THEME_VIDEO_LOOP_FILE_CONTROL,
-                    LabelText = Strings.ThemeVideoLoopFile,
-                    FileMode = true,
-                    RelativeEnabled = true,
-                    FileExtension = ".mp4",
-                    FileFilter = $"{Strings.Mp4File}|*.mp4",
-                    MediaPathProvider = mediaPathProvider,
-                    Converter = new PathConverter(parser, sectionName, "ThemeVideoLoopFile"),
-                },
-                new PathControlFactory()
-                {
-                    Name = THEME_VIDEO_STOP_FILE_CONTROL,
-                    LabelText = Strings.ThemeVideoStopFile,
-                    FileMode = true,
-                    RelativeEnabled = true,
-                    FileExtension = ".mp4",
-                    FileFilter = $"{Strings.Mp4File}|*.mp4",
-                    MediaPathProvider = mediaPathProvider,
-                    Converter = new PathConverter(parser, sectionName, "ThemeVideoStopFile"),
-                },
-                new SelectControlFactory()
-                {
-                    Name = THEME_VIDEO_ROTATION_CONTROL,
-                    LabelText = Strings.ThemeVideoRotation,
-                    Items = new()
+                    ChildFactory = new PathControlFactory()
                     {
-                        new("-90 °", -90),
-                        new("0 °", 0),
-                        new("90 °", 90),
-                        new("180 °", 180),
-                    },
-                    Converter = new IntSelectConverter(parser, sectionName, "ThemeVideoRotation"),
+                        Name = THEME_VIDEO_START_FILE_CONTROL,
+                        FileMode = true,
+                        RelativeEnabled = true,
+                        FileExtension = ".mp4",
+                        FileFilter = $"{Strings.Mp4File}|*.mp4",
+                        MediaPathProvider = mediaPathProvider,
+                        Converter = new PathConverter(parser, sectionName, "ThemeVideoStartFile"),
+                    }
+                },
+                new RowFactory<PathControl>()
+                {
+                    LabelText = Strings.ThemeVideoLoopFile,
+                    ChildFactory = new PathControlFactory()
+                    {
+                        Name = THEME_VIDEO_LOOP_FILE_CONTROL,
+                        FileMode = true,
+                        RelativeEnabled = true,
+                        FileExtension = ".mp4",
+                        FileFilter = $"{Strings.Mp4File}|*.mp4",
+                        MediaPathProvider = mediaPathProvider,
+                        Converter = new PathConverter(parser, sectionName, "ThemeVideoLoopFile"),
+                    }
+                },
+                new RowFactory<PathControl>()
+                {
+                    LabelText = Strings.ThemeVideoStopFile,
+                    ChildFactory = new PathControlFactory()
+                    {
+                        Name = THEME_VIDEO_STOP_FILE_CONTROL,
+                        FileMode = true,
+                        RelativeEnabled = true,
+                        FileExtension = ".mp4",
+                        FileFilter = $"{Strings.Mp4File}|*.mp4",
+                        MediaPathProvider = mediaPathProvider,
+                        Converter = new PathConverter(parser, sectionName, "ThemeVideoStopFile"),
+                    }
+                },
+                new RowFactory<SelectControl>()
+                {
+                    LabelText = Strings.ThemeVideoRotation,
+                    ChildFactory = new SelectControlFactory()
+                    {
+                        Name = THEME_VIDEO_ROTATION_CONTROL,
+                        Items = new()
+                        {
+                            new("-90 °", -90),
+                            new("0 °", 0),
+                            new("90 °", 90),
+                            new("180 °", 180),
+                        },
+                        Converter = new IntSelectConverter(parser, sectionName, "ThemeVideoRotation"),
+                    }
                 },
             ];
         }

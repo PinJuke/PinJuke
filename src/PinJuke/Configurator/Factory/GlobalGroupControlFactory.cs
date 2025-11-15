@@ -124,47 +124,61 @@ namespace PinJuke.Configurator.Factory
                 {
                     LabelText = Strings.Controller,
                     Controls = [
-                        new SelectControlFactory()
-                        {
+                        new RowFactory<SelectControl>() {
                             LabelText = Strings.ControllerExit,
-                            Items = controllerButtons,
-                            Converter = new ControllerSelectConverter(parser, "Controller", "Exit"),
+                            ChildFactory = new SelectControlFactory()
+                            {
+                                Items = controllerButtons,
+                                Converter = new ControllerSelectConverter(parser, "Controller", "Exit"),
+                            }
                         },
-                        new SelectControlFactory()
-                        {
+                        new RowFactory<SelectControl>() {
                             LabelText = Strings.ControllerBrowse,
-                            Items = controllerButtons,
-                            Converter = new ControllerSelectConverter(parser, "Controller", "Browse"),
+                            ChildFactory = new SelectControlFactory()
+                            {
+                                Items = controllerButtons,
+                                Converter = new ControllerSelectConverter(parser, "Controller", "Browse"),
+                            }
                         },
-                        new SelectControlFactory()
-                        {
+                        new RowFactory<SelectControl>() {
                             LabelText = Strings.ControllerPrevious,
-                            Items = controllerButtons,
-                            Converter = new ControllerSelectConverter(parser, "Controller", "Previous"),
+                            ChildFactory = new SelectControlFactory()
+                            {
+                                Items = controllerButtons,
+                                Converter = new ControllerSelectConverter(parser, "Controller", "Previous"),
+                            }
                         },
-                        new SelectControlFactory()
-                        {
+                        new RowFactory<SelectControl>() {
                             LabelText = Strings.ControllerNext,
-                            Items = controllerButtons,
-                            Converter = new ControllerSelectConverter(parser, "Controller", "Next"),
+                            ChildFactory = new SelectControlFactory()
+                            {
+                                Items = controllerButtons,
+                                Converter = new ControllerSelectConverter(parser, "Controller", "Next"),
+                            }
                         },
-                        new SelectControlFactory()
-                        {
+                        new RowFactory<SelectControl>() {
                             LabelText = Strings.ControllerPlayPause,
-                            Items = controllerButtons,
-                            Converter = new ControllerSelectConverter(parser, "Controller", "PlayPause"),
+                            ChildFactory = new SelectControlFactory()
+                            {
+                                Items = controllerButtons,
+                                Converter = new ControllerSelectConverter(parser, "Controller", "PlayPause"),
+                            }
                         },
-                        new SelectControlFactory()
-                        {
+                        new RowFactory<SelectControl>() {
                             LabelText = Strings.ControllerVolumeDown,
-                            Items = controllerButtons,
-                            Converter = new ControllerSelectConverter(parser, "Controller", "VolumeDown"),
+                            ChildFactory = new SelectControlFactory()
+                            {
+                                Items = controllerButtons,
+                                Converter = new ControllerSelectConverter(parser, "Controller", "VolumeDown"),
+                            }
                         },
-                        new SelectControlFactory()
-                        {
+                        new RowFactory<SelectControl>() {
                             LabelText = Strings.ControllerVolumeUp,
-                            Items = controllerButtons,
-                            Converter = new ControllerSelectConverter(parser, "Controller", "VolumeUp"),
+                            ChildFactory = new SelectControlFactory()
+                            {
+                                Items = controllerButtons,
+                                Converter = new ControllerSelectConverter(parser, "Controller", "VolumeUp"),
+                            }
                         },
                     ]
                 },
@@ -220,93 +234,149 @@ namespace PinJuke.Configurator.Factory
                 {
                     LabelText = "Spotify",
                     Controls = [
-                        new BoolControlFactory()
-                        {
+                        new RowFactory<BoolControl>() {
                             LabelText = "Enable Spotify Integration",
-                            Converter = new BoolConverter(parser, "Spotify", "Enabled"),
-                            ChangedHandler = (ConfiguratorControl control) =>
+                            ChildFactory = new BoolControlFactory()
                             {
-                                var enabled = ((BoolControl)control).Value;
-                                var group = control.GetParentGroup();
-                                ((TextControl)group.GetChildByName("SpotifyClientId")).Enabled = enabled;
-                                ((TextControl)group.GetChildByName("SpotifyClientSecret")).Enabled = enabled;
-                                ((TextControl)group.GetChildByName("SpotifyRedirectUri")).Enabled = enabled;
-                                ((BoolControl)group.GetChildByName("SpotifyUsePreviewUrls")).Enabled = enabled;
-                                ((NumberControl)group.GetChildByName("SpotifyCacheDuration")).Enabled = enabled;
-                                ((NumberControl)group.GetChildByName("SpotifyMaxTracks")).Enabled = enabled;
-                                ((ButtonControl)group.GetChildByName("SpotifyAuthenticateButton")).IsEnabled = enabled;
-                                ((SelectControl)group.GetChildByName("SpotifyDeviceSelect")).Enabled = enabled;
-                                ((ButtonControl)group.GetChildByName("SpotifyRefreshDevicesButton")).IsEnabled = enabled;
-                                ((BoolControl)group.GetChildByName("SpotifyAutoTransferPlayback")).Enabled = enabled;
-                                ((NumberControl)group.GetChildByName("SpotifyDefaultVolume")).Enabled = enabled;
-                            },
+                                Converter = new BoolConverter(parser, "Spotify", "Enabled"),
+                                ChangedHandler = (ConfiguratorControl control) =>
+                                {
+                                    var enabled = ((BoolControl)control).Value;
+                                    var group = control.GetParentGroup();
+                                    
+                                    // Safely update controls if they exist
+                                    try
+                                    {
+                                        var clientIdControl = group.GetChildByName("SpotifyClientId") as TextControl;
+                                        if (clientIdControl != null) clientIdControl.Enabled = enabled;
+                                        
+                                        var clientSecretControl = group.GetChildByName("SpotifyClientSecret") as TextControl;
+                                        if (clientSecretControl != null) clientSecretControl.Enabled = enabled;
+                                        
+                                        var redirectUriControl = group.GetChildByName("SpotifyRedirectUri") as TextControl;
+                                        if (redirectUriControl != null) redirectUriControl.Enabled = enabled;
+                                        
+                                        var usePreviewUrlsControl = group.GetChildByName("SpotifyUsePreviewUrls") as BoolControl;
+                                        if (usePreviewUrlsControl != null) usePreviewUrlsControl.Enabled = enabled;
+                                        
+                                        var cacheDurationControl = group.GetChildByName("SpotifyCacheDuration") as NumberControl;
+                                        if (cacheDurationControl != null) cacheDurationControl.Enabled = enabled;
+                                        
+                                        var maxTracksControl = group.GetChildByName("SpotifyMaxTracks") as NumberControl;
+                                        if (maxTracksControl != null) maxTracksControl.Enabled = enabled;
+                                        
+                                        var authenticateButtonControl = group.GetChildByName("SpotifyAuthenticateButton") as ButtonControl;
+                                        if (authenticateButtonControl != null) authenticateButtonControl.IsEnabled = enabled;
+                                        
+                                        var deviceSelectControl = group.GetChildByName("SpotifyDeviceSelect") as SelectControl;
+                                        if (deviceSelectControl != null) deviceSelectControl.Enabled = enabled;
+                                        
+                                        var refreshDevicesButtonControl = group.GetChildByName("SpotifyRefreshDevicesButton") as ButtonControl;
+                                        if (refreshDevicesButtonControl != null) refreshDevicesButtonControl.IsEnabled = enabled;
+                                        
+                                        var autoTransferPlaybackControl = group.GetChildByName("SpotifyAutoTransferPlayback") as BoolControl;
+                                        if (autoTransferPlaybackControl != null) autoTransferPlaybackControl.Enabled = enabled;
+                                        
+                                        var defaultVolumeControl = group.GetChildByName("SpotifyDefaultVolume") as NumberControl;
+                                        if (defaultVolumeControl != null) defaultVolumeControl.Enabled = enabled;
+                                    }
+                                    catch
+                                    {
+                                        // Controls may not exist yet, ignore
+                                    }
+                                },
+                            }
                         },
-                        new TextControlFactory()
-                        {
-                            Name = "SpotifyClientId",
+                        new RowFactory<TextControl>() {
                             LabelText = "Spotify Client ID",
-                            Converter = new StringConverter(parser, "Spotify", "ClientId"),
+                            ChildFactory = new TextControlFactory()
+                            {
+                                Name = "SpotifyClientId",
+                                Converter = new StringConverter(parser, "Spotify", "ClientId"),
+                            }
                         },
-                        new TextControlFactory()
-                        {
-                            Name = "SpotifyClientSecret", 
+                        new RowFactory<TextControl>() {
                             LabelText = "Spotify Client Secret",
-                            Converter = new StringConverter(parser, "Spotify", "ClientSecret"),
+                            ChildFactory = new TextControlFactory()
+                            {
+                                Name = "SpotifyClientSecret", 
+                                Converter = new StringConverter(parser, "Spotify", "ClientSecret"),
+                            }
                         },
-                        new TextControlFactory()
-                        {
-                            Name = "SpotifyRedirectUri",
+                        new RowFactory<TextControl>() {
                             LabelText = "OAuth Redirect URI",
-                            Converter = new StringConverter(parser, "Spotify", "RedirectUri"),
+                            ChildFactory = new TextControlFactory()
+                            {
+                                Name = "SpotifyRedirectUri",
+                                Converter = new StringConverter(parser, "Spotify", "RedirectUri"),
+                            }
                         },
-                        new BoolControlFactory()
-                        {
-                            Name = "SpotifyUsePreviewUrls",
+                        new RowFactory<BoolControl>() {
                             LabelText = "Use 30s Preview URLs (no Premium required)",
-                            Converter = new BoolConverter(parser, "Spotify", "UsePreviewUrls"),
+                            ChildFactory = new BoolControlFactory()
+                            {
+                                Name = "SpotifyUsePreviewUrls",
+                                Converter = new BoolConverter(parser, "Spotify", "UsePreviewUrls"),
+                            }
                         },
-                        new NumberControlFactory()
-                        {
-                            Name = "SpotifyCacheDuration",
+                        new RowFactory<NumberControl>() {
                             LabelText = "API Cache Duration (minutes)",
-                            Converter = new IntNumberConverter(parser, "Spotify", "CacheDurationMinutes"),
+                            ChildFactory = new NumberControlFactory()
+                            {
+                                Name = "SpotifyCacheDuration",
+                                Converter = new IntNumberConverter(parser, "Spotify", "CacheDurationMinutes"),
+                            }
                         },
-                        new NumberControlFactory()
-                        {
-                            Name = "SpotifyMaxTracks",
+                        new RowFactory<NumberControl>() {
                             LabelText = "Max Tracks per Playlist",
-                            Converter = new IntNumberConverter(parser, "Spotify", "MaxTracksPerPlaylist"),
+                            ChildFactory = new NumberControlFactory()
+                            {
+                                Name = "SpotifyMaxTracks",
+                                Converter = new IntNumberConverter(parser, "Spotify", "MaxTracksPerPlaylist"),
+                            }
                         },
-                        new ButtonControlFactory()
-                        {
-                            Name = "SpotifyAuthenticateButton",
-                            Text = IsSpotifyAuthenticated() ? "Authenticated" : "Not Authenticated",
-                            ClickHandler = async (control) => await AuthenticateSpotifyAsync(control),
+                        new RowFactory<ButtonControl>() {
+                            LabelText = "Authentication",
+                            ChildFactory = new ButtonControlFactory()
+                            {
+                                Name = "SpotifyAuthenticateButton",
+                                Text = IsSpotifyAuthenticated() ? "Authenticated" : "Not Authenticated",
+                                ClickHandler = async (control) => await AuthenticateSpotifyAsync(control),
+                            }
                         },
-                        new SelectControlFactory()
-                        {
-                            Name = "SpotifyDeviceSelect",
+                        new RowFactory<SelectControl>() {
                             LabelText = "Playback Device",
-                            Converter = new StringSelectConverter(parser, "Spotify", "DeviceId"),
-                            Items = GetInitialSpotifyDevices(),
+                            ChildFactory = new SelectControlFactory()
+                            {
+                                Name = "SpotifyDeviceSelect",
+                                Converter = new StringSelectConverter(parser, "Spotify", "DeviceId"),
+                                Items = GetInitialSpotifyDevices(),
+                            }
                         },
-                        new ButtonControlFactory()
-                        {
-                            Name = "SpotifyRefreshDevicesButton",
-                            Text = "Refresh Devices",
-                            ClickHandler = async (control) => await RefreshSpotifyDevicesAsync(control),
+                        new RowFactory<ButtonControl>() {
+                            LabelText = "Device Management",
+                            ChildFactory = new ButtonControlFactory()
+                            {
+                                Name = "SpotifyRefreshDevicesButton",
+                                Text = "Refresh Devices",
+                                ClickHandler = async (control) => await RefreshSpotifyDevicesAsync(control),
+                            }
                         },
-                        new BoolControlFactory()
-                        {
-                            Name = "SpotifyAutoTransferPlayback",
+                        new RowFactory<BoolControl>() {
                             LabelText = "Auto-transfer playback to selected device (ensures playback happens on correct device)",
-                            Converter = new BoolConverter(parser, "Spotify", "AutoTransferPlayback"),
+                            ChildFactory = new BoolControlFactory()
+                            {
+                                Name = "SpotifyAutoTransferPlayback",
+                                Converter = new BoolConverter(parser, "Spotify", "AutoTransferPlayback"),
+                            }
                         },
-                        new NumberControlFactory()
-                        {
-                            Name = "SpotifyDefaultVolume",
+                        new RowFactory<NumberControl>() {
                             LabelText = "Default Spotify Volume (0-100, controls Spotify app volume)",
-                            Converter = new IntNumberConverter(parser, "Spotify", "DefaultVolume"),
+                            ChildFactory = new NumberControlFactory()
+                            {
+                                Name = "SpotifyDefaultVolume",
+                                Converter = new IntNumberConverter(parser, "Spotify", "DefaultVolume"),
+                            }
                         },
                     ]
                 },
@@ -318,9 +388,21 @@ namespace PinJuke.Configurator.Factory
             try
             {
                 var group = control.GetParentGroup();
-                var clientId = ((TextControl)group.GetChildByName("SpotifyClientId")).Value;
-                var clientSecret = ((TextControl)group.GetChildByName("SpotifyClientSecret")).Value;
-                var redirectUri = ((TextControl)group.GetChildByName("SpotifyRedirectUri")).Value;
+                
+                // Safely get control values
+                var clientIdControl = group.GetChildByName("SpotifyClientId") as TextControl;
+                var clientSecretControl = group.GetChildByName("SpotifyClientSecret") as TextControl;
+                var redirectUriControl = group.GetChildByName("SpotifyRedirectUri") as TextControl;
+                
+                if (clientIdControl == null || clientSecretControl == null || redirectUriControl == null)
+                {
+                    System.Windows.MessageBox.Show("Authentication error: cannot return child. Found no control for \"SpotifyClientId\"", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                    return;
+                }
+                
+                var clientId = clientIdControl.Value;
+                var clientSecret = clientSecretControl.Value;
+                var redirectUri = redirectUriControl.Value;
 
                 if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret) || string.IsNullOrEmpty(redirectUri))
                 {
@@ -543,9 +625,21 @@ namespace PinJuke.Configurator.Factory
 
                 // Get the group and config values
                 var group = control.GetParentGroup();
-                var clientId = ((TextControl)group.GetChildByName("SpotifyClientId")).Value;
-                var clientSecret = ((TextControl)group.GetChildByName("SpotifyClientSecret")).Value;
-                var redirectUri = ((TextControl)group.GetChildByName("SpotifyRedirectUri")).Value;
+                
+                // Safely get control values
+                var clientIdControl = group.GetChildByName("SpotifyClientId") as TextControl;
+                var clientSecretControl = group.GetChildByName("SpotifyClientSecret") as TextControl;
+                var redirectUriControl = group.GetChildByName("SpotifyRedirectUri") as TextControl;
+                
+                if (clientIdControl == null || clientSecretControl == null || redirectUriControl == null)
+                {
+                    System.Windows.MessageBox.Show("Error loading devices: Cannot return child. Found no control for \"SpotifyClientId\"", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                    return;
+                }
+                
+                var clientId = clientIdControl.Value;
+                var clientSecret = clientSecretControl.Value;
+                var redirectUri = redirectUriControl.Value;
 
                 // Create temporary config and media provider
                 var config = new Spotify.SpotifyConfig
