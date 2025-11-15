@@ -389,11 +389,6 @@ namespace PinJuke.Configurator.Factory
                 },
                 new BoolControlFactory()
                 {
-                    LabelText = Strings.EnablePlaybackStatus,
-                    Converter = new BoolConverter(parser, sectionName, "StateEnabled"),
-                },
-                new BoolControlFactory()
-                {
                     LabelText = Strings.EnableThemeVideo,
                     Converter = new BoolConverter(parser, sectionName, "ThemeVideoEnabled"),
                     ChangedHandler = (ConfiguratorControl control) =>
