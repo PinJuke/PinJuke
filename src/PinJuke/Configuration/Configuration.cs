@@ -36,12 +36,27 @@ namespace PinJuke.Configuration
 
     public record Window(int Left, int Top, int Width, int Height, float ContentScale, int ContentRotation);
 
-    public record Content(BackgroundType BackgroundType, string BackgroundImageFile, bool CoverEnabled, bool StateEnabled, bool BrowserEnabled, bool ThemeVideoEnabled, string ThemeVideoStartFile, string ThemeVideoLoopFile, string ThemeVideoStopFile, int ThemeVideoRotation);
+    public record Content(
+        bool CoverEnabled,
+        bool StateEnabled,
+        bool BrowserEnabled,
+        BackgroundType PlaybackBackgroundType,
+        BackgroundType IdleBackgroundType,
+        bool ThemeVideoStartFileEnabled,
+        bool ThemeVideoStopFileEnabled,
+        string BackgroundImageFile,
+        string ThemeVideoStartFile,
+        string ThemeVideoLoopFile,
+        string ThemeVideoStopFile,
+        string ThemeVideoIdleFile,
+        int ThemeVideoRotation
+    );
 
     public enum BackgroundType
     {
         Image = 0,
         MilkdropVisualization = 1,
+        Video = 2,
     }
 
     public record Keyboard(Key Exit, Key Browse, Key Previous, Key Next, Key PlayPause, Key VolumeDown, Key VolumeUp, Key Tilt);

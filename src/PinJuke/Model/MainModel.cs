@@ -50,6 +50,10 @@ namespace PinJuke.Model
 
     public record State(StateType Type, object? Data = null);
 
+    public class MediaEventData
+    {
+    }
+
     public class MainModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -61,9 +65,11 @@ namespace PinJuke.Model
         public event EventHandler<PresetActionEventArgs>? PresetEvent;
         public event EventHandler<PlayMediaEventArgs>? PlayMediaEvent;
         public event EventHandler<EndMediaEventArgs>? EndMediaEvent;
+        public event EventHandler<MediaEventArgs<MediaEventData>>? MediaEvent;
 
         private PlayMediaEventArgs? playMediaEventArgs = null;
         private EndMediaEventArgs? endMediaEventArgs = null;
+        private MediaEventArgs<MediaEventData>? mediaEventArgs = null;
 
         public Configuration.Configuration Configuration { get; }
         public Configuration.UserConfiguration UserConfiguration { get; }

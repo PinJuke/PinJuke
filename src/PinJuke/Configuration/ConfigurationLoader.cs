@@ -141,37 +141,25 @@ namespace PinJuke.Configuration
                  GetRotation(displaySection["ContentRotation"]) ?? 0
             );
 
-            var backgroundImageFile = parser.ParseString(displaySection["BackgroundImageFile"]) ?? "";
-            if (!backgroundImageFile.IsNullOrEmpty())
-            {
-                backgroundImageFile = GetFullPathFromMediaPath(backgroundImageFile, mediaPath);
-            }
-            var themeVideoStartFile = parser.ParseString(displaySection["ThemeVideoStartFile"]) ?? "";
-            if (!themeVideoStartFile.IsNullOrEmpty())
-            {
-                themeVideoStartFile = GetFullPathFromMediaPath(themeVideoStartFile, mediaPath);
-            }
-            var themeVideoLoopFile = parser.ParseString(displaySection["ThemeVideoLoopFile"]) ?? "";
-            if (!themeVideoLoopFile.IsNullOrEmpty())
-            {
-                themeVideoLoopFile = GetFullPathFromMediaPath(themeVideoLoopFile, mediaPath);
-            }
-            var themeVideoStopFile = parser.ParseString(displaySection["ThemeVideoStopFile"]) ?? "";
-            if (!themeVideoStopFile.IsNullOrEmpty())
-            {
-                themeVideoStopFile = GetFullPathFromMediaPath(themeVideoStopFile, mediaPath);
-            }
+            var backgroundImageFile = ParseFullPathFromMediaPath(displaySection["BackgroundImageFile"], mediaPath);
+            var themeVideoStartFile = ParseFullPathFromMediaPath(displaySection["ThemeVideoStartFile"], mediaPath);
+            var themeVideoLoopFile = ParseFullPathFromMediaPath(displaySection["ThemeVideoLoopFile"], mediaPath);
+            var themeVideoStopFile = ParseFullPathFromMediaPath(displaySection["ThemeVideoStopFile"], mediaPath);
+            var themeVideoIdleFile = ParseFullPathFromMediaPath(displaySection["ThemeVideoIdleFile"], mediaPath);
 
             var content = new Content(
-                parser.ParseEnum<BackgroundType>(displaySection["BackgroundType"]) ?? BackgroundType.MilkdropVisualization,
-                backgroundImageFile,
                 parser.ParseBool(displaySection["CoverEnabled"]) ?? role == DisplayRole.DMD,
                 parser.ParseBool(displaySection["StateEnabled"]) ?? true,
-                parser.ParseBool(displaySection["BrowserEnabled"]) ?? true,
-                parser.ParseBool(displaySection["ThemeVideoEnabled"]) ?? true,
+                parser.ParseBool(displaySection["BrowserEnabled"]) ?? role == DisplayRole.BackGlass,
+                parser.ParseEnum<BackgroundType>(displaySection["PlaybackBackgroundType"]) ?? BackgroundType.MilkdropVisualization,
+                parser.ParseEnum<BackgroundType>(displaySection["IdleBackgroundType"]) ?? BackgroundType.MilkdropVisualization,
+                parser.ParseBool(displaySection["ThemeVideoStartFileEnabled"]) ?? false,
+                parser.ParseBool(displaySection["ThemeVideoStopFileEnabled"]) ?? false,
+                backgroundImageFile,
                 themeVideoStartFile,
                 themeVideoLoopFile,
                 themeVideoStopFile,
+                themeVideoIdleFile,
                 GetRotation(displaySection["ThemeVideoRotation"]) ?? 0
             );
 
@@ -216,6 +204,16 @@ namespace PinJuke.Configuration
         protected string GetFullPathFromMediaPath(string path, string mediaPath)
         {
             return Path.GetFullPath(path, mediaPath);
+        }
+
+        protected string ParseFullPathFromMediaPath(string? entryValue, string mediaPath)
+        {
+            var path = parser.ParseString(entryValue) ?? "";
+            if (!path.IsNullOrEmpty())
+            {
+                path = GetFullPathFromMediaPath(path, mediaPath);
+            }
+            return path;
         }
 
         protected int? GetRotation(string? s)

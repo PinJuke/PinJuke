@@ -68,30 +68,32 @@ namespace PinJuke
             ContentRotation = displayConfig.Window.ContentRotation;
             Cursor = mainModel.Configuration.CursorVisible ? Cursors.Arrow : Cursors.None;
 
-            switch (displayConfig.Content.BackgroundType)
+            var content = displayConfig.Content;
+
+            if (content.PlaybackBackgroundType == Configuration.BackgroundType.Image
+                || content.IdleBackgroundType == Configuration.BackgroundType.Image)
             {
-                case Configuration.BackgroundType.Image:
-                    backgroundImageControl = new();
-                    new BackgroundImageMediator(backgroundImageControl, displayConfig).Initialize();
-                    BackgroundImageContainer.Content = backgroundImageControl;
-                    break;
-                case Configuration.BackgroundType.MilkdropVisualization:
-                    visualizerControl = new();
-                    new VisualizerMediator(visualizerControl, mainModel, displayConfig, audioManager).Initialize();
-                    VisualizerContainer.Content = visualizerControl;
-                    break;
+                backgroundImageControl = new();
+                new BackgroundImageMediator(backgroundImageControl, mainModel, displayConfig).Initialize();
+                BackgroundImageContainer.Content = backgroundImageControl;
             }
 
-            if (displayConfig.Content.ThemeVideoEnabled)
+            if (content.PlaybackBackgroundType == Configuration.BackgroundType.MilkdropVisualization
+                || content.IdleBackgroundType == Configuration.BackgroundType.MilkdropVisualization)
             {
-                if (!displayConfig.Content.ThemeVideoStartFile.IsNullOrEmpty()
-                    || !displayConfig.Content.ThemeVideoLoopFile.IsNullOrEmpty()
-                    || !displayConfig.Content.ThemeVideoStopFile.IsNullOrEmpty())
-                {
-                    themeVideoControl = new();
-                    new ThemeVideoMediator(themeVideoControl, mainModel, displayConfig).Initialize();
-                    ThemeVideoContainer.Content = themeVideoControl;
-                }
+                visualizerControl = new();
+                new VisualizerMediator(visualizerControl, mainModel, displayConfig, audioManager).Initialize();
+                VisualizerContainer.Content = visualizerControl;
+            }
+
+            if (content.PlaybackBackgroundType == Configuration.BackgroundType.Video
+                || content.IdleBackgroundType == Configuration.BackgroundType.Video
+                || content.ThemeVideoStartFileEnabled
+                || content.ThemeVideoStopFileEnabled)
+            {
+                themeVideoControl = new();
+                new ThemeVideoMediator(themeVideoControl, mainModel, displayConfig).Initialize();
+                ThemeVideoContainer.Content = themeVideoControl;
             }
 
             introImageControl = new();
