@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PinJuke.View;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,7 @@ using System.Windows.Shapes;
 
 namespace PinJuke.Configurator.View
 {
-    public partial class GroupControl : ConfiguratorControl
+    public partial class GroupControl : ConfiguratorControl, ContainerControl
     {
         private string labelText = "";
         public string LabelText
@@ -23,6 +24,8 @@ namespace PinJuke.Configurator.View
             get => labelText;
             set => this.SetField(ref labelText, value);
         }
+
+        Panel ContainerControl.Controls => Controls;
 
         public GroupControl()
         {

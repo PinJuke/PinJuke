@@ -8,7 +8,8 @@
     d:DesignHeight="20" d:DesignWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -16,5 +17,8 @@
 
         <CheckBox VerticalAlignment="Center" Content="{Binding LabelText}"
                   IsChecked="{Binding Value, Mode=TwoWay}" IsEnabled="{Binding Enabled}"/>
+
+        <StackPanel x:Name="Controls" Grid.Column="1" Orientation="Vertical">
+        </StackPanel>
     </Grid>
 </local:ConfiguratorControl>

@@ -23,3 +23,10 @@
 ```Shell
 ./ffmpeg -i "Turntable Start.mp4" -vf "transpose=1" -an -vcodec libx264 -crf 28 "Turntable Start New.mp4"
 ```
+
+## Create idle video
+
+```Shell
+ffmpeg -i "Turntable Start.mp4" -frames:v 1 -q:v 2 first_frame.jpg
+ffmpeg -loop 1 -i first_frame.jpg -c:v libx264 -t 2 -pix_fmt yuv420p -vf "fps=25" output.mp4
+```

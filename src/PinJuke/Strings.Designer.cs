@@ -97,11 +97,20 @@ namespace PinJuke {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Background type.
+        ///   Looks up a localized string similar to Show idle videl.
         /// </summary>
-        public static string BackgroundType {
+        public static string BackgroundTypeShowIdleVideo {
             get {
-                return ResourceManager.GetString("BackgroundType", resourceCulture);
+                return ResourceManager.GetString("BackgroundTypeShowIdleVideo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show loop video.
+        /// </summary>
+        public static string BackgroundTypeShowLoopVideo {
+            get {
+                return ResourceManager.GetString("BackgroundTypeShowLoopVideo", resourceCulture);
             }
         }
         
@@ -622,7 +631,7 @@ namespace PinJuke {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show track cover.
+        ///   Looks up a localized string similar to Show track cover and information.
         /// </summary>
         public static string EnableTrackCover {
             get {
@@ -699,6 +708,15 @@ namespace PinJuke {
         public static string GlobalConfiguration {
             get {
                 return ResourceManager.GetString("GlobalConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Idle background type.
+        /// </summary>
+        public static string IdleBackgroundType {
+            get {
+                return ResourceManager.GetString("IdleBackgroundType", resourceCulture);
             }
         }
         
@@ -1009,6 +1027,15 @@ namespace PinJuke {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Playback background type.
+        /// </summary>
+        public static string PlaybackBackgroundType {
+            get {
+                return ResourceManager.GetString("PlaybackBackgroundType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Player.
         /// </summary>
         public static string Player {
@@ -1288,6 +1315,15 @@ namespace PinJuke {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Theme video idle file.
+        /// </summary>
+        public static string ThemeVideoIdleFile {
+            get {
+                return ResourceManager.GetString("ThemeVideoIdleFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Theme video loop file.
         /// </summary>
         public static string ThemeVideoLoopFile {
@@ -1329,6 +1365,15 @@ namespace PinJuke {
         public static string ToolTipDocumentation {
             get {
                 return ResourceManager.GetString("ToolTipDocumentation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show track browser on.
+        /// </summary>
+        public static string TrackBrowserOn {
+            get {
+                return ResourceManager.GetString("TrackBrowserOn", resourceCulture);
             }
         }
         

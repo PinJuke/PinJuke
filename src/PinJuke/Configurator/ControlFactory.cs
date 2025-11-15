@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
+using static PinJuke.Configurator.View.ConfiguratorControl;
+using static System.Resources.ResXFileRef;
 
 namespace PinJuke.Configurator
 {
     public interface ControlFactory<out T> where T : UIElement
     {
-        public string LabelText { get; set; }
         public string? Name { get; set; }
 
         public T CreateControl();
@@ -21,82 +21,187 @@ namespace PinJuke.Configurator
         public void WriteToControl(UIElement control, IniDocument iniDocument);
     }
 
-    public abstract class BaseControlFactory<T> : ControlFactory<RowControl> where T : ConfiguratorControl
+    public class RowFactory<T> : ControlFactory<RowControl> where T : ConfiguratorControl
     {
         public string LabelText { get; set; } = "";
         public string? Name { get; set; } = null;
-        public Converter<T>? Converter { get; set; } = null;
-        public ConfiguratorControl.ChangedHandler? ChangedHandler { get; set; } = null;
+
+        private ControlFactory<T>? childFactory = null;
+        public ControlFactory<T> ChildFactory
+        {
+            get
+            {
+                if (childFactory == null)
+                {
+                    throw new InvalidOperationException("ChildFactory is not set.");
+                }
+                return childFactory;
+            }
+            set
+            {
+                childFactory = value;
+            }
+        }
+
+        public RowFactory()
+        {
+        }
 
         public RowControl CreateControl()
         {
             var rowControl = new RowControl();
-            var control = CreateControlForRow();
-            if (ChangedHandler != null)
-            {
-                control.ChangedEvent += ChangedHandler;
-            }
-            rowControl.Control = control;
+            var childControl = ChildFactory.CreateControl();
+            rowControl.Control = childControl;
             rowControl.LabelText = LabelText;
             return rowControl;
         }
 
-        public abstract T CreateControlForRow();
-
-        public void ReadFromControl(UIElement control, IniDocument iniDocument)
+        public virtual void ReadFromControl(UIElement control, IniDocument iniDocument)
         {
             var rowControl = (RowControl)control;
             var childControl = (T?)rowControl.Control ?? throw new InvalidOperationException("Cannot read. Control of row control is null.");
-            Converter?.ReadFromControl(childControl, iniDocument);
+            ChildFactory.ReadFromControl(childControl, iniDocument);
         }
 
-        public void WriteToControl(UIElement control, IniDocument iniDocument)
+        public virtual void WriteToControl(UIElement control, IniDocument iniDocument)
         {
             var rowControl = (RowControl)control;
             var childControl = (T?)rowControl.Control ?? throw new InvalidOperationException("Cannot write. Control of row control is null.");
-            Converter?.WriteToControl(childControl, iniDocument);
+            ChildFactory.WriteToControl(childControl, iniDocument);
         }
     }
 
-    public class GroupControlFactory : ControlFactory<GroupControl>
+    public abstract class BaseControlFactory<T> : ControlFactory<T> where T : ConfiguratorControl
     {
-        public string LabelText { get; set; } = "";
         public string? Name { get; set; } = null;
-        public ControlFactory<UIElement>[] Controls { get; set; } = [];
+        public Converter<T>? Converter { get; set; } = null;
+        public ConfiguratorControl.ChangedHandler? ChangedHandler { get; set; } = null;
 
-        public GroupControl CreateControl()
+        public abstract T CreateConfiguratorControl();
+
+        public T CreateControl()
         {
-            var controlGroup = new GroupControl()
+            var control = CreateConfiguratorControl();
+            if (ChangedHandler != null)
             {
-                Name = Name,
-                LabelText = LabelText,
-            };
-            foreach (var controlFactory in Controls)
-            {
-                var control = controlFactory.CreateControl();
-                controlGroup.Controls.Children.Add(control);
+                control.ChangedEvent += ChangedHandler;
             }
-            return controlGroup;
+            return control;
         }
 
-        public void ReadFromControl(UIElement control, IniDocument iniDocument)
+        public virtual void ReadFromControl(UIElement control, IniDocument iniDocument)
         {
-            var groupControl = (GroupControl)control;
-            foreach (var (controlFactory, i) in Controls.Select((item, i) => (item, i)))
+            Converter?.ReadFromControl((T)control, iniDocument);
+        }
+
+        public virtual void WriteToControl(UIElement control, IniDocument iniDocument)
+        {
+            Converter?.WriteToControl((T)control, iniDocument);
+        }
+    }
+
+    public interface ContainerControlFactoryInterface<out T> where T : ConfiguratorControl, ContainerControl
+    {
+        public ControlFactory<UIElement>[] Controls { get; }
+
+        public T CreateContainerControl();
+    }
+
+    public class ContainerControlTrait<T> where T : ConfiguratorControl, ContainerControl
+    {
+        public T CreateControlAndChildren(ContainerControlFactoryInterface<T> factory)
+        {
+            var containerControl = factory.CreateContainerControl();
+            foreach (var controlFactory in factory.Controls)
             {
-                var childControl = groupControl.Controls.Children[i];
+                var control = controlFactory.CreateControl();
+                containerControl.Controls.Children.Add(control);
+            }
+            return containerControl;
+        }
+
+        public void ReadFromControl(ContainerControlFactoryInterface<T> factory, UIElement control, IniDocument iniDocument)
+        {
+            var containerControl = (ContainerControl)control;
+            var i = 0;
+            foreach (var controlFactory in factory.Controls)
+            {
+                var childControl = containerControl.Controls.Children[i++];
                 controlFactory.ReadFromControl(childControl, iniDocument);
             }
         }
 
-        public void WriteToControl(UIElement control, IniDocument iniDocument)
+        public void WriteToControl(ContainerControlFactoryInterface<T> factory, UIElement control, IniDocument iniDocument)
         {
-            var groupControl = (GroupControl)control;
-            foreach (var (controlFactory, i) in Controls.Select((item, i) => (item, i)))
+            var containerControl = (ContainerControl)control;
+            var i = 0;
+            foreach (var controlFactory in factory.Controls)
             {
-                var childControl = groupControl.Controls.Children[i];
+                var childControl = containerControl.Controls.Children[i++];
                 controlFactory.WriteToControl(childControl, iniDocument);
             }
+        }
+    }
+
+    public abstract class BaseContainerControlFactory<T> : BaseControlFactory<T>, ContainerControlFactoryInterface<T> where T : ConfiguratorControl, ContainerControl
+    {
+        public ControlFactory<UIElement>[] Controls { get; set; } = [];
+        private readonly ContainerControlTrait<T> containerControlTrait = new();
+
+        public abstract T CreateContainerControl();
+
+        public override T CreateConfiguratorControl()
+        {
+            return containerControlTrait.CreateControlAndChildren(this);
+        }
+
+        public override void ReadFromControl(UIElement control, IniDocument iniDocument)
+        {
+            base.ReadFromControl(control, iniDocument);
+            containerControlTrait.ReadFromControl(this, control, iniDocument);
+        }
+
+        public override void WriteToControl(UIElement control, IniDocument iniDocument)
+        {
+            base.WriteToControl(control, iniDocument);
+            containerControlTrait.WriteToControl(this, control, iniDocument);
+        }
+    }
+
+    public abstract class ContainerControlFactory<T> : ControlFactory<T>, ContainerControlFactoryInterface<T> where T : ConfiguratorControl, ContainerControl
+    {
+        public string LabelText { get; set; } = "";
+        public string? Name { get; set; } = null;
+        public ControlFactory<UIElement>[] Controls { get; set; } = [];
+        private readonly ContainerControlTrait<T> containerControlTrait = new();
+
+        public abstract T CreateContainerControl();
+
+        public T CreateControl()
+        {
+            return containerControlTrait.CreateControlAndChildren(this);
+        }
+
+        public void ReadFromControl(UIElement control, IniDocument iniDocument)
+        {
+            containerControlTrait.ReadFromControl(this, control, iniDocument);
+        }
+
+        public void WriteToControl(UIElement control, IniDocument iniDocument)
+        {
+            containerControlTrait.WriteToControl(this, control, iniDocument);
+        }
+    }
+
+    public class GroupControlFactory : ContainerControlFactory<GroupControl>
+    {
+        public override GroupControl CreateContainerControl()
+        {
+            return new GroupControl()
+            {
+                Name = Name,
+                LabelText = LabelText,
+            };
         }
     }
 
@@ -109,8 +214,9 @@ namespace PinJuke.Configurator
         public string FileExtension { get; set; } = ".ini";
         public string FileFilter { get; set; } = $"{Strings.IniFile}|*.ini";
         public MediaPathProvider? MediaPathProvider { get; set; } = null;
+        public int InputWidth { get; set; } = 200;
 
-        public override PathControl CreateControlForRow()
+        public override PathControl CreateConfiguratorControl()
         {
             return new PathControl()
             {
@@ -122,13 +228,14 @@ namespace PinJuke.Configurator
                 FileExtension = FileExtension,
                 FileFilter = FileFilter,
                 MediaPathProvider = MediaPathProvider,
+                InputWidth = InputWidth,
             };
         }
     }
 
-    public class BoolControlFactory : BaseControlFactory<BoolControl>
+    public class BoolControlFactory : BaseContainerControlFactory<BoolControl>
     {
-        public override BoolControl CreateControlForRow()
+        public override BoolControl CreateContainerControl()
         {
             return new BoolControl()
             {
@@ -139,7 +246,7 @@ namespace PinJuke.Configurator
 
     public class NumberControlFactory : BaseControlFactory<NumberControl>
     {
-        public override NumberControl CreateControlForRow()
+        public override NumberControl CreateConfiguratorControl()
         {
             return new NumberControl()
             {
@@ -163,7 +270,7 @@ namespace PinJuke.Configurator
     {
         public List<Item> Items { get; set; } = new();
 
-        public override SelectControl CreateControlForRow()
+        public override SelectControl CreateConfiguratorControl()
         {
             return new SelectControl()
             {
@@ -178,7 +285,7 @@ namespace PinJuke.Configurator
         public string Text { get; set; } = "";
         public ButtonControlClickHandler? ClickHandler { get; set; } = null;
 
-        public override ButtonControl CreateControlForRow()
+        public override ButtonControl CreateConfiguratorControl()
         {
             return new ButtonControl()
             {

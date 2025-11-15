@@ -34,14 +34,16 @@ namespace PinJuke.Configurator.Factory
                 {
                     LabelText = "PinJuke",
                     Controls = [
-                        new PathControlFactory()
-                        {
+                        new RowFactory<PathControl>() {
                             LabelText = Strings.MediaPath,
-                            Name = MEDIA_PATH_CONTROL,
-                            FileMode = false,
-                            RelativeEnabled = true,
-                            Converter = new PathConverter(parser, "PinJuke", "MediaPath"),
-                        },
+                            ChildFactory = new PathControlFactory()
+                            {
+                                Name = MEDIA_PATH_CONTROL,
+                                FileMode = false,
+                                RelativeEnabled = true,
+                                Converter = new PathConverter(parser, "PinJuke", "MediaPath"),
+                            }
+                        }
                     ]
                 },
                 new WindowGroupControlFactory(parser, "PlayField", false, pinUpReader, PinUpPlayerIniReader.PLAY_FIELD_SECTION_NAME)
@@ -60,47 +62,61 @@ namespace PinJuke.Configurator.Factory
                 {
                     LabelText = Strings.Keyboard,
                     Controls = [
-                        new SelectControlFactory()
-                        {
+                        new RowFactory<SelectControl>() {
                             LabelText = Strings.KeyExit,
-                            Items = keys,
-                            Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "Exit"),
+                            ChildFactory = new SelectControlFactory()
+                            {
+                                Items = keys,
+                                Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "Exit"),
+                            }
                         },
-                        new SelectControlFactory()
-                        {
+                        new RowFactory<SelectControl>() {
                             LabelText = Strings.KeyBrowse,
-                            Items = keys,
-                            Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "Browse"),
+                            ChildFactory = new SelectControlFactory()
+                            {
+                                Items = keys,
+                                Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "Browse"),
+                            }
                         },
-                        new SelectControlFactory()
-                        {
+                        new RowFactory<SelectControl>() {
                             LabelText = Strings.KeyPrevious,
-                            Items = keys,
-                            Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "Previous"),
+                            ChildFactory = new SelectControlFactory()
+                            {
+                                Items = keys,
+                                Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "Previous"),
+                            }
                         },
-                        new SelectControlFactory()
-                        {
+                        new RowFactory<SelectControl>() {
                             LabelText = Strings.KeyNext,
-                            Items = keys,
-                            Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "Next"),
+                            ChildFactory = new SelectControlFactory()
+                            {
+                                Items = keys,
+                                Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "Next"),
+                            }
                         },
-                        new SelectControlFactory()
-                        {
+                        new RowFactory<SelectControl>() {
                             LabelText = Strings.KeyPlayPause,
-                            Items = keys,
-                            Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "PlayPause"),
+                            ChildFactory = new SelectControlFactory()
+                            {
+                                Items = keys,
+                                Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "PlayPause"),
+                            }
                         },
-                        new SelectControlFactory()
-                        {
+                        new RowFactory<SelectControl>() {
                             LabelText = Strings.KeyVolumeDown,
-                            Items = keys,
-                            Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "VolumeDown"),
+                            ChildFactory = new SelectControlFactory()
+                            {
+                                Items = keys,
+                                Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "VolumeDown"),
+                            }
                         },
-                        new SelectControlFactory()
-                        {
+                        new RowFactory<SelectControl>() {
                             LabelText = Strings.KeyVolumeUp,
-                            Items = keys,
-                            Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "VolumeUp"),
+                            ChildFactory = new SelectControlFactory()
+                            {
+                                Items = keys,
+                                Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "VolumeUp"),
+                            }
                         },
                     ]
                 },
@@ -156,19 +172,23 @@ namespace PinJuke.Configurator.Factory
                 {
                     LabelText = Strings.Milkdrop,
                     Controls = [
-                        new PathControlFactory()
-                        {
+                        new RowFactory<PathControl>() {
                             LabelText = Strings.MilkdropPresetsPath,
-                            FileMode = false,
-                            RelativeEnabled = true,
-                            Converter = new PathConverter(parser, "Milkdrop", "PresetsPath"),
+                            ChildFactory = new PathControlFactory()
+                            {
+                                FileMode = false,
+                                RelativeEnabled = true,
+                                Converter = new PathConverter(parser, "Milkdrop", "PresetsPath"),
+                            }
                         },
-                        new PathControlFactory()
-                        {
+                        new RowFactory<PathControl>() {
                             LabelText = Strings.MilkdropTexturesPath,
-                            FileMode = false,
-                            RelativeEnabled = true,
-                            Converter = new PathConverter(parser, "Milkdrop", "TexturesPath"),
+                            ChildFactory = new PathControlFactory()
+                            {
+                                FileMode = false,
+                                RelativeEnabled = true,
+                                Converter = new PathConverter(parser, "Milkdrop", "TexturesPath"),
+                            }
                         },
                     ]
                 },
@@ -176,19 +196,23 @@ namespace PinJuke.Configurator.Factory
                 {
                     LabelText = Strings.Dof,
                     Controls = [
-                        new BoolControlFactory()
-                        {
+                        new RowFactory<BoolControl>() {
                             LabelText = Strings.Enable,
-                            Converter = new BoolConverter(parser, "DOF", "Enabled"),
+                            ChildFactory = new BoolControlFactory()
+                            {
+                                Converter = new BoolConverter(parser, "DOF", "Enabled"),
+                            }
                         },
-                        new PathControlFactory()
-                        {
+                        new RowFactory<PathControl>() {
                             LabelText = Strings.DofGlobalConfigFilePath,
-                            FileMode = true,
-                            RelativeEnabled = false,
-                            FileExtension = ".xml",
-                            FileFilter = $"{Strings.XmlFile}|*.xml",
-                            Converter = new PathConverter(parser, "DOF", "GlobalConfigFilePath"),
+                            ChildFactory = new PathControlFactory()
+                            {
+                                FileMode = true,
+                                RelativeEnabled = false,
+                                FileExtension = ".xml",
+                                FileFilter = $"{Strings.XmlFile}|*.xml",
+                                Converter = new PathConverter(parser, "DOF", "GlobalConfigFilePath"),
+                            }
                         },
                     ]
                 },
@@ -684,84 +708,100 @@ namespace PinJuke.Configurator.Factory
         {
             ControlFactory<UIElement>[] enabledControls = enabledAvailable
                 ? [
-                    new BoolControlFactory()
-                    {
+                    new RowFactory<BoolControl>() {
                         LabelText = Strings.Enable,
-                        Converter = new BoolConverter(parser, sectionName, "Enabled"),
+                        ChildFactory = new BoolControlFactory()
+                        {
+                            Converter = new BoolConverter(parser, sectionName, "Enabled"),
+                        }
                     },
                 ]
                 : [];
 
             Controls = [
                 ..enabledControls,
-                new ButtonControlFactory()
-                {
+                new RowFactory<ButtonControl>() {
                     LabelText = "",
-                    Text = Strings.GetDisplayPositionFromPinup,
-                    ClickHandler = (buttonControl) =>
+                    ChildFactory = new ButtonControlFactory()
                     {
-                        (int, int, int, int)? position;
-                        try
+                        Text = Strings.GetDisplayPositionFromPinup,
+                        ClickHandler = (buttonControl) =>
                         {
-                            position = pinUpReader.FindPosition(pinUpSectionName);
-                        }
-                        catch (IniIoException ex)
-                        {
-                            MessageBox.Show(string.Format(Strings.ErrorReadingFile, ex.FilePath), AppDomain.CurrentDomain.FriendlyName);
-                            return;
-                        }
-                        if (position == null)
-                        {
-                            MessageBox.Show(string.Format(Strings.PathNotFound, PinUpPlayerIniReader.BALLER_PIN_UP_PLAYER_INI), AppDomain.CurrentDomain.FriendlyName);
-                            return;
-                        }
-                        var group = buttonControl.GetParentGroup();
-                        ((NumberControl)group.GetChildByName("WindowLeft")).Value = position.Value.Item1;
-                        ((NumberControl)group.GetChildByName("WindowTop")).Value = position.Value.Item2;
-                        ((NumberControl)group.GetChildByName("WindowWidth")).Value = position.Value.Item3;
-                        ((NumberControl)group.GetChildByName("WindowHeight")).Value = position.Value.Item4;
-                    },
+                            (int, int, int, int)? position;
+                            try
+                            {
+                                position = pinUpReader.FindPosition(pinUpSectionName);
+                            }
+                            catch (IniIoException ex)
+                            {
+                                MessageBox.Show(string.Format(Strings.ErrorReadingFile, ex.FilePath), AppDomain.CurrentDomain.FriendlyName);
+                                return;
+                            }
+                            if (position == null)
+                            {
+                                MessageBox.Show(string.Format(Strings.PathNotFound, PinUpPlayerIniReader.BALLER_PIN_UP_PLAYER_INI), AppDomain.CurrentDomain.FriendlyName);
+                                return;
+                            }
+                            var group = buttonControl.GetParentGroup();
+                            ((NumberControl)group.GetChildByName("WindowLeft")).Value = position.Value.Item1;
+                            ((NumberControl)group.GetChildByName("WindowTop")).Value = position.Value.Item2;
+                            ((NumberControl)group.GetChildByName("WindowWidth")).Value = position.Value.Item3;
+                            ((NumberControl)group.GetChildByName("WindowHeight")).Value = position.Value.Item4;
+                        },
+                    }
                 },
-                new NumberControlFactory()
-                {
+                new RowFactory<NumberControl>() {
                     LabelText = Strings.RectLeft,
-                    Name = "WindowLeft",
-                    Converter = new IntNumberConverter(parser, sectionName, "WindowLeft"),
-                },
-                new NumberControlFactory()
-                {
-                    LabelText = Strings.RectTop,
-                    Name = "WindowTop",
-                    Converter = new IntNumberConverter(parser, sectionName, "WindowTop"),
-                },
-                new NumberControlFactory()
-                {
-                    LabelText = Strings.RectWidth,
-                    Name = "WindowWidth",
-                    Converter = new IntNumberConverter(parser, sectionName, "WindowWidth"),
-                },
-                new NumberControlFactory()
-                {
-                    LabelText = Strings.RectHeight,
-                    Name = "WindowHeight",
-                    Converter = new IntNumberConverter(parser, sectionName, "WindowHeight"),
-                },
-                new NumberControlFactory()
-                {
-                    LabelText = Strings.Scale,
-                    Converter = new FloatNumberConverter(parser, sectionName, "ContentScale"),
-                },
-                new SelectControlFactory()
-                {
-                    LabelText = Strings.Rotation,
-                    Items = new()
+                    ChildFactory = new NumberControlFactory()
                     {
-                        new("-90 °", -90),
-                        new("0 °", 0),
-                        new("90 °", 90),
-                        new("180 °", 180),
-                    },
-                    Converter = new IntSelectConverter(parser, sectionName, "ContentRotation"),
+                        Name = "WindowLeft",
+                        Converter = new IntNumberConverter(parser, sectionName, "WindowLeft"),
+                    }
+                },
+                new RowFactory<NumberControl>() {
+                    LabelText = Strings.RectTop,
+                    ChildFactory = new NumberControlFactory()
+                    {
+                        Name = "WindowTop",
+                        Converter = new IntNumberConverter(parser, sectionName, "WindowTop"),
+                    }
+                },
+                new RowFactory<NumberControl>() {
+                    LabelText = Strings.RectWidth,
+                    ChildFactory = new NumberControlFactory()
+                    {
+                        Name = "WindowWidth",
+                        Converter = new IntNumberConverter(parser, sectionName, "WindowWidth"),
+                    }
+                },
+                new RowFactory<NumberControl>() {
+                    LabelText = Strings.RectHeight,
+                    ChildFactory = new NumberControlFactory()
+                    {
+                        Name = "WindowHeight",
+                        Converter = new IntNumberConverter(parser, sectionName, "WindowHeight"),
+                    }
+                },
+                new RowFactory<NumberControl>() {
+                    LabelText = Strings.Scale,
+                    ChildFactory = new NumberControlFactory()
+                    {
+                        Converter = new FloatNumberConverter(parser, sectionName, "ContentScale"),
+                    }
+                },
+                new RowFactory<SelectControl>() {
+                    LabelText = Strings.Rotation,
+                    ChildFactory = new SelectControlFactory()
+                    {
+                        Items = new()
+                        {
+                            new("-90 °", -90),
+                            new("0 °", 0),
+                            new("90 °", 90),
+                            new("180 °", 180),
+                        },
+                        Converter = new IntSelectConverter(parser, sectionName, "ContentRotation"),
+                    }
                 },
             ];
         }
