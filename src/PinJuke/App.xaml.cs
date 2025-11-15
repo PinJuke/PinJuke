@@ -38,7 +38,6 @@ namespace PinJuke
         private DofMediator? dofMediator = null;
         private AudioManager? audioManager = null;
         private SpotifyIntegrationService? spotifyIntegration = null;
-        private MediaControllerManager? mediaControllerManager = null;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -147,7 +146,7 @@ namespace PinJuke
             window.Close();
         }
 
-        private void RunPlayer(string? playlistConfigFilePath)
+        private async void RunPlayer(string? playlistConfigFilePath)
         {
             // Console debugging disabled for production
             // AllocConsole();
@@ -198,10 +197,6 @@ namespace PinJuke
                     dofMediator = new DofMediator(mainModel, configuration.Dof);
                     dofMediator.Startup();
                 }
-
-                // Initialize media controller system
-                mediaControllerManager = new MediaControllerManager();
-
                 // Initialize Spotify integration if enabled
                 SimpleLogger.Log($"Spotify.Enabled: {configuration.Spotify.Enabled}");
                 SimpleLogger.Log($"Spotify.ClientId: '{configuration.Spotify.ClientId}'");
@@ -209,24 +204,58 @@ namespace PinJuke
                 
                 if (configuration.Spotify.Enabled)
                 {
-                    SimpleLogger.Log("Spotify integration is enabled. Initializing...");
-                    Debug.WriteLine("Spotify integration is enabled. Initializing...");
-                    Debug.WriteLine($"Spotify ClientId: {configuration.Spotify.ClientId}");
-                    Debug.WriteLine($"Spotify RedirectUri: {configuration.Spotify.RedirectUri}");
-                    spotifyIntegration = new SpotifyIntegrationService(configuration);
-                    _ = spotifyIntegration.InitializeAsync(mainModel);
-                    
-                    // Register Spotify as a media controller
-                    var spotifyController = new SpotifyMediaController(spotifyIntegration, () => mainModel.GetCurrentPlaylist());
-                    mediaControllerManager.RegisterController(spotifyController);
-                    
-                    SimpleLogger.Log("Spotify integration initialization started.");
-                    Debug.WriteLine("Spotify integration initialization started.");
+                    try
+                    {
+                        SimpleLogger.Log("Spotify integration is enabled. Initializing...");
+                        Debug.WriteLine("Spotify integration is enabled. Initializing...");
+                        Debug.WriteLine($"Spotify ClientId: {configuration.Spotify.ClientId}");
+                        Debug.WriteLine($"Spotify RedirectUri: {configuration.Spotify.RedirectUri}");
+                        
+                        SimpleLogger.Log("Creating SpotifyIntegrationService...");
+                        spotifyIntegration = new SpotifyIntegrationService(configuration);
+                        
+                        SimpleLogger.Log("Calling InitializeAsync...");
+                        await spotifyIntegration.InitializeAsync(mainModel);
+                        
+                        SimpleLogger.Log("Creating SpotifyMediaController...");
+                        // Register Spotify as a media controller
+                        var spotifyController = new SpotifyMediaController(spotifyIntegration, () => mainModel.GetCurrentPlaylist());
+                        
+                        SimpleLogger.Log("Registering media controller...");
+                        mainModel.RegisterMediaController(spotifyController);
+                        
+                        SimpleLogger.Log("Spotify integration initialization completed.");
+                        Debug.WriteLine("Spotify integration initialization completed.");
+                    }
+                    catch (Exception ex)
+                    {
+                        SimpleLogger.Log($"Error initializing Spotify integration: {ex.Message}");
+                        SimpleLogger.Log($"Exception details: {ex}");
+                        Debug.WriteLine($"Error initializing Spotify integration: {ex.Message}");
+                        Debug.WriteLine($"Exception details: {ex}");
+                        // Continue without Spotify integration
+                        spotifyIntegration = null;
+                    }
                 }
                 else
                 {
                     SimpleLogger.Log("Spotify integration is disabled in configuration!");
                     Debug.WriteLine("Spotify integration is disabled.");
+                }
+
+                // Initialize all registered media controllers
+                try
+                {
+                    SimpleLogger.Log("Initializing media controllers...");
+                    await mainModel.InitializeMediaControllersAsync();
+                    SimpleLogger.Log("Media controllers initialized.");
+                }
+                catch (Exception ex)
+                {
+                    SimpleLogger.Log($"Error initializing media controllers: {ex.Message}");
+                    SimpleLogger.Log($"Exception details: {ex}");
+                    Debug.WriteLine($"Error initializing media controllers: {ex.Message}");
+                    Debug.WriteLine($"Exception details: {ex}");
                 }
 
                 audioManager = new();
@@ -421,7 +450,6 @@ namespace PinJuke
             appController?.Dispose();
             audioManager?.Dispose();
             dofMediator?.Dispose();
-            mediaControllerManager?.Dispose();
             spotifyIntegration?.Dispose();
         }
 

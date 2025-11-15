@@ -41,20 +41,6 @@ namespace PinJuke.Spotify
             _spotifyService = new SpotifyService();
             _mediaProvider = new SpotifyMediaProvider(_config, () => GetCurrentPlaylistWithTracksAsync());
             _playbackController = new SpotifyPlaybackController(_config);
-            
-            // Subscribe to authentication changes to auto-save refreshed tokens
-            _spotifyService.AuthService.AuthenticationChanged += OnAuthenticationChanged;
-            
-            // Automatically load any saved authentication tokens
-            try
-            {
-                LoadSavedAuthenticationTokens();
-            }
-            catch (Exception ex)
-            {
-                // Log but don't fail initialization if token loading fails
-                System.Diagnostics.Debug.WriteLine($"SpotifyIntegrationService: Could not load saved tokens: {ex.Message}");
-            }
         }
 
         public async Task InitializeAsync(MainModel mainModel)
@@ -76,8 +62,19 @@ namespace PinJuke.Spotify
             {
                 await _spotifyService.InitializeAsync(_config);
                 
-                // Load saved authentication tokens from global config
-                LoadSavedAuthenticationTokens();
+                // Subscribe to authentication changes to auto-save refreshed tokens
+                _spotifyService.AuthService.AuthenticationChanged += OnAuthenticationChanged;
+                
+                // Automatically load any saved authentication tokens
+                try
+                {
+                    LoadSavedAuthenticationTokens();
+                }
+                catch (Exception ex)
+                {
+                    // Log but don't fail initialization if token loading fails
+                    System.Diagnostics.Debug.WriteLine($"SpotifyIntegrationService: Could not load saved tokens: {ex.Message}");
+                }
                 
                 _isInitialized = true;
                 System.Diagnostics.Debug.WriteLine("Spotify integration initialized successfully.");
