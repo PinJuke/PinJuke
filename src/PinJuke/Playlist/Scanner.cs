@@ -59,6 +59,7 @@ namespace PinJuke.Playlist
         private static readonly Dictionary<string, FileType> fileTypes = new()
         {
             {"mp3", FileType.Music},
+            {"flac", FileType.Music},
             {"mp4", FileType.Video},
             {"m3u", FileType.M3u},
         };
