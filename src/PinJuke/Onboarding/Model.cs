@@ -110,9 +110,20 @@ namespace PinJuke.Onboarding
             set => this.SetField(ref height, value);
         }
 
+        public int Right => Left + Width;
+        public int Bottom => Top + Height;
+
         public void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged.Raise(this, propertyName);
+        }
+
+        public bool Covers(Display other)
+        {
+            return this.Left <= other.Left &&
+                   this.Top <= other.Top &&
+                   this.Right >= other.Right &&
+                   this.Bottom >= other.Bottom;
         }
     }
 }

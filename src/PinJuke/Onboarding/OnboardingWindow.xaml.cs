@@ -339,20 +339,33 @@ namespace PinJuke.Onboarding
             var configuration = this.configuration;
             var playField = configuration.PlayField with { Enabled = true, Window = GetWindow(Model.PlayFieldDisplay, true) };
             var backGlass = configuration.BackGlass with { Enabled = true, Window = GetWindow(Model.BackGlassDisplay) };
-            var dmd = configuration.Dmd with { Enabled = Model.DmdEnabled, Window = GetWindow(Model.DmdDisplay) };
+            var dmd = configuration.Dmd with { Enabled = Model.DmdEnabled, Window = GetWindow(Model.DmdDisplay, false, Model.BackGlassDisplay) };
             var dof = configuration.Dof with { Enabled = Model.DofEnabled, GlobalConfigFilePath = Model.DofPath };
             return configuration with { PlayField = playField, BackGlass = backGlass, Dmd = dmd, Dof = dof };
         }
 
-        private Configuration.Window GetWindow(Display display, bool isVertical = false)
+        private Configuration.Window GetWindow(Display display, bool isVertical = false, Display? possibleEnclosingDisplay = null)
         {
-            var is4k = display.Width >= 3840 || display.Height >= 3840;
+            var parentDisplay = possibleEnclosingDisplay != null && possibleEnclosingDisplay.Covers(display) ? possibleEnclosingDisplay : display;
+
+            var scale = 1f;
+            // 8K
+            if (parentDisplay.Width >= 7680 || parentDisplay.Height >= 7680)
+            {
+                scale = 4f;
+            }
+            // 4K
+            else if (parentDisplay.Width >= 3840 || parentDisplay.Height >= 3840)
+            {
+                scale = 2f;
+            }
+
             return new Configuration.Window(
                 display.Left,
                 display.Top,
                 display.Width,
                 display.Height,
-                is4k ? 2f : 1f,
+                scale,
                 isVertical ? -90 : 0
             );
         }
