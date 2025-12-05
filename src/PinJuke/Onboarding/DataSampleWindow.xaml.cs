@@ -78,14 +78,23 @@ namespace PinJuke.Onboarding
                     + $"{Strings.BeaconAppFileVersion}: {beacon.AppFileVersion}\n"
                     + $"{Strings.BeaconLocale}: {beacon.Locale}\n"
                     + $"{Strings.BeaconTimezone}: {beacon.Timezone}\n"
-                    + $"{Strings.BeaconDmdAvailable}: {(beacon.DmdAvailable ? Strings.Yes : Strings.No)}\n"
+                    + $"{Strings.DisplayPlayField}: {FormatDisplay(beacon.PlayField)}\n"
+                    + $"{Strings.DisplayBackGlass}: {FormatDisplay(beacon.BackGlass)}\n"
+                    + $"{Strings.DisplayDmd}: {FormatDisplay(beacon.Dmd)}\n"
+                    + $"{Strings.DisplayTopper}: {FormatDisplay(beacon.Topper)}\n"
                     + $"{Strings.BeaconDofEnabled}: {(beacon.DofEnabled ? Strings.Yes : Strings.No)}\n"
-                    + $"{Strings.BeaconControllerNames}: {string.Join(", ", beacon.ControllerNames)}\n";
+                    + $"{Strings.BeaconControllerNames}: {string.Join(", ", beacon.ControllerNames)}\n"
+                    + $"{Strings.BeaconInstalledRam}: {beacon.RamInstalledGigaBytes} GiB\n";
             }
             catch (Exception ex)
             {
                 BeaconText = string.Format(Strings.BeaconErrorQuerying, ex.Message);
             }
+        }
+
+        private string FormatDisplay(BeaconDisplay display)
+        {
+            return $"{(display.Enabled ? Strings.Enabled : Strings.Disabled)}, {display.Left}, {display.Top}, {display.Width}, {display.Height}";
         }
 
         private Beacon GetBeacon()

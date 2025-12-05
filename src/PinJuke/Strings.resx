@@ -283,10 +283,10 @@
     <value>Select the GlobalConfig_B2SServer.xml file:</value>
   </data>
   <data name="DataOnSoftwareUsage" xml:space="preserve">
-    <value>Data on software usage</value>
+    <value>Hardware &amp; Software Survey</value>
   </data>
   <data name="DataOnSoftwareUsageDescription" xml:space="preserve">
-    <value>Please allow data on the use of the software and hardware to be collected pseudonymously. We would like to know how the software is received and used by users. The data can be made available to the community (e.g. in the form of evaluations).</value>
+    <value>We kindly ask for your consent to collect pseudonymized data regarding the use of our software and hardware. This information will help us understand how the software is perceived and utilized by users. Aggregated insights may be shared with the community (e.g., in the form of reports or analyses).</value>
   </data>
   <data name="SeeWhatDataIsCollected" xml:space="preserve">
     <value>See what data is collected.</value>
@@ -380,9 +380,6 @@ Track: restart</value>
   </data>
   <data name="BeaconTimezone" xml:space="preserve">
     <value>Timezone</value>
-  </data>
-  <data name="BeaconDmdAvailable" xml:space="preserve">
-    <value>DMD available</value>
   </data>
   <data name="BeaconDofEnabled" xml:space="preserve">
     <value>DOF enabled</value>
@@ -557,5 +554,17 @@ Track: restart</value>
   </data>
   <data name="TrackBrowserOn" xml:space="preserve">
     <value>Show track browser on</value>
+  </data>
+  <data name="DisplayTopper" xml:space="preserve">
+    <value>Topper</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="Disabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="BeaconInstalledRam" xml:space="preserve">
+    <value>Installed RAM</value>
   </data>
 </root>

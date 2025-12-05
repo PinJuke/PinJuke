@@ -1,11 +1,11 @@
 ﻿using PinJuke.Configuration;
 using PinJuke.Service.Firestore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using SoftCircuits.Collections;
 
 namespace PinJuke.Service
 {
@@ -66,7 +66,29 @@ namespace PinJuke.Service
         }
     }
 
-    public record Beacon(string AppName, string AppVersion, string AppFileVersion, string Locale, string Timezone, bool DmdAvailable, bool DofEnabled, string[] ControllerNames, string? DeveloperName);
+    public record Beacon(
+        string AppName,
+        string AppVersion,
+        string AppFileVersion,
+        string Locale,
+        string Timezone,
+        BeaconDisplay PlayField,
+        BeaconDisplay BackGlass,
+        BeaconDisplay Dmd,
+        BeaconDisplay Topper,
+        bool DofEnabled,
+        string[] ControllerNames,
+        long RamInstalledGigaBytes,
+        string? DeveloperName
+    );
+
+    public record BeaconDisplay(
+        bool Enabled,
+        int Left,
+        int Top,
+        int Width,
+        int Height
+    );
 
     public class BeaconService
     {
@@ -114,15 +136,31 @@ namespace PinJuke.Service
                 ["appFileVersion"] = new StringValue(beacon.AppFileVersion),
                 ["locale"] = new StringValue(beacon.Locale),
                 ["timezone"] = new StringValue(beacon.Timezone),
-                ["dmdAvailable"] = new BooleanValue(beacon.DmdAvailable),
+                ["playField"] = BeaconDisplayToMapValue(beacon.PlayField),
+                ["backGlass"] = BeaconDisplayToMapValue(beacon.BackGlass),
+                ["dmd"] = BeaconDisplayToMapValue(beacon.Dmd),
+                ["topper"] = BeaconDisplayToMapValue(beacon.Topper),
                 ["dofEnabled"] = new BooleanValue(beacon.DofEnabled),
                 ["controllerNames"] = new ArrayValue(beacon.ControllerNames.Select(str => new StringValue(str)).ToArray()),
+                ["ramInstalledGigaBytes"] = new IntegerValue(beacon.RamInstalledGigaBytes),
             };
             if (beacon.DeveloperName != null)
             {
                 document["developerName"] = new StringValue(beacon.DeveloperName);
             }
             await firestoreService.Insert(document);
+        }
+
+        private MapValue BeaconDisplayToMapValue(BeaconDisplay display)
+        {
+            return new MapValue(new OrderedDictionary<string, StaticValue>
+            {
+                ["enabled"] = new BooleanValue(display.Enabled),
+                ["left"] = new IntegerValue(display.Left),
+                ["top"] = new IntegerValue(display.Top),
+                ["width"] = new IntegerValue(display.Width),
+                ["height"] = new IntegerValue(display.Height),
+            });
         }
 
         private async Task<bool> IsRateLimited(InstallIdPair installIdPair)

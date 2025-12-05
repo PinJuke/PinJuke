@@ -17,10 +17,11 @@ namespace PinJuke.Controller
 {
     public class BeaconController
     {
-        private MainModel mainModel;
-        private BeaconService beaconService;
-        private ConfigurationService configurationService;
-        private DofMediator? dofMediator;
+        private readonly MainModel mainModel;
+        private readonly BeaconService beaconService;
+        private readonly ConfigurationService configurationService;
+        private readonly DofMediator? dofMediator;
+        private readonly SystemInfo systemInfo = new SystemInfo();
 
         public BeaconController(MainModel mainModel, BeaconService beaconService, ConfigurationService configurationService, DofMediator? dofMediator)
         {
@@ -40,12 +41,27 @@ namespace PinJuke.Controller
                 assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version ?? "",
                 CultureInfo.CurrentCulture.Name,
                 TimeZoneInfo.Local.Id,
-                mainModel.Configuration.Dmd.Enabled,
+                DisplayToBeaconDisplay(mainModel.Configuration.PlayField),
+                DisplayToBeaconDisplay(mainModel.Configuration.BackGlass),
+                DisplayToBeaconDisplay(mainModel.Configuration.Dmd),
+                new BeaconDisplay(false, 0, 0, 0, 0),
                 mainModel.Configuration.Dof.Enabled,
                 controllerNames,
+                systemInfo.GetTotalPhysicalMemoryGigaBytes(),
                 mainModel.UserConfiguration.DeveloperName
             );
             return beacon;
+        }
+
+        private BeaconDisplay DisplayToBeaconDisplay(Configuration.Display display)
+        {
+            return new BeaconDisplay(
+                display.Enabled,
+                display.Window.Left,
+                display.Window.Top,
+                display.Window.Width,
+                display.Window.Height
+            );
         }
 
         public async Task Startup()

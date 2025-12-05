@@ -114,10 +114,7 @@ namespace PinJuke.Service.Firestore
         {
             if (responseNode is JsonObject jsonObject && jsonObject["fields"] is JsonObject fields)
             {
-                foreach (var pair in fields)
-                {
-                    document[pair.Key] = deserializer.Deserialize((JsonObject)pair.Value!);
-                }
+                document.Update(deserializer.DeserializeFields(fields));
                 return;
             }
             throw new FirestoreException("Document has not been updated!");
@@ -199,12 +196,7 @@ namespace PinJuke.Service.Firestore
 
         private JsonObject BuildFields()
         {
-            var fieldsNode = new JsonObject();
-            foreach (var pair in document.StaticValues)
-            {
-                fieldsNode[pair.Key] = pair.Value.ToValue();
-            }
-            return fieldsNode;
+            return MapValue.ToFields(document.StaticValues);
         }
 
         private JsonArray BuildFieldPaths()
@@ -284,7 +276,7 @@ namespace PinJuke.Service.Firestore
             }
             if (jsonObject.TryGetPropertyValue("integerValue", out var integerJsonNode))
             {
-                return new IntegerValue(int.Parse(integerJsonNode!.GetValue<string>(), CultureInfo.InvariantCulture));
+                return new IntegerValue(long.Parse(integerJsonNode!.GetValue<string>(), CultureInfo.InvariantCulture));
             }
             if (jsonObject.TryGetPropertyValue("booleanValue", out var booleanJsonNode))
             {
@@ -301,7 +293,22 @@ namespace PinJuke.Service.Firestore
                     .ToArray();
                 return new ArrayValue(value);
             }
+            if (jsonObject.TryGetPropertyValue("mapValue", out var mapJsonNode))
+            {
+                var fields = (JsonObject)mapJsonNode!["fields"]!;
+                return new MapValue(DeserializeFields(fields));
+            }
             throw new FirestoreException("Unhandled jsonObject.");
+        }
+
+        public OrderedDictionary<string, StaticValue> DeserializeFields(JsonObject fields)
+        {
+            var dict = new OrderedDictionary<string, StaticValue>();
+            foreach (var pair in fields)
+            {
+                dict[pair.Key] = Deserialize((JsonObject)pair.Value!);
+            }
+            return dict;
         }
     }
 
@@ -377,6 +384,14 @@ namespace PinJuke.Service.Firestore
         {
             return GetEnumerator();
         }
+
+        public void Update<T>(IEnumerable<KeyValuePair<string, T>> items) where T : FieldValue
+        {
+            foreach (var item in items)
+            {
+                this[item.Key] = item.Value;
+            }
+        }
     }
 
     public interface FieldValue
@@ -434,9 +449,9 @@ namespace PinJuke.Service.Firestore
 
     public class IntegerValue : StaticValue
     {
-        public int Value { get; }
+        public long Value { get; }
 
-        public IntegerValue(int value)
+        public IntegerValue(long value)
         {
             Value = value;
         }
@@ -507,6 +522,32 @@ namespace PinJuke.Service.Firestore
                 ["arrayValue"] = new JsonObject()
                 {
                     ["values"] = new JsonArray(Value.Select(it => it.ToValue()).ToArray())
+                }
+            };
+        }
+    }
+
+    public class MapValue : StaticValue
+    {
+        public OrderedDictionary<string, StaticValue> Value { get; }
+
+        public MapValue(OrderedDictionary<string, StaticValue> value)
+        {
+            Value = value;
+        }
+
+        public static JsonObject ToFields(OrderedDictionary<string, StaticValue> dict)
+        {
+            return new JsonObject(dict.Select(pair => KeyValuePair.Create(pair.Key, (JsonNode?)pair.Value.ToValue())));
+        }
+
+        public JsonObject ToValue()
+        {
+            return new JsonObject()
+            {
+                ["mapValue"] = new JsonObject()
+                {
+                    ["fields"] = ToFields(Value)
                 }
             };
         }

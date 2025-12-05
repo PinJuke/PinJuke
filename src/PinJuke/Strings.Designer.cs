@@ -169,15 +169,6 @@ namespace PinJuke {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DMD available.
-        /// </summary>
-        public static string BeaconDmdAvailable {
-            get {
-                return ResourceManager.GetString("BeaconDmdAvailable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to DOF enabled.
         /// </summary>
         public static string BeaconDofEnabled {
@@ -192,6 +183,15 @@ namespace PinJuke {
         public static string BeaconErrorQuerying {
             get {
                 return ResourceManager.GetString("BeaconErrorQuerying", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installed RAM.
+        /// </summary>
+        public static string BeaconInstalledRam {
+            get {
+                return ResourceManager.GetString("BeaconInstalledRam", resourceCulture);
             }
         }
         
@@ -505,7 +505,7 @@ namespace PinJuke {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Data on software usage.
+        ///   Looks up a localized string similar to Hardware &amp; Software Survey.
         /// </summary>
         public static string DataOnSoftwareUsage {
             get {
@@ -514,7 +514,7 @@ namespace PinJuke {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please allow data on the use of the software and hardware to be collected pseudonymously. We would like to know how the software is received and used by users. The data can be made available to the community (e.g. in the form of evaluations)..
+        ///   Looks up a localized string similar to We kindly ask for your consent to collect pseudonymized data regarding the use of our software and hardware. This information will help us understand how the software is perceived and utilized by users. Aggregated insights may be shared with the community (e.g., in the form of reports or analyses)..
         /// </summary>
         public static string DataOnSoftwareUsageDescription {
             get {
@@ -528,6 +528,15 @@ namespace PinJuke {
         public static string DataOnSoftwareUsageStorage {
             get {
                 return ResourceManager.GetString("DataOnSoftwareUsageStorage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disabled.
+        /// </summary>
+        public static string Disabled {
+            get {
+                return ResourceManager.GetString("Disabled", resourceCulture);
             }
         }
         
@@ -555,6 +564,15 @@ namespace PinJuke {
         public static string DisplayPlayField {
             get {
                 return ResourceManager.GetString("DisplayPlayField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Topper.
+        /// </summary>
+        public static string DisplayTopper {
+            get {
+                return ResourceManager.GetString("DisplayTopper", resourceCulture);
             }
         }
         
@@ -591,6 +609,15 @@ namespace PinJuke {
         public static string Enable {
             get {
                 return ResourceManager.GetString("Enable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enabled.
+        /// </summary>
+        public static string Enabled {
+            get {
+                return ResourceManager.GetString("Enabled", resourceCulture);
             }
         }
         

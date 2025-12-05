@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PinJuke.Onboarding"
         xmlns:pinjuke="clr-namespace:PinJuke"
         mc:Ignorable="d"
-        Title="PinJuke" Height="300" Width="400" WindowStartupLocation="CenterScreen">
+        Title="PinJuke" Height="400" Width="400" WindowStartupLocation="CenterScreen">
     <Grid FocusManager.FocusedElement="{Binding ElementName=BeaconTextBox}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
