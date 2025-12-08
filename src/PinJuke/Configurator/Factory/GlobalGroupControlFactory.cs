@@ -39,15 +39,15 @@ namespace PinJuke.Configurator.Factory
                         }
                     ]
                 },
-                new WindowGroupControlFactory(parser, "PlayField", false, pinUpReader, PinUpPlayerIniReader.PLAY_FIELD_SECTION_NAME)
+                new WindowGroupControlFactory(parser, "PlayField", false, pinUpReader, DisplayRole.PlayField)
                 {
                     LabelText = Strings.DisplayPlayField,
                 },
-                new WindowGroupControlFactory(parser, "BackGlass", false, pinUpReader, PinUpPlayerIniReader.BACK_GLASS_SECTION_NAME)
+                new WindowGroupControlFactory(parser, "BackGlass", false, pinUpReader, DisplayRole.BackGlass)
                 {
                     LabelText = Strings.DisplayBackGlass,
                 },
-                new WindowGroupControlFactory(parser, "DMD", true, pinUpReader, PinUpPlayerIniReader.DMD_SECTION_NAME)
+                new WindowGroupControlFactory(parser, "DMD", true, pinUpReader, DisplayRole.DMD)
                 {
                     LabelText = Strings.DisplayDmd,
                 },
@@ -167,7 +167,7 @@ namespace PinJuke.Configurator.Factory
 
     public class WindowGroupControlFactory : GroupControlFactory
     {
-        public WindowGroupControlFactory(Parser parser, string sectionName, bool enabledAvailable, PinUpPlayerIniReader pinUpReader, string pinUpSectionName)
+        public WindowGroupControlFactory(Parser parser, string sectionName, bool enabledAvailable, PinUpPlayerIniReader pinUpReader, DisplayRole displayRole)
         {
             ControlFactory<UIElement>[] enabledControls = enabledAvailable
                 ? [
@@ -190,26 +190,26 @@ namespace PinJuke.Configurator.Factory
                         Text = Strings.GetDisplayPositionFromPinup,
                         ClickHandler = (buttonControl) =>
                         {
-                            (int, int, int, int)? position;
+                            PinUpRect? rect = null;
                             try
                             {
-                                position = pinUpReader.FindPosition(pinUpSectionName);
+                                rect = pinUpReader.FindPosition(displayRole);
                             }
                             catch (IniIoException ex)
                             {
                                 UiUtil.ShowErrorMessage(string.Format(Strings.ErrorReadingFile, ex.FilePath));
                                 return;
                             }
-                            if (position == null)
+                            if (rect == null)
                             {
                                 UiUtil.ShowErrorMessage(string.Format(Strings.PathNotFound, PinUpPlayerIniReader.BALLER_PIN_UP_PLAYER_INI));
                                 return;
                             }
                             var group = buttonControl.GetParentGroup();
-                            ((NumberControl)group.GetChildByName("WindowLeft")).Value = position.Value.Item1;
-                            ((NumberControl)group.GetChildByName("WindowTop")).Value = position.Value.Item2;
-                            ((NumberControl)group.GetChildByName("WindowWidth")).Value = position.Value.Item3;
-                            ((NumberControl)group.GetChildByName("WindowHeight")).Value = position.Value.Item4;
+                            ((NumberControl)group.GetChildByName("WindowLeft")).Value = rect.Left;
+                            ((NumberControl)group.GetChildByName("WindowTop")).Value = rect.Top;
+                            ((NumberControl)group.GetChildByName("WindowWidth")).Value = rect.Width;
+                            ((NumberControl)group.GetChildByName("WindowHeight")).Value = rect.Height;
                         },
                     }
                 },

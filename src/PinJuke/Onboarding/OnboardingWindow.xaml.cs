@@ -282,9 +282,9 @@ namespace PinJuke.Onboarding
             bool success;
             try
             {
-                success = SetDisplayFromPinUp(Model.PlayFieldDisplay, Configurator.PinUpPlayerIniReader.PLAY_FIELD_SECTION_NAME)
-                    && SetDisplayFromPinUp(Model.BackGlassDisplay, Configurator.PinUpPlayerIniReader.BACK_GLASS_SECTION_NAME)
-                    && SetDisplayFromPinUp(Model.DmdDisplay, Configurator.PinUpPlayerIniReader.DMD_SECTION_NAME);
+                success = SetDisplayFromPinUp(Model.PlayFieldDisplay, Configuration.DisplayRole.PlayField)
+                    && SetDisplayFromPinUp(Model.BackGlassDisplay, Configuration.DisplayRole.BackGlass)
+                    && SetDisplayFromPinUp(Model.DmdDisplay, Configuration.DisplayRole.DMD);
             }
             catch (IniIoException ex)
             {
@@ -297,18 +297,18 @@ namespace PinJuke.Onboarding
             }
         }
 
-        private bool SetDisplayFromPinUp(Display display, string sectionName)
+        private bool SetDisplayFromPinUp(Display display, Configuration.DisplayRole displayRole)
         {
             var pinUpReader = Configurator.PinUpPlayerIniReader.Create();
-            var position = pinUpReader.FindPosition(sectionName);
-            if (position == null)
+            var rect = pinUpReader.FindPosition(displayRole);
+            if (rect == null)
             {
                 return false;
             }
-            display.Left = position.Value.Item1;
-            display.Top = position.Value.Item2;
-            display.Width = position.Value.Item3;
-            display.Height = position.Value.Item4;
+            display.Left = rect.Left;
+            display.Top = rect.Top;
+            display.Width = rect.Width;
+            display.Height = rect.Height;
             return true;
         }
 

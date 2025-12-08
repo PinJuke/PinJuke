@@ -26,6 +26,7 @@ namespace PinJuke.Configuration
         PlayField = 0,
         BackGlass = 1,
         DMD = 2,
+        Topper = 3,
     }
 
     public record Window(int Left, int Top, int Width, int Height, float ContentScale, int ContentRotation);

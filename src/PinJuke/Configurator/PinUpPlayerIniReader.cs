@@ -9,13 +9,12 @@ using System.Threading.Tasks;
 
 namespace PinJuke.Configurator
 {
+    public record PinUpRect(int Left, int Top, int Width, int Height);
+
     public class PinUpPlayerIniReader
     {
         private const string BALLER_DIRECTORY_PATH = "vPinball";
         public const string BALLER_PIN_UP_PLAYER_INI = @"PinUPSystem\PinUpPlayer.ini";
-        public const string PLAY_FIELD_SECTION_NAME = "INFO3";
-        public const string BACK_GLASS_SECTION_NAME = "INFO2";
-        public const string DMD_SECTION_NAME = "INFO1";
 
         public static PinUpPlayerIniReader Create()
         {
@@ -37,7 +36,7 @@ namespace PinJuke.Configurator
             Paths = new List<string>(paths).AsReadOnly();
         }
 
-        public (int, int, int, int)? FindPosition(string sectionName)
+        public PinUpRect? FindPosition(DisplayRole displayRole)
         {
             var path = Search();
             if (path == null)
@@ -45,6 +44,25 @@ namespace PinJuke.Configurator
                 return null;
             }
             var iniDocument = IniReader.Read(path);
+
+            string sectionName;
+            switch (displayRole)
+            {
+                case DisplayRole.PlayField:
+                    sectionName = "INFO3";
+                    break;
+                case DisplayRole.BackGlass:
+                    sectionName = "INFO2";
+                    break;
+                case DisplayRole.DMD:
+                    sectionName = Parser.ParseInt(iniDocument["INFO5"]["hidestopped"]) == 0 ? "INFO5" : "INFO1";
+                    break;
+                case DisplayRole.Topper:
+                    sectionName = "INFO";
+                    break;
+                default:
+                    return null;
+            }
             var section = iniDocument[sectionName];
             var left = Parser.ParseInt(section["ScreenXPos"]);
             var top = Parser.ParseInt(section["ScreenYPos"]);
@@ -54,7 +72,7 @@ namespace PinJuke.Configurator
             {
                 return null;
             }
-            return ((int)left, (int)top, (int)width, (int)height);
+            return new PinUpRect((int)left, (int)top, (int)width, (int)height);
         }
 
         public string? Search()
