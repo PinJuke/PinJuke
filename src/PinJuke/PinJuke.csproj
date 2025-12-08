@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <TargetFramework>net10.0-windows7.0</TargetFramework>
     <!-- https://learn.microsoft.com/en-us/visualstudio/ide/how-to-change-the-build-output-directory -->
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
@@ -28,7 +28,6 @@
     <PackageReference Include="NaturalSort.Extension" Version="4.4.1" />
     <PackageReference Include="NAudio.Wasapi" Version="2.2.1" />
     <PackageReference Include="OpenTK.GLWpfControl" Version="4.3.4" />
-    <PackageReference Include="SoftCircuits.OrderedDictionary" Version="3.3.0" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
   </ItemGroup>
 

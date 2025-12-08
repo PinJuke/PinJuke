@@ -3,6 +3,7 @@ using PinJuke.Dof;
 using PinJuke.Ini;
 using PinJuke.Model;
 using PinJuke.Service;
+using PinJuke.Utility;
 using PinJuke.View;
 using System;
 using System.Collections.Generic;
@@ -235,7 +236,7 @@ namespace PinJuke.Onboarding
             }
             catch (IOException)
             {
-                MessageBox.Show(string.Format(Strings.ErrorWritingFile, Configuration.ConfigPath.CONFIG_GLOBAL_FILE_PATH), AppDomain.CurrentDomain.FriendlyName);
+                UiUtil.ShowErrorMessage(string.Format(Strings.ErrorWritingFile, Configuration.ConfigPath.CONFIG_GLOBAL_FILE_PATH));
                 return;
             }
             try
@@ -244,7 +245,7 @@ namespace PinJuke.Onboarding
             }
             catch (IOException)
             {
-                MessageBox.Show(string.Format(Strings.ErrorWritingFile, Configuration.ConfigPath.USER_FILE_NAME), AppDomain.CurrentDomain.FriendlyName);
+                UiUtil.ShowErrorMessage(string.Format(Strings.ErrorWritingFile, Configuration.ConfigPath.USER_FILE_NAME));
                 return;
             }
             FinishEvent?.Invoke(this, new FinishEventData(Model.CreatePlaylist));
@@ -287,12 +288,12 @@ namespace PinJuke.Onboarding
             }
             catch (IniIoException ex)
             {
-                MessageBox.Show(string.Format(Strings.ErrorReadingFile, ex.FilePath), AppDomain.CurrentDomain.FriendlyName);
+                UiUtil.ShowErrorMessage(string.Format(Strings.ErrorReadingFile, ex.FilePath));
                 return;
             }
             if (!success)
             {
-                MessageBox.Show(string.Format(Strings.PathNotFound, Configurator.PinUpPlayerIniReader.BALLER_PIN_UP_PLAYER_INI), AppDomain.CurrentDomain.FriendlyName);
+                UiUtil.ShowErrorMessage(string.Format(Strings.PathNotFound, Configurator.PinUpPlayerIniReader.BALLER_PIN_UP_PLAYER_INI));
             }
         }
 

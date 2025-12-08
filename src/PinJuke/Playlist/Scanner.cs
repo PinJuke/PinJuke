@@ -1,5 +1,4 @@
 ﻿using NaturalSort.Extension;
-using SoftCircuits.Collections;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

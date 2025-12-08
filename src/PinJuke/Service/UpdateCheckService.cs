@@ -1,5 +1,4 @@
 ﻿using PinJuke.Service.Github;
-using SoftCircuits.Collections;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

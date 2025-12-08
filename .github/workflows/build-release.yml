@@ -20,7 +20,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x' # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
+          dotnet-version: '10.0.x' # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
       - name: Get FFmpeg
         uses: robinraju/release-downloader@v1.8
         with:

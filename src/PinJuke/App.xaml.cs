@@ -6,6 +6,7 @@ using PinJuke.Ini;
 using PinJuke.Model;
 using PinJuke.Onboarding;
 using PinJuke.Service;
+using PinJuke.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -57,7 +58,7 @@ namespace PinJuke
                             configurator = true;
                             break;
                         default:
-                            MessageBox.Show(string.Format("Unknown argument \"{0}\".", arg), AppDomain.CurrentDomain.FriendlyName);
+                            UiUtil.ShowErrorMessage(string.Format("Unknown argument \"{0}\".", arg));
                             Application.Current.Shutdown(1);
                             return;
                     }

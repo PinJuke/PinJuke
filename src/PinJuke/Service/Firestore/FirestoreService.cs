@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using SoftCircuits.Collections;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -339,12 +338,9 @@ namespace PinJuke.Service.Firestore
         {
             get
             {
-                var staticValues = new OrderedDictionary<string, StaticValue>();
-                staticValues.AddRange(fields
-                    .Where(field => field.Value is StaticValue)
-                    .Select(it => KeyValuePair.Create(it.Key, (StaticValue)it.Value))
-                );
-                return staticValues;
+                return new OrderedDictionary<string, StaticValue>(fields
+                    .Where(it => it.Value is StaticValue)
+                    .Select(it => KeyValuePair.Create(it.Key, (StaticValue)it.Value)));
             }
         }
 
@@ -352,12 +348,9 @@ namespace PinJuke.Service.Firestore
         {
             get
             {
-                var transformValues = new OrderedDictionary<string, TransformValue>();
-                transformValues.AddRange(fields
-                    .Where(field => field.Value is TransformValue)
-                    .Select(it => KeyValuePair.Create(it.Key, (TransformValue)it.Value))
-                );
-                return transformValues;
+                return new OrderedDictionary<string, TransformValue>(fields
+                    .Where(it => it.Value is TransformValue)
+                    .Select(it => KeyValuePair.Create(it.Key, (TransformValue)it.Value)));
             }
         }
 
@@ -365,7 +358,7 @@ namespace PinJuke.Service.Firestore
         {
             get
             {
-                return fields.Where(field => field.Value is TransformValue).Any();
+                return fields.Where(it => it.Value is TransformValue).Any();
             }
         }
 

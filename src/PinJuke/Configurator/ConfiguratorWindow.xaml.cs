@@ -3,6 +3,7 @@ using PinJuke.Configurator.View;
 using PinJuke.Ini;
 using PinJuke.Model;
 using PinJuke.Service;
+using PinJuke.Utility;
 using PinJuke.View;
 using System;
 using System.Collections.Generic;
@@ -206,7 +207,7 @@ namespace PinJuke.Configurator
             }
             catch (IOException)
             {
-                MessageBox.Show(string.Format(Strings.ErrorWritingFile, tabItem.FilePath), AppDomain.CurrentDomain.FriendlyName);
+                UiUtil.ShowErrorMessage(string.Format(Strings.ErrorWritingFile, tabItem.FilePath));
             }
         }
 

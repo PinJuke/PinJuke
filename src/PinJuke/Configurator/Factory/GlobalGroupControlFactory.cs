@@ -1,6 +1,7 @@
 ﻿using PinJuke.Configuration;
 using PinJuke.Configurator.View;
 using PinJuke.Ini;
+using PinJuke.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -196,12 +197,12 @@ namespace PinJuke.Configurator.Factory
                             }
                             catch (IniIoException ex)
                             {
-                                MessageBox.Show(string.Format(Strings.ErrorReadingFile, ex.FilePath), AppDomain.CurrentDomain.FriendlyName);
+                                UiUtil.ShowErrorMessage(string.Format(Strings.ErrorReadingFile, ex.FilePath));
                                 return;
                             }
                             if (position == null)
                             {
-                                MessageBox.Show(string.Format(Strings.PathNotFound, PinUpPlayerIniReader.BALLER_PIN_UP_PLAYER_INI), AppDomain.CurrentDomain.FriendlyName);
+                                UiUtil.ShowErrorMessage(string.Format(Strings.PathNotFound, PinUpPlayerIniReader.BALLER_PIN_UP_PLAYER_INI));
                                 return;
                             }
                             var group = buttonControl.GetParentGroup();

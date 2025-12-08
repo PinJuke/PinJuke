@@ -3,6 +3,7 @@ using PinJuke.Dof;
 using PinJuke.Ini;
 using PinJuke.Model;
 using PinJuke.Service;
+using PinJuke.Utility;
 using PinJuke.View;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace PinJuke.Onboarding
 {
@@ -100,10 +102,43 @@ namespace PinJuke.Onboarding
         private Beacon GetBeacon()
         {
             var mainModel = new MainModel(configuration, userConfiguration);
-            using DofMediator? dofMediator = configuration.Dof.Enabled ? new DofMediator(mainModel, configuration.Dof) : null;
-            dofMediator?.Startup();
+            using DofMediator? dofMediator = CreateDofMediator(mainModel);
             var beaconController = new BeaconController(mainModel, beaconService, configurationService, dofMediator);
             return beaconController.GetBeacon();
+        }
+
+        private DofMediator? CreateDofMediator(MainModel mainModel)
+        {
+            if (!configuration.Dof.Enabled)
+            {
+                return null;
+            }
+
+            DofMediator dofMediator = new DofMediator(mainModel, configuration.Dof);
+
+            try
+            {
+                dofMediator.Setup();
+            }
+            catch (Exception ex)
+            {
+                UiUtil.ShowErrorMessage(string.Format(Strings.ErrorDofSetup, ex.ToString()));
+                dofMediator.Dispose();
+                return null;
+            }
+
+            try
+            {
+                dofMediator.Init();
+            }
+            catch (Exception ex)
+            {
+                UiUtil.ShowErrorMessage(string.Format(Strings.ErrorDofInit, ex.ToString()));
+                dofMediator.Dispose();
+                return null;
+            }
+
+            return dofMediator;
         }
     }
 }

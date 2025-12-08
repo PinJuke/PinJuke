@@ -567,4 +567,10 @@ Track: restart</value>
   <data name="BeaconInstalledRam" xml:space="preserve">
     <value>Installed RAM</value>
   </data>
+  <data name="ErrorDofSetup" xml:space="preserve">
+    <value>Error setting up DOF: "{0}"</value>
+  </data>
+  <data name="ErrorDofInit" xml:space="preserve">
+    <value>Error initializing DOF: "{0}"</value>
+  </data>
 </root>

@@ -567,4 +567,10 @@ Titel: neu starten</value>
   <data name="BeaconInstalledRam" xml:space="preserve">
     <value>Verbauter RAM</value>
   </data>
+  <data name="ErrorDofSetup" xml:space="preserve">
+    <value>Fehler beim Setup von DOF: "{0}"</value>
+  </data>
+  <data name="ErrorDofInit" xml:space="preserve">
+    <value>Fehler beim Initialisieren von DOF: "{0}"</value>
+  </data>
 </root>

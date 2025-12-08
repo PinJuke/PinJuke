@@ -61,6 +61,8 @@ namespace PinJuke.Dof
         public void Dispose()
         {
             if (disposed) return;
+            initialized = false;
+            setup = false;
             disposed = true;
             mainModel.InputEvent -= MainModel_InputEvent;
             mainModel.PropertyChanged -= MainModel_PropertyChanged;
@@ -71,30 +73,40 @@ namespace PinJuke.Dof
         {
             try
             {
-                pinball.Setup(dof.GlobalConfigFilePath, "", dof.RomName);
+                Setup();
             }
             catch (Exception)
             {
                 Debug.WriteLine("Error setting up DOF.");
                 return;
             }
-            setup = true;
 
             try
             {
-                pinball.Init();
+                Init();
             }
             catch (Exception)
             {
                 Debug.WriteLine("Error initializing DOF.");
                 return;
             }
-            initialized = true;
 
             mainModel.InputEvent += MainModel_InputEvent;
             mainModel.PropertyChanged += MainModel_PropertyChanged;
 
             Trigger(Lamp.Startup);
+        }
+
+        public void Setup()
+        {
+            pinball.Setup(dof.GlobalConfigFilePath, "", dof.RomName);
+            setup = true;
+        }
+
+        public void Init()
+        {
+            pinball.Init();
+            initialized = true;
         }
 
         private void MainModel_InputEvent(object? sender, InputActionEventArgs e)
