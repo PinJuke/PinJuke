@@ -59,7 +59,9 @@ namespace PinJuke.Playlist
         {
             {"mp3", FileType.Music},
             {"flac", FileType.Music},
+            {"ogg", FileType.Music},
             {"mp4", FileType.Video},
+            {"mpeg", FileType.Video},
             {"m3u", FileType.M3u},
         };
 
