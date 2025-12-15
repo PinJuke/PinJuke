@@ -3,6 +3,7 @@ using PinJuke.Configurator;
 using PinJuke.Controller;
 using PinJuke.Dof;
 using PinJuke.Ini;
+using PinJuke.Interop;
 using PinJuke.Model;
 using PinJuke.Onboarding;
 using PinJuke.Service;
@@ -30,6 +31,7 @@ namespace PinJuke
         private BeaconController? beaconController = null;
         private AppController? appController = null;
         private DisplayController? displayController = null;
+        private PlaybackMediator? playbackMediator = null;
         private DofMediator? dofMediator = null;
         private AudioManager? audioManager = null;
 
@@ -171,6 +173,9 @@ namespace PinJuke
             var result = Unosquare.FFME.Library.LoadFFmpeg();
             Debug.WriteLine(result ? "FFmpeg loaded." : "FFmpeg NOT loaded.");
 
+            playbackMediator = new PlaybackMediator(mainModel);
+            playbackMediator.Startup();
+
             if (configuration.Dof.Enabled)
             {
                 dofMediator = new DofMediator(mainModel, configuration.Dof);
@@ -249,6 +254,7 @@ namespace PinJuke
             appController?.Dispose();
             audioManager?.Dispose();
             dofMediator?.Dispose();
+            playbackMediator?.Dispose();
         }
 
         private MainWindow? CreateWindow(MainModel mainModel, Configuration.Display displayConfig, AudioManager audioManager)
