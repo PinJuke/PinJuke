@@ -17,8 +17,8 @@
     <RepositoryType>git</RepositoryType>
     <Authors>The PinJuke developers</Authors>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <FileVersion>1.0.0.33</FileVersion>
-    <Version>1.0.3</Version>
+    <FileVersion>1.0.4.0</FileVersion>
+    <Version>1.0.4</Version>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 
