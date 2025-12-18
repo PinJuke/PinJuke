@@ -573,4 +573,7 @@ Titel: neu starten</value>
   <data name="ErrorDofInit" xml:space="preserve">
     <value>Fehler beim Initialisieren von DOF: "{0}"</value>
   </data>
+  <data name="Input" xml:space="preserve">
+    <value>Eingabe</value>
+  </data>
 </root>

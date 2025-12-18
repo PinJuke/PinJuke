@@ -775,6 +775,15 @@ namespace PinJuke {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Input ähnelt.
+        /// </summary>
+        public static string Input {
+            get {
+                return ResourceManager.GetString("Input", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die JPEG file ähnelt.
         /// </summary>
         public static string JpegFile {

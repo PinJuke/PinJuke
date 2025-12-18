@@ -573,4 +573,7 @@ Track: restart</value>
   <data name="ErrorDofInit" xml:space="preserve">
     <value>Error initializing DOF: "{0}"</value>
   </data>
+  <data name="Input" xml:space="preserve">
+    <value>Input</value>
+  </data>
 </root>

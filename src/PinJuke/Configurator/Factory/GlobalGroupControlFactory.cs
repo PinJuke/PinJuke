@@ -21,13 +21,15 @@ namespace PinJuke.Configurator.Factory
             // Some cases of Key share the same value.
             var keys = Enum.GetNames<Key>().Select(name => new Item(name, Enum.Parse<Key>(name))).ToList();
 
+            var descriptionMargin = new Thickness(10, 0, 0, 0);
+
             LabelText = Strings.GlobalConfiguration;
             Controls = [
                 new GroupControlFactory()
                 {
                     LabelText = "PinJuke",
                     Controls = [
-                        new RowFactory<PathControl>() {
+                        new RowFactory() {
                             LabelText = Strings.MediaPath,
                             ChildFactory = new PathControlFactory()
                             {
@@ -53,62 +55,149 @@ namespace PinJuke.Configurator.Factory
                 },
                 new GroupControlFactory()
                 {
-                    LabelText = Strings.Keyboard,
+                    LabelText = Strings.Input,
                     Controls = [
-                        new RowFactory<SelectControl>() {
+                        new TextBlockFactory()
+                        {
+                            Text = "⚠️ Controller input support (e.g. VirtuaPin) is coming soon. In the meantime, you can use tools like joy2key.",
+                            Margin = new Thickness(0, 10, 0, 10),
+                        },
+                        new RowFactory() {
+                            ChildFactory = new CompositeControlFactory()
+                            {
+                                Children = [
+                                    new TextBlockFactory()
+                                    {
+                                        Text = Strings.Keyboard,
+                                        Width = 200,
+                                    },
+                                ],
+                            }
+                        },
+                        new RowFactory() {
                             LabelText = Strings.KeyExit,
-                            ChildFactory = new SelectControlFactory()
+                            ChildFactory = new CompositeControlFactory()
                             {
-                                Items = keys,
-                                Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "Exit"),
+                                Children = [
+                                    new SelectControlFactory()
+                                    {
+                                        Items = keys,
+                                        Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "Exit"),
+                                    },
+                                    new TextBlockFactory()
+                                    {
+                                        Text = "(Exit)",
+                                        Margin = descriptionMargin,
+                                    }
+                                ],
                             }
                         },
-                        new RowFactory<SelectControl>() {
+                        new RowFactory() {
                             LabelText = Strings.KeyBrowse,
-                            ChildFactory = new SelectControlFactory()
+                            ChildFactory = new CompositeControlFactory()
                             {
-                                Items = keys,
-                                Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "Browse"),
+                                Children = [
+                                    new SelectControlFactory()
+                                    {
+                                        Items = keys,
+                                        Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "Browse"),
+                                    },
+                                    new TextBlockFactory()
+                                    {
+                                        Text = "(Launch ball)",
+                                        Margin = descriptionMargin,
+                                    }
+                                ],
                             }
                         },
-                        new RowFactory<SelectControl>() {
+                        new RowFactory() {
                             LabelText = Strings.KeyPrevious,
-                            ChildFactory = new SelectControlFactory()
+                            ChildFactory = new CompositeControlFactory()
                             {
-                                Items = keys,
+                                Children = [
+                                    new SelectControlFactory()
+                                    {
+                                        Items = keys,
                                 Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "Previous"),
+                                    },
+                                    new TextBlockFactory()
+                                    {
+                                        Text = "(Left flipper)",
+                                        Margin = descriptionMargin,
+                                    }
+                                ],
                             }
                         },
-                        new RowFactory<SelectControl>() {
+                        new RowFactory() {
                             LabelText = Strings.KeyNext,
-                            ChildFactory = new SelectControlFactory()
+                            ChildFactory = new CompositeControlFactory()
                             {
-                                Items = keys,
-                                Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "Next"),
+                                Children = [
+                                    new SelectControlFactory()
+                                    {
+                                        Items = keys,
+                                        Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "Next"),
+                                    },
+                                    new TextBlockFactory()
+                                    {
+                                        Text = "(Right flipper)",
+                                        Margin = descriptionMargin,
+                                    }
+                                ],
                             }
                         },
-                        new RowFactory<SelectControl>() {
+                        new RowFactory() {
                             LabelText = Strings.KeyPlayPause,
-                            ChildFactory = new SelectControlFactory()
+                            ChildFactory = new CompositeControlFactory()
                             {
-                                Items = keys,
-                                Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "PlayPause"),
+                                Children = [
+                                    new SelectControlFactory()
+                                    {
+                                        Items = keys,
+                                        Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "PlayPause"),
+                                    },
+                                    new TextBlockFactory()
+                                    {
+                                        Text = "(Start)",
+                                        Margin = descriptionMargin,
+                                    }
+                                ],
                             }
                         },
-                        new RowFactory<SelectControl>() {
+                        new RowFactory() {
                             LabelText = Strings.KeyVolumeDown,
-                            ChildFactory = new SelectControlFactory()
+                            ChildFactory = new CompositeControlFactory()
                             {
-                                Items = keys,
-                                Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "VolumeDown"),
+                                Children = [
+                                    new SelectControlFactory()
+                                    {
+                                        Items = keys,
+                                        Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "VolumeDown"),
+                                    },
+                                    new TextBlockFactory()
+                                    {
+                                        Text = "(Left magna save)",
+                                        Margin = descriptionMargin,
+                                    }
+                                ],
                             }
                         },
-                        new RowFactory<SelectControl>() {
+                        new RowFactory() {
                             LabelText = Strings.KeyVolumeUp,
-                            ChildFactory = new SelectControlFactory()
+                            ChildFactory = new CompositeControlFactory()
                             {
-                                Items = keys,
-                                Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "VolumeUp"),
+                                Children = [
+                                    new SelectControlFactory()
+                                    {
+                                        Items = keys,
+                                        Converter = new EnumSelectConverter<Key>(parser, "Keyboard", "VolumeUp"),
+                                    },
+                                    new TextBlockFactory()
+                                    {
+                                        Text = "(Right magna save)",
+                                        Margin = descriptionMargin,
+                                    }
+                                ],
                             }
                         },
                     ]
@@ -117,7 +206,7 @@ namespace PinJuke.Configurator.Factory
                 {
                     LabelText = Strings.Milkdrop,
                     Controls = [
-                        new RowFactory<PathControl>() {
+                        new RowFactory() {
                             LabelText = Strings.MilkdropPresetsPath,
                             ChildFactory = new PathControlFactory()
                             {
@@ -126,7 +215,7 @@ namespace PinJuke.Configurator.Factory
                                 Converter = new PathConverter(parser, "Milkdrop", "PresetsPath"),
                             }
                         },
-                        new RowFactory<PathControl>() {
+                        new RowFactory() {
                             LabelText = Strings.MilkdropTexturesPath,
                             ChildFactory = new PathControlFactory()
                             {
@@ -141,14 +230,14 @@ namespace PinJuke.Configurator.Factory
                 {
                     LabelText = Strings.Dof,
                     Controls = [
-                        new RowFactory<BoolControl>() {
+                        new RowFactory() {
                             LabelText = Strings.Enable,
                             ChildFactory = new BoolControlFactory()
                             {
                                 Converter = new BoolConverter(parser, "DOF", "Enabled"),
                             }
                         },
-                        new RowFactory<PathControl>() {
+                        new RowFactory() {
                             LabelText = Strings.DofGlobalConfigFilePath,
                             ChildFactory = new PathControlFactory()
                             {
@@ -171,7 +260,7 @@ namespace PinJuke.Configurator.Factory
         {
             ControlFactory<UIElement>[] enabledControls = enabledAvailable
                 ? [
-                    new RowFactory<BoolControl>() {
+                    new RowFactory() {
                         LabelText = Strings.Enable,
                         ChildFactory = new BoolControlFactory()
                         {
@@ -183,7 +272,7 @@ namespace PinJuke.Configurator.Factory
 
             Controls = [
                 ..enabledControls,
-                new RowFactory<ButtonControl>() {
+                new RowFactory() {
                     LabelText = "",
                     ChildFactory = new ButtonControlFactory()
                     {
@@ -213,7 +302,7 @@ namespace PinJuke.Configurator.Factory
                         },
                     }
                 },
-                new RowFactory<NumberControl>() {
+                new RowFactory() {
                     LabelText = Strings.RectLeft,
                     ChildFactory = new NumberControlFactory()
                     {
@@ -221,7 +310,7 @@ namespace PinJuke.Configurator.Factory
                         Converter = new IntNumberConverter(parser, sectionName, "WindowLeft"),
                     }
                 },
-                new RowFactory<NumberControl>() {
+                new RowFactory() {
                     LabelText = Strings.RectTop,
                     ChildFactory = new NumberControlFactory()
                     {
@@ -229,7 +318,7 @@ namespace PinJuke.Configurator.Factory
                         Converter = new IntNumberConverter(parser, sectionName, "WindowTop"),
                     }
                 },
-                new RowFactory<NumberControl>() {
+                new RowFactory() {
                     LabelText = Strings.RectWidth,
                     ChildFactory = new NumberControlFactory()
                     {
@@ -237,7 +326,7 @@ namespace PinJuke.Configurator.Factory
                         Converter = new IntNumberConverter(parser, sectionName, "WindowWidth"),
                     }
                 },
-                new RowFactory<NumberControl>() {
+                new RowFactory() {
                     LabelText = Strings.RectHeight,
                     ChildFactory = new NumberControlFactory()
                     {
@@ -245,14 +334,14 @@ namespace PinJuke.Configurator.Factory
                         Converter = new IntNumberConverter(parser, sectionName, "WindowHeight"),
                     }
                 },
-                new RowFactory<NumberControl>() {
+                new RowFactory() {
                     LabelText = Strings.Scale,
                     ChildFactory = new NumberControlFactory()
                     {
                         Converter = new FloatNumberConverter(parser, sectionName, "ContentScale"),
                     }
                 },
-                new RowFactory<SelectControl>() {
+                new RowFactory() {
                     LabelText = Strings.Rotation,
                     ChildFactory = new SelectControlFactory()
                     {

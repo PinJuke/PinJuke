@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
 using static PinJuke.Configurator.View.ConfiguratorControl;
 using static System.Resources.ResXFileRef;
 
@@ -21,13 +23,13 @@ namespace PinJuke.Configurator
         public void WriteToControl(UIElement control, IniDocument iniDocument);
     }
 
-    public class RowFactory<T> : ControlFactory<RowControl> where T : ConfiguratorControl
+    public class RowFactory : ControlFactory<RowControl>
     {
         public string LabelText { get; set; } = "";
         public string? Name { get; set; } = null;
 
-        private ControlFactory<T>? childFactory = null;
-        public ControlFactory<T> ChildFactory
+        private ControlFactory<ConfiguratorControl>? childFactory = null;
+        public ControlFactory<ConfiguratorControl> ChildFactory
         {
             get
             {
@@ -59,15 +61,55 @@ namespace PinJuke.Configurator
         public virtual void ReadFromControl(UIElement control, IniDocument iniDocument)
         {
             var rowControl = (RowControl)control;
-            var childControl = (T?)rowControl.Control ?? throw new InvalidOperationException("Cannot read. Control of row control is null.");
+            var childControl = rowControl.Control ?? throw new InvalidOperationException("Cannot read. Control of row control is null.");
             ChildFactory.ReadFromControl(childControl, iniDocument);
         }
 
         public virtual void WriteToControl(UIElement control, IniDocument iniDocument)
         {
             var rowControl = (RowControl)control;
-            var childControl = (T?)rowControl.Control ?? throw new InvalidOperationException("Cannot write. Control of row control is null.");
+            var childControl = rowControl.Control ?? throw new InvalidOperationException("Cannot write. Control of row control is null.");
             ChildFactory.WriteToControl(childControl, iniDocument);
+        }
+    }
+
+    public class CompositeControlFactory : ControlFactory<CompositeControl>
+    {
+        public string? Name { get; set; } = null;
+        public ControlFactory<UIElement>[] Children { get; set; } = [];
+
+        public CompositeControlFactory()
+        {
+        }
+
+        public CompositeControl CreateControl()
+        {
+            var compositeControl = new CompositeControl();
+            foreach (var controlFactory in Children)
+            {
+                compositeControl.Children.Add(controlFactory.CreateControl());
+            }
+            return compositeControl;
+        }
+
+        public virtual void ReadFromControl(UIElement control, IniDocument iniDocument)
+        {
+            var compositeControl = (CompositeControl)control;
+            foreach (var (index, controlFactory) in Children.Index())
+            {
+                var child = compositeControl.Children[index];
+                controlFactory.ReadFromControl(child, iniDocument);
+            }
+        }
+
+        public virtual void WriteToControl(UIElement control, IniDocument iniDocument)
+        {
+            var compositeControl = (CompositeControl)control;
+            foreach (var (index, controlFactory) in Children.Index())
+            {
+                var child = compositeControl.Children[index];
+                controlFactory.WriteToControl(child, iniDocument);
+            }
         }
     }
 
@@ -258,14 +300,17 @@ namespace PinJuke.Configurator
     public class SelectControlFactory : BaseControlFactory<SelectControl>
     {
         public List<Item> Items { get; set; } = new();
+        public Thickness Margin { get; set; } = new Thickness();
 
         public override SelectControl CreateConfiguratorControl()
         {
-            return new SelectControl()
+            var selectControl = new SelectControl()
             {
                 Name = Name,
                 Items = Items
             };
+            selectControl.Margin = Margin;
+            return selectControl;
         }
     }
 
@@ -282,6 +327,33 @@ namespace PinJuke.Configurator
                 Text = Text,
                 ClickHandler = ClickHandler,
             };
+        }
+    }
+
+    public class TextBlockFactory : ControlFactory<TextBlock>
+    {
+        public string? Name { get; set; } = null;
+        public string Text { get; set; } = "";
+        public Thickness Margin { get; set; } = new Thickness();
+        public VerticalAlignment VerticalAlignment { get; set; } = VerticalAlignment.Center;
+        public double Width { get; set; } = double.NaN;
+
+        public TextBlock CreateControl()
+        {
+            var textBlock = new TextBlock();
+            textBlock.Inlines.Add(new Run(Text));
+            textBlock.Margin = Margin;
+            textBlock.VerticalAlignment = VerticalAlignment;
+            textBlock.Width = Width;
+            return textBlock;
+        }
+
+        public void ReadFromControl(UIElement control, IniDocument iniDocument)
+        {
+        }
+
+        public void WriteToControl(UIElement control, IniDocument iniDocument)
+        {
         }
     }
 }

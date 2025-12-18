@@ -20,7 +20,7 @@ namespace PinJuke.Configurator.Factory
                 {
                     LabelText = Strings.Player,
                     Controls = [
-                        new RowFactory<PathControl>() {
+                        new RowFactory() {
                             LabelText = Strings.MusicPath,
                             ChildFactory = new PathControlFactory()
                             {
@@ -29,7 +29,7 @@ namespace PinJuke.Configurator.Factory
                                 Converter = new PathConverter(parser, "Player", "MusicPath"),
                             }
                         },
-                        new RowFactory<SelectControl>() {
+                        new RowFactory() {
                             LabelText = Strings.StartupTrackType,
                             ChildFactory = new SelectControlFactory()
                             {
@@ -42,14 +42,14 @@ namespace PinJuke.Configurator.Factory
                                 Converter = new IntSelectConverter(parser, "Player", "StartupTrackType"),
                             }
                         },
-                        new RowFactory<BoolControl>() {
+                        new RowFactory() {
                             LabelText = Strings.PlayOnStartup,
                             ChildFactory = new BoolControlFactory()
                             {
                                 Converter = new BoolConverter(parser, "Player", "PlayOnStartup"),
                             }
                         },
-                        new RowFactory<SelectControl>() {
+                        new RowFactory() {
                             LabelText = Strings.TrackBrowserOn,
                             ChildFactory = new SelectControlFactory()
                             {
@@ -130,7 +130,7 @@ namespace PinJuke.Configurator.Factory
         public ContentGroupControlFactory(Parser parser, string sectionName, MediaPathProvider mediaPathProvider)
         {
             Controls = [
-                new RowFactory<BoolControl>() {
+                new RowFactory() {
                     LabelText = Strings.EnableTrackCover,
                     ChildFactory = new BoolControlFactory()
                     {
@@ -138,7 +138,7 @@ namespace PinJuke.Configurator.Factory
                     }
                 },
 
-                new RowFactory<SelectControl>() {
+                new RowFactory() {
                     LabelText = Strings.PlaybackBackgroundType,
                     ChildFactory = new SelectControlFactory()
                     {
@@ -153,7 +153,7 @@ namespace PinJuke.Configurator.Factory
                         ChangedHandler = OnBackgroundTypeChanged,
                     }
                 },
-                new RowFactory<SelectControl>() {
+                new RowFactory() {
                     LabelText = Strings.IdleBackgroundType,
                     ChildFactory = new SelectControlFactory()
                     {
@@ -169,7 +169,7 @@ namespace PinJuke.Configurator.Factory
                     }
                 },
 
-                new RowFactory<PathControl>() {
+                new RowFactory() {
                     LabelText = Strings.BackgroundImageFile,
                     ChildFactory = new PathControlFactory()
                     {
@@ -183,7 +183,7 @@ namespace PinJuke.Configurator.Factory
                     }
                 },
 
-                new RowFactory<PathControl>() {
+                new RowFactory() {
                     LabelText = Strings.ThemeVideoLoopFile,
                     ChildFactory = new PathControlFactory()
                     {
@@ -196,7 +196,7 @@ namespace PinJuke.Configurator.Factory
                         Converter = new PathConverter(parser, sectionName, "ThemeVideoLoopFile"),
                     }
                 },
-                new RowFactory<PathControl>() {
+                new RowFactory() {
                     LabelText = Strings.ThemeVideoIdleFile,
                     ChildFactory = new PathControlFactory()
                     {
@@ -210,7 +210,7 @@ namespace PinJuke.Configurator.Factory
                     }
                 },
 
-                new RowFactory<BoolControl>() {
+                new RowFactory() {
                     LabelText = Strings.ThemeVideoStartFile,
                     ChildFactory = new BoolControlFactory()
                     {
@@ -230,7 +230,7 @@ namespace PinJuke.Configurator.Factory
                         ],
                     }
                 },
-                new RowFactory<BoolControl>() {
+                new RowFactory() {
                     LabelText = Strings.ThemeVideoStopFile,
                     ChildFactory = new BoolControlFactory()
                     {
@@ -252,7 +252,7 @@ namespace PinJuke.Configurator.Factory
                 },
 
 
-                new RowFactory<SelectControl>() {
+                new RowFactory() {
                     LabelText = Strings.ThemeVideoRotation,
                     ChildFactory = new SelectControlFactory()
                     {
