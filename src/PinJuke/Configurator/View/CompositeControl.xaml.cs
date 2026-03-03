@@ -15,12 +15,9 @@ using System.Windows.Shapes;
 
 namespace PinJuke.Configurator.View
 {
-    public partial class CompositeControl : ConfiguratorControl
+    public partial class CompositeControl : ContainerControl
     {
-        public UIElementCollection Children
-        {
-            get => Container.Children;
-        }
+        override public UIElementCollection Children => Container.Children;
 
         public CompositeControl()
         {

@@ -18,9 +18,9 @@ namespace PinJuke.Configurator.View
         {
         }
 
-        private T? FindParent<T>() where T : FrameworkElement
+        public static T? FindControlParent<T>(FrameworkElement control) where T : FrameworkElement
         {
-            FrameworkElement? element = Parent as FrameworkElement;
+            FrameworkElement? element = control.Parent as FrameworkElement;
             for (; ; )
             {
                 if (element == null || element is T)
@@ -31,25 +31,30 @@ namespace PinJuke.Configurator.View
             }
         }
 
-        public GroupControl? FindParentGroup()
+        public static T GetControlParent<T>(FrameworkElement control) where T : FrameworkElement
         {
-            return FindParent<GroupControl>();
+            var parent = FindControlParent<T>(control);
+            if (parent == null)
+            {
+                throw new InvalidOperationException("Cannot return parent. No parent found.");
+            }
+            return parent;
         }
 
-        public GroupControl GetParentGroup()
+        public T? FindParent<T>() where T : FrameworkElement
         {
-            var parentGroup = FindParentGroup();
-            if (parentGroup == null)
-            {
-                throw new InvalidOperationException("Cannot return parent group. No parent group found.");
-            }
-            return parentGroup;
+            return FindControlParent<T>(this);
+        }
+
+        public T GetParent<T>() where T : FrameworkElement
+        {
+            return GetControlParent<T>(this);
         }
 
         protected void OnChanged()
         {
             ChangedEvent?.Invoke(this);
-            var parentGroup = FindParentGroup();
+            var parentGroup = FindParent<ContainerControl>();
             parentGroup?.OnChanged();
         }
     }

@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace PinJuke.Controller
 {
-    public class InputManager
+    public class InputManager : IDisposable
     {
         public event EventHandler<InputActionEventArgs>? InputEvent;
         public event EventHandler<InputActionEventArgs>? ExitEvent;
@@ -26,6 +26,10 @@ namespace PinJuke.Controller
         public InputManager(Configuration.Configuration configuration)
         {
             this.configuration = configuration;
+        }
+
+        public void Dispose()
+        {
         }
 
         public bool HandleKeyDown(System.Windows.Input.KeyEventArgs e)
@@ -82,6 +86,61 @@ namespace PinJuke.Controller
             }
 
             return eventArgs != null;
+        }
+
+        public void HandleGamepadButtonPressed(GamepadButtonEventArgs e)
+        {
+            var buttonNumber = e.ButtonNumber;
+            var repeated = e.IsRepeated;
+
+            InputActionEventArgs? eventArgs = null;
+            var controller = configuration.Controller ?? throw new InvalidOperationException("Cannot handle gamepad button. Controller is null.");
+
+            if (e.ButtonNumber == controller.Exit)
+            {
+                eventArgs = new(InputAction.Exit, repeated);
+                ExitEvent?.Invoke(this, eventArgs);
+            }
+            else if (e.ButtonNumber == controller.Browse)
+            {
+                eventArgs = new(InputAction.Browse, repeated);
+                BrowseEvent?.Invoke(this, eventArgs);
+            }
+            else if (e.ButtonNumber == controller.Previous)
+            {
+                eventArgs = new(InputAction.Previous, repeated);
+                PreviousEvent?.Invoke(this, eventArgs);
+            }
+            else if (e.ButtonNumber == controller.Next)
+            {
+                eventArgs = new(InputAction.Next, repeated);
+                NextEvent?.Invoke(this, eventArgs);
+            }
+            else if (e.ButtonNumber == controller.PlayPause)
+            {
+                eventArgs = new(InputAction.PlayPause, repeated);
+                PlayPauseEvent?.Invoke(this, eventArgs);
+            }
+            else if (e.ButtonNumber == controller.VolumeDown)
+            {
+                eventArgs = new(InputAction.VolumeDown, repeated);
+                VolumeDownEvent?.Invoke(this, eventArgs);
+            }
+            else if (e.ButtonNumber == controller.VolumeUp)
+            {
+                eventArgs = new(InputAction.VolumeUp, repeated);
+                VolumeUpEvent?.Invoke(this, eventArgs);
+            }
+            else if (e.ButtonNumber == controller.Tilt)
+            {
+                eventArgs = new(InputAction.Tilt, repeated);
+                TiltEvent?.Invoke(this, eventArgs);
+            }
+
+            if (eventArgs != null)
+            {
+                InputEvent?.Invoke(this, eventArgs);
+            }
         }
     }
 }

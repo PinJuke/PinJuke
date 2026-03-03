@@ -272,7 +272,7 @@ namespace PinJuke.Configurator.Factory
 
         private void OnBackgroundTypeChanged(ConfiguratorControl control)
         {
-            var group = control.GetParentGroup();
+            var group = control.GetParent<GroupControl>();
 
             var playbackBackgroundTypeControl = (SelectControl)group.GetChildByName(PLAYBACK_BACKGROUND_TYPE_CONTROL);
             var idleBackgroundTypeControl = (SelectControl)group.GetChildByName(IDLE_BACKGROUND_TYPE_CONTROL);

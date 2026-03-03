@@ -5,7 +5,7 @@ using System.Windows.Controls;
 
 namespace PinJuke.Configurator.View
 {
-    public partial class BoolControl : ConfiguratorControl, ContainerControl
+    public partial class BoolControl : ContainerControl
     {
         private bool value = true;
         public bool Value
@@ -33,7 +33,7 @@ namespace PinJuke.Configurator.View
             get => "";
         }
 
-        Panel ContainerControl.Controls => Controls;
+        override public UIElementCollection Children => Controls.Children;
 
         public BoolControl()
         {

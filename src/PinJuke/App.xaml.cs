@@ -204,6 +204,10 @@ namespace PinJuke
             {
                 displayController.ObserveWindow(dmdWindow);
             }
+            if (configuration.Controller != null)
+            {
+                displayController.ObserverGamepad();
+            }
 
             playFieldWindow?.Show();
             backGlassWindow?.Show();

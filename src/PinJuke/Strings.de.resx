@@ -576,4 +576,28 @@ Titel: neu starten</value>
   <data name="Input" xml:space="preserve">
     <value>Eingabe</value>
   </data>
+  <data name="Controller" xml:space="preserve">
+    <value>Controller</value>
+  </data>
+  <data name="CaptureKeyboardKey" xml:space="preserve">
+    <value>Drücken Sie die Taste auf Ihrer Tastatur, die Sie zuweisen möchten.</value>
+  </data>
+  <data name="CaptureControllerButton" xml:space="preserve">
+    <value>Drücken Sie die Taste auf Ihrem Controller/Gamepad, die Sie zuweisen möchten.</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="ErrorGamepadInit" xml:space="preserve">
+    <value>Fehler beim Initialisieren des Gamepads: "{0}"</value>
+  </data>
+  <data name="ErrorNoGamepadFound" xml:space="preserve">
+    <value>Es wurden keine Controller/Gamepads erkannt.</value>
+  </data>
+  <data name="Presets" xml:space="preserve">
+    <value>Voreinstellungen</value>
+  </data>
+  <data name="SelectFromPresets" xml:space="preserve">
+    <value>Wählen Sie eine Voreinstellung aus, die Sie zuweisen möchten.</value>
+  </data>
 </root>

@@ -24,6 +24,8 @@ namespace PinJuke.Controller
         private int tiltLastPlayed = 0;
         private readonly SoundPlayer tiltSoundPlayer;
 
+        private GamepadManager? gamepadManager = null;
+
         public DisplayController(MainModel mainModel, AudioManager audioManager)
         {
             this.mainModel = mainModel;
@@ -49,13 +51,50 @@ namespace PinJuke.Controller
 
         public void Dispose()
         {
+            DisposeGamepad();
             tiltSoundPlayer.Dispose();
+            inputManager.Dispose();
         }
 
         public void ObserveWindow(MainWindow window)
         {
             window.ShutdownRequestedEvent += Window_ShutdownRequested;
             window.KeyDown += Window_KeyDown;
+        }
+
+        public void ObserverGamepad()
+        {
+            DisposeGamepad();
+
+            GamepadManager? gamepadManager = null;
+            try
+            {
+                gamepadManager = new GamepadManager();
+                gamepadManager.Start();
+                gamepadManager.ButtonPressed += GamepadManager_ButtonPressed;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to initialize gamepad manager: {ex.Message}");
+                gamepadManager?.Dispose();
+                gamepadManager = null;
+            }
+            this.gamepadManager = gamepadManager;
+        }
+
+        private void DisposeGamepad()
+        {
+            if (gamepadManager != null)
+            {
+                gamepadManager.ButtonPressed -= GamepadManager_ButtonPressed;
+                gamepadManager.Dispose();
+                gamepadManager = null;
+            }
+        }
+
+        private void GamepadManager_ButtonPressed(object? sender, GamepadButtonEventArgs e)
+        {
+            inputManager.HandleGamepadButtonPressed(e);
         }
 
         private void Window_ShutdownRequested(object? sender, EventArgs e)

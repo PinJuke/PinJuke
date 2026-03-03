@@ -397,6 +397,33 @@ namespace PinJuke {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Cancel ähnelt.
+        /// </summary>
+        public static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Press the button on your controller/gamepad that you want to assign. ähnelt.
+        /// </summary>
+        public static string CaptureControllerButton {
+            get {
+                return ResourceManager.GetString("CaptureControllerButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Press the key on your keyboard that you want to assign. ähnelt.
+        /// </summary>
+        public static string CaptureKeyboardKey {
+            get {
+                return ResourceManager.GetString("CaptureKeyboardKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Check for application updates (when the Configurator is run) ähnelt.
         /// </summary>
         public static string CheckForUpdates {
@@ -447,6 +474,15 @@ namespace PinJuke {
         public static string ConsentToDataCollection {
             get {
                 return ResourceManager.GetString("ConsentToDataCollection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Controller ähnelt.
+        /// </summary>
+        public static string Controller {
+            get {
+                return ResourceManager.GetString("Controller", resourceCulture);
             }
         }
         
@@ -681,6 +717,24 @@ namespace PinJuke {
         public static string ErrorDofSetup {
             get {
                 return ResourceManager.GetString("ErrorDofSetup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Error initializing gamepad: &quot;{0}&quot; ähnelt.
+        /// </summary>
+        public static string ErrorGamepadInit {
+            get {
+                return ResourceManager.GetString("ErrorGamepadInit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die No controllers/gamepads were detected. ähnelt.
+        /// </summary>
+        public static string ErrorNoGamepadFound {
+            get {
+                return ResourceManager.GetString("ErrorNoGamepadFound", resourceCulture);
             }
         }
         
@@ -1036,6 +1090,15 @@ namespace PinJuke {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Presets ähnelt.
+        /// </summary>
+        public static string Presets {
+            get {
+                return ResourceManager.GetString("Presets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die PinJuke is provided under the displayed license. ähnelt.
         /// </summary>
         public static string ProvidedUnderDisplayedLicense {
@@ -1167,6 +1230,15 @@ namespace PinJuke {
         public static string SelectDofConfigFile {
             get {
                 return ResourceManager.GetString("SelectDofConfigFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Select a preset that you want to assign. ähnelt.
+        /// </summary>
+        public static string SelectFromPresets {
+            get {
+                return ResourceManager.GetString("SelectFromPresets", resourceCulture);
             }
         }
         

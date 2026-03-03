@@ -103,8 +103,11 @@ namespace PinJuke.Configurator
 
     public class IntSelectConverter : BaseConverter<SelectControl>
     {
-        public IntSelectConverter(Parser parser, string sectionName, string entryName) : base(parser, sectionName, entryName)
+        private int? DefaultValue { get; }
+
+        public IntSelectConverter(Parser parser, string sectionName, string entryName, int? defaultValue = null) : base(parser, sectionName, entryName)
         {
+            DefaultValue = defaultValue;
         }
 
         public override void ReadFromControl(SelectControl control, IniDocument iniDocument)
@@ -114,7 +117,7 @@ namespace PinJuke.Configurator
 
         public override void WriteToControl(SelectControl control, IniDocument iniDocument)
         {
-            control.SelectedValue = Parser.ParseInt(iniDocument[SectionName][EntryName]);
+            control.SelectedValue = Parser.ParseInt(iniDocument[SectionName][EntryName]) ?? DefaultValue;
         }
     }
 

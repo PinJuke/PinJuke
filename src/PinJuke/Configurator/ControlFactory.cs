@@ -55,6 +55,7 @@ namespace PinJuke.Configurator
             var childControl = ChildFactory.CreateControl();
             rowControl.Control = childControl;
             rowControl.LabelText = LabelText;
+            rowControl.Name = Name;
             return rowControl;
         }
 
@@ -142,14 +143,14 @@ namespace PinJuke.Configurator
         }
     }
 
-    public interface ContainerControlFactoryInterface<out T> where T : ConfiguratorControl, ContainerControl
+    public interface ContainerControlFactoryInterface<out T> where T : ContainerControl
     {
         public ControlFactory<UIElement>[] Controls { get; }
 
         public T CreateContainerControl();
     }
 
-    public class ContainerControlTrait<T> where T : ConfiguratorControl, ContainerControl
+    public class ContainerControlTrait<T> where T : ContainerControl
     {
         public T CreateControlAndChildren(ContainerControlFactoryInterface<T> factory)
         {
@@ -157,7 +158,7 @@ namespace PinJuke.Configurator
             foreach (var controlFactory in factory.Controls)
             {
                 var control = controlFactory.CreateControl();
-                containerControl.Controls.Children.Add(control);
+                containerControl.Children.Add(control);
             }
             return containerControl;
         }
@@ -168,7 +169,7 @@ namespace PinJuke.Configurator
             var i = 0;
             foreach (var controlFactory in factory.Controls)
             {
-                var childControl = containerControl.Controls.Children[i++];
+                var childControl = (UIElement)containerControl.Children[i++]!;
                 controlFactory.ReadFromControl(childControl, iniDocument);
             }
         }
@@ -179,13 +180,13 @@ namespace PinJuke.Configurator
             var i = 0;
             foreach (var controlFactory in factory.Controls)
             {
-                var childControl = containerControl.Controls.Children[i++];
+                var childControl = (UIElement)containerControl.Children[i++]!;
                 controlFactory.WriteToControl(childControl, iniDocument);
             }
         }
     }
 
-    public abstract class BaseContainerControlFactory<T> : BaseControlFactory<T>, ContainerControlFactoryInterface<T> where T : ConfiguratorControl, ContainerControl
+    public abstract class BaseContainerControlFactory<T> : BaseControlFactory<T>, ContainerControlFactoryInterface<T> where T : ContainerControl
     {
         public ControlFactory<UIElement>[] Controls { get; set; } = [];
         private readonly ContainerControlTrait<T> containerControlTrait = new();
@@ -210,7 +211,7 @@ namespace PinJuke.Configurator
         }
     }
 
-    public abstract class ContainerControlFactory<T> : ControlFactory<T>, ContainerControlFactoryInterface<T> where T : ConfiguratorControl, ContainerControl
+    public abstract class ContainerControlFactory<T> : ControlFactory<T>, ContainerControlFactoryInterface<T> where T : ContainerControl
     {
         public string LabelText { get; set; } = "";
         public string? Name { get; set; } = null;
@@ -301,13 +302,15 @@ namespace PinJuke.Configurator
     {
         public List<Item> Items { get; set; } = new();
         public Thickness Margin { get; set; } = new Thickness();
+        public int Width { get; set; } = 200;
 
         public override SelectControl CreateConfiguratorControl()
         {
             var selectControl = new SelectControl()
             {
                 Name = Name,
-                Items = Items
+                Items = Items,
+                Width = Width,
             };
             selectControl.Margin = Margin;
             return selectControl;
@@ -318,6 +321,7 @@ namespace PinJuke.Configurator
     {
         public string Text { get; set; } = "";
         public ButtonControlClickHandler? ClickHandler { get; set; } = null;
+        public int Width { get; set; } = 200;
 
         public override ButtonControl CreateConfiguratorControl()
         {
@@ -326,6 +330,7 @@ namespace PinJuke.Configurator
                 Name = Name,
                 Text = Text,
                 ClickHandler = ClickHandler,
+                Width = Width,
             };
         }
     }
@@ -334,6 +339,7 @@ namespace PinJuke.Configurator
     {
         public string? Name { get; set; } = null;
         public string Text { get; set; } = "";
+        public Func<Inline>? Inline { get; set; } = null;
         public Thickness Margin { get; set; } = new Thickness();
         public VerticalAlignment VerticalAlignment { get; set; } = VerticalAlignment.Center;
         public double Width { get; set; } = double.NaN;
@@ -341,7 +347,7 @@ namespace PinJuke.Configurator
         public TextBlock CreateControl()
         {
             var textBlock = new TextBlock();
-            textBlock.Inlines.Add(new Run(Text));
+            textBlock.Inlines.Add(Inline?.Invoke() ?? new Run(Text));
             textBlock.Margin = Margin;
             textBlock.VerticalAlignment = VerticalAlignment;
             textBlock.Width = Width;

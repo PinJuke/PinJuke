@@ -435,6 +435,9 @@ Track: restart</value>
   <data name="KeyVolumeUp" xml:space="preserve">
     <value>Volume up</value>
   </data>
+  <data name="Controller" xml:space="preserve">
+    <value>Controller</value>
+  </data>
   <data name="MilkdropPresetsPath" xml:space="preserve">
     <value>Presets path</value>
   </data>
@@ -575,5 +578,26 @@ Track: restart</value>
   </data>
   <data name="Input" xml:space="preserve">
     <value>Input</value>
+  </data>
+  <data name="CaptureKeyboardKey" xml:space="preserve">
+    <value>Press the key on your keyboard that you want to assign.</value>
+  </data>
+  <data name="CaptureControllerButton" xml:space="preserve">
+    <value>Press the button on your controller/gamepad that you want to assign.</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ErrorGamepadInit" xml:space="preserve">
+    <value>Error initializing gamepad: "{0}"</value>
+  </data>
+  <data name="ErrorNoGamepadFound" xml:space="preserve">
+    <value>No controllers/gamepads were detected.</value>
+  </data>
+  <data name="Presets" xml:space="preserve">
+    <value>Presets</value>
+  </data>
+  <data name="SelectFromPresets" xml:space="preserve">
+    <value>Select a preset that you want to assign.</value>
   </data>
 </root>

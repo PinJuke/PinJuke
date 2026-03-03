@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PinJuke.Configurator"
         xmlns:pinjuke="clr-namespace:PinJuke"
         mc:Ignorable="d"
-        Title="PinJuke Configurator" Height="800" Width="770" WindowStartupLocation="CenterScreen">
+        Title="PinJuke Configurator" Height="800" Width="800" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <Storyboard x:Key="FlashUpdateCheckBorderStoryboard" RepeatBehavior="2x">
             <DoubleAnimation

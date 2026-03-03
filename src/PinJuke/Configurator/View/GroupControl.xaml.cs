@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 
 namespace PinJuke.Configurator.View
 {
-    public partial class GroupControl : ConfiguratorControl, ContainerControl
+    public partial class GroupControl : ContainerControl
     {
         private string labelText = "";
         public string LabelText
@@ -25,44 +25,11 @@ namespace PinJuke.Configurator.View
             set => this.SetField(ref labelText, value);
         }
 
-        Panel ContainerControl.Controls => Controls;
+        override public UIElementCollection Children => Controls.Children;
 
         public GroupControl()
         {
             InitializeComponent();
-        }
-
-        public ConfiguratorControl? FindChildByName(string name)
-        {
-            foreach (var child in Controls.Children)
-            {
-                if (child is RowControl rowControl && rowControl.Control is ConfiguratorControl configuratorControl)
-                {
-                    if (name == configuratorControl.Name)
-                    {
-                        return configuratorControl;
-                    }
-                }
-                if (child is GroupControl groupControl)
-                {
-                    var groupChild = groupControl.FindChildByName(name);
-                    if (groupChild != null)
-                    {
-                        return groupChild;
-                    }
-                }
-            }
-            return null;
-        }
-
-        public ConfiguratorControl GetChildByName(string name)
-        {
-            var child = FindChildByName(name);
-            if (child == null)
-            {
-                throw new InvalidOperationException($"Cannot return child. Found no control for \"{name}\".");
-            }
-            return child;
         }
     }
 }
